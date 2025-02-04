@@ -14,7 +14,8 @@
 			},
 			"suspicious": {
 				"noConfusingVoidType": "off",
-				"noExplicitAny": "off"
+				"noExplicitAny": "off",
+				"noEmptyInterface": "off"
 			},
 			"correctness": {
 				"noVoidTypeReturn": "off"

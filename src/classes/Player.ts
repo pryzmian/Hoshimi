@@ -1,0 +1,369 @@
+import {
+	DebugLevels,
+	DestroyReasons,
+	Events,
+	type Nullable,
+	type QueryOptions,
+	type SearchResult,
+} from "../types/Manager";
+import {
+	type LavalinkPlayerVoice,
+	LoopMode,
+	type PlayOptions,
+	type PlayerJson,
+	type PlayerOptions,
+} from "../types/Player";
+import { validatePlayerOptions } from "../util/functions/validations";
+import { OptionError, PlayerError } from "./Errors";
+import type { Hoshimi } from "./Manager";
+import type { Node } from "./node/Node";
+import { Queue } from "./queue/Queue";
+
+/**
+ * Class representing a Hoshimi player.
+ */
+export class Player {
+	/**
+	 * The options for the player.
+	 * @type {PlayerOptions}
+	 */
+	readonly options: PlayerOptions;
+	/**
+	 * The manager for the player.
+	 * @type {Hoshimi}
+	 */
+	readonly manager: Hoshimi;
+	/**
+	 * The data for the player.
+	 * @type {Record<string, unknown>}
+	 */
+	readonly data: Record<string, unknown> = {};
+	/**
+	 * The queue for the player.
+	 * @type {Queue}
+	 */
+	readonly queue: Queue;
+
+	/**
+	 * The node for the player.
+	 * @type {Node}
+	 */
+	readonly node: Node;
+
+	/**
+	 * Check if the player is self deafened.
+	 * @type {boolean}
+	 */
+	public selfDeaf: boolean = false;
+	/**
+	 * Check if the player is self muted.
+	 * @type {boolean}
+	 */
+	public selfMute: boolean = false;
+	/**
+	 * Loop mode of the player.
+	 * @type {LoopMode}
+	 * @default LoopMode.Off
+	 */
+	public loop: LoopMode = LoopMode.Off;
+	/**
+	 * Check if the player is playing.
+	 * @type {boolean}
+	 * @default false
+	 */
+	public playing: boolean = false;
+	/**
+	 * Check if the player is paused.
+	 * @type {boolean}
+	 * @default false
+	 */
+	public paused: boolean = false;
+	/**
+	 * Check if the player is connected.
+	 * @type {boolean}
+	 * @default false
+	 */
+	public connected: boolean = false;
+	/**
+	 * Volume of the player.
+	 * @type {number}
+	 * @default 100
+	 */
+	public volume: number = 100;
+	/**
+	 * Guild ig of the player.
+	 * @type {string}
+	 */
+	public guildId: string;
+	/**
+	 * Voice channel idof the player.
+	 * @type {string | undefined}
+	 */
+	public voiceId: string | undefined = undefined;
+	/**
+	 * Text channel id of the player.
+	 * @type {string | undefined}
+	 */
+	public textId: string | undefined = undefined;
+	/**
+	 * The ping of the player.
+	 * @type {number}
+	 */
+	public ping: number = 0;
+	/**
+	 * The timestamp when the player was created.
+	 * @type {number}
+	 */
+	public createdTimestamp: number = 0;
+	/**
+	 * The position of the player.
+	 * @type {number}
+	 */
+	public position: number = 0;
+
+	/**
+	 * The voice connection details.
+	 * @type {PlayerVoice}
+	 */
+	public voice: Nullable<LavalinkPlayerVoice> = {
+		endpoint: null,
+		sessionId: null,
+		token: null,
+	};
+
+	/**
+	 *
+	 * Create a new player.
+	 * @param manager The manager for the player.
+	 * @param options The options for the player.
+	 */
+	constructor(manager: Hoshimi, options: PlayerOptions) {
+		this.manager = manager;
+		this.options = options;
+
+		this.guildId = options.guildId;
+		this.voiceId = options.voiceId;
+
+		this.selfDeaf = options.selfDeaf ?? true;
+		this.selfMute = options.selfMute ?? false;
+		this.volume = options.volume ?? 100;
+		this.textId = options.textId;
+
+		this.queue = new Queue(this);
+		this.node =
+			(typeof options.node === "string"
+				? this.manager.nodes.get(options.node)
+				: options.node) ?? this.manager.getLeastUsedNode();
+
+		validatePlayerOptions(this.options);
+	}
+
+	/**
+	 *
+	 * Set the data for the player.
+	 * @param key The key to set the data to.
+	 * @param value The value to set the data to.
+	 * @returns {this} The player.
+	 */
+	public set<T>(key: string, value: T): this {
+		this.data[key] = value;
+		return this;
+	}
+
+	/**
+	 *
+	 * Get the data from the player.
+	 * @param key The key to get the data from.
+	 * @returns {T | undefined} The data from the player.
+	 */
+	public get<T>(key: string): T | undefined {
+		return this.data[key] as T;
+	}
+
+	/**
+	 *
+	 * Delete the data from the player.
+	 * @param key The key to delete the data from.
+	 * @returns
+	 */
+	public delete(key: string): boolean {
+		if (this.data[key]) {
+			delete this.data[key];
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 *
+	 * Search for a track or playlist.
+	 * @param options The options for the search.
+	 * @returns
+	 */
+	public search(options: QueryOptions): Promise<SearchResult> {
+		return this.manager.search({
+			...options,
+			node: this.node,
+		});
+	}
+
+	/**
+	 *
+	 * Play the next track in the queue.
+	 * @param to The amount of tracks to skip.
+	 * @returns {Promise<void>}
+	 */
+	public async skip(to: number = 0): Promise<void> {
+		if (!this.queue.size) {
+			this.manager.emit(
+				Events.Debug,
+				DebugLevels.Player,
+				"[Player] -> [Skip] No tracks to skip.",
+			);
+
+			return;
+		}
+
+		if (typeof to === "number" && to > 0) {
+			if (to > this.queue.size)
+				throw new PlayerError("Cannot skip to a track that doesn't exist.");
+
+			if (to < 0) throw new PlayerError("Cannot skip to a negative number.");
+
+			this.queue.splice(0, to - 1);
+		}
+
+		if (!this.playing && !this.queue.current) return this.play();
+
+		await this.node.rest.stopPlayer(this.guildId);
+
+		return;
+	}
+
+	/**
+	 *
+	 * Disconnect the player from the voice channel.
+	 * @returns {Promise<void>}
+	 */
+	public async disconnect(): Promise<void> {
+		if (!this.voiceId) return;
+
+		await this.manager.options.sendPayload(this.guildId, {
+			op: 4,
+			d: {
+				guild_id: this.guildId,
+				channel_id: null,
+				self_deaf: this.selfDeaf,
+				self_mute: this.selfMute,
+			},
+		});
+
+		this.connected = false;
+	}
+
+	/**
+	 *
+	 * Destroy and disconnect the player.
+	 * @param reason The reason for destroying the player.
+	 * @returns {Promise<void>}
+	 */
+	public async destroy(reason: DestroyReasons = DestroyReasons.Stop): Promise<boolean> {
+		await this.disconnect();
+		await this.node.destroyPlayer(this.guildId);
+
+		this.manager.emit(Events.PlayerDestroy, this, reason);
+		this.manager.emit(
+			Events.Debug,
+			DebugLevels.Player,
+			`[Player] -> [Destroy] Destroyed player for guild: ${this.guildId} | Reason: ${reason}`,
+		);
+
+		return this.manager.deletePlayer(this.guildId);
+	}
+
+	/**
+	 *
+	 * Play a track in the player.
+	 * @param options The options to play the track.
+	 */
+	public async play(options: Partial<PlayOptions> = {}): Promise<void> {
+		if (options.track) this.queue.current = options.track;
+		else if (!this.queue.current) this.queue.current = this.queue.shift();
+
+		if (!this.queue.current) throw new PlayerError("No track to play.");
+
+		this.manager.emit(
+			Events.Debug,
+			DebugLevels.Player,
+			`[Player] -> [Play] A new track is playing: ${this.queue.current.info.title}`,
+		);
+
+		await this.node.rest.updatePlayer({
+			guildId: this.guildId,
+			noReplace: options.noReplace,
+			playerOptions: {
+				...options,
+				track: {
+					encoded: this.queue.current.encoded,
+					userData: this.queue.current.userData,
+				},
+			},
+		});
+	}
+
+	/**
+	 * Connect the player to the voice channel.
+	 * @returns {Promise<void>}
+	 */
+	public async connect(): Promise<void> {
+		if (!this.voiceId) return;
+
+		await this.manager.options.sendPayload(this.guildId, {
+			op: 4,
+			d: {
+				guild_id: this.guildId,
+				channel_id: this.voiceId,
+				self_deaf: this.selfDeaf,
+				self_mute: this.selfMute,
+			},
+		});
+
+		this.connected = true;
+	}
+
+	/**
+	 *
+	 * Stop the player from playing.
+	 * @returns {Promise<void>}
+	 */
+	public async stop(): Promise<void> {
+		await this.node.stopPlayer(this.guildId);
+
+		this.playing = false;
+		this.paused = false;
+
+		return;
+	}
+
+	/**
+	 *
+	 * Return the player as a json object.
+	 * @returns {PlayerJson}
+	 */
+	public toJSON(): PlayerJson {
+		return {
+			volume: this.volume,
+			loop: this.loop,
+			paused: this.paused,
+			playing: this.playing,
+			voiceId: this.voiceId,
+			guildId: this.guildId,
+			selfMute: this.selfMute,
+			selfDeaf: this.selfDeaf,
+			options: this.options,
+			queue: this.queue.toJSON(),
+			voice: this.voice,
+		};
+	}
+}

@@ -5,7 +5,7 @@
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
-	"packageManager": "pnpm@9.15.1+sha512.1acb565e6193efbebda772702950469150cf12bcc764262e7587e71d19dc98a423dff9536e57ea44c49bdf790ff694e83c27be5faa23d67e0c033b583be4bfcf",
+	"packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0",
 	"files": ["dist"],
 	"lint-staged": {
 		"*.{ts,json}": ["pnpm format"]
@@ -38,14 +38,13 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
-		"@types/node": "^22.10.2",
-		"@types/ws": "^8.5.13",
+		"@types/node": "^22.13.1",
+		"@types/ws": "^8.5.14",
 		"husky": "^9.1.7",
-		"lint-staged": "^15.2.11",
-		"tsup": "^8.3.5",
+		"lint-staged": "^15.4.3",
+		"tsup": "^8.3.6",
 		"tsx": "^4.19.2",
-		"typescript": "^5.7.2",
-		"vitest": "^2.1.8"
+		"typescript": "^5.7.3"
 	},
 	"dependencies": {
 		"ws": "^8.18.0"

@@ -1,0 +1,68 @@
+import type { Inferable } from "../types/Manager";
+import type { LavalinkTrack, PluginInfo, TrackInfo } from "../types/Node";
+
+/**
+ * Class representing a Hoshimi track.
+ */
+export class Track {
+	/**
+	 * The base64 encoded track.
+	 * @type {string}
+	 */
+	readonly encoded: string;
+	/**
+	 * The track info.
+	 * @type {TrackInfo}
+	 */
+	readonly info: TrackInfo;
+
+	/**
+	 * The plugin info of the track.
+	 * @type {PluginInfo}
+	 */
+	readonly pluginInfo: PluginInfo;
+
+	/**
+	 * The requester of the track.
+	 * @type {InferableRequester}
+	 */
+	public requester: InferableRequester;
+
+	/**
+	 * The user data of the track.
+	 * @type {InferableRequester}
+	 */
+	public userData: InferableRequester;
+
+	/**
+	 * The constructor for the track.
+	 * @param track The track to construct the track from.
+	 * @param requester The requester of the track.
+	 */
+	constructor(track: LavalinkTrack, requester: InferableRequester) {
+		this.info = track.info;
+		this.encoded = track.encoded;
+		this.requester = requester;
+		this.pluginInfo = track.pluginInfo;
+		this.userData = requester;
+	}
+
+	/**
+	 *
+	 * Get the hyperlink of the track.
+	 * @returns {string} The hyperlink of the track.
+	 */
+	public toHyperlink(): string {
+		return `[${this.info.title}](${this.info.uri})`;
+	}
+}
+
+/**
+ * Interface representing an extendable track.
+ */
+export interface CustomizableTrack {}
+
+/**
+ * The requester of the track.
+ */
+export type InferableRequester = Inferable<CustomizableTrack, "requester">;

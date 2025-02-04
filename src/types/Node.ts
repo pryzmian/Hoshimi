@@ -1,0 +1,859 @@
+import type { SearchEngines } from "./Manager";
+import type {
+	PlayerUpdate,
+	TrackEndEvent,
+	TrackExceptionEvent,
+	TrackStartEvent,
+	TrackStuckEvent,
+	WebSocketClosedEvent,
+} from "./Player";
+
+/**
+ * The states.
+ */
+export enum State {
+	/**
+	 * The node is connecting.
+	 */
+	Connecting = 1,
+	/**
+	 * The node is connected.
+	 */
+	Connected = 2,
+	/**
+	 * The node is disconnected.
+	 */
+	Disconnected = 3,
+	/**
+	 * The node is reconnecting.
+	 */
+	Reconnecting = 4,
+	/**
+	 * The node is reconnected.
+	 */
+	Reconnected = 5,
+	/**
+	 * The node is destroyed.
+	 */
+	Destroyed = 6,
+	/**
+	 * The node is idle.
+	 */
+	Idle = 7,
+}
+
+/**
+ * The op codes for the node.
+ */
+export enum OpCodes {
+	/**
+	 * The op code for the ready event for the node.
+	 */
+	Ready = "ready",
+	/**
+	 * The op code for the player update event for the node.
+	 */
+	PlayerUpdate = "playerUpdate",
+	/**
+	 * The op code for the stats event for the node.
+	 */
+	Stats = "stats",
+	/**
+	 * The op code for the event event for the node.
+	 */
+	Event = "event",
+}
+
+/**
+ * The load types for the result.
+ */
+export enum LoadType {
+	/**
+	 * The load type for the track.
+	 */
+	Track = "track",
+	/**
+	 * The load type for the playlist.
+	 */
+	Playlist = "playlist",
+	/**
+	 * The load type for the search.
+	 */
+	Search = "search",
+	/**
+	 * The load type for the empty.
+	 */
+	Empty = "empty",
+	/**
+	 * The load type for the error.
+	 */
+	Error = "error",
+}
+
+/**
+ * The sources available for the result.
+ */
+export enum SourceNames {
+	/**
+	 * The lavalink built-in source name for Youtube.
+	 * @description Privided by lavalink
+	 */
+	Youtube = "youtube",
+	/**
+	 * The lavalink built-in source name for Youtube Music.
+	 * @description Privided by lavalink
+	 */
+	YoutubeMusic = "youtubemusic",
+	/**
+	 * The lavalink built-in source name for Soundcloud.
+	 * @description Privided by lavalink
+	 */
+	Soundcloud = "soundcloud",
+	/**
+	 * The lavalink built-in source name for Bandcamp.
+	 * @description Privided by lavalink
+	 */
+	Bandcamp = "bandcamp",
+	/**
+	 * The lavalink built-in source name for Twitch.
+	 * @description Privided by lavalink
+	 */
+	Twitch = "twitch",
+	/**
+	 * The lavalink built-in source name for Vimeo.
+	 * @description Privided by lavalink
+	 */
+	Vimeo = "vimeo",
+	/**
+	 * The lavalink built-in source name for Mixer.
+	 * @description Privided by lavalink
+	 */
+	Mixer = "mixer",
+
+	/**
+	 * The lavasrc built-in source name for Spotify.
+	 * @description Privided by lavasrc
+	 */
+	Spotify = "spotify",
+	/**
+	 * The lavasrc built-in source name for Deezer.
+	 * @description Privided by lavasrc
+	 */
+	Deezer = "deezer",
+	/**
+	 * The lavasrc built-in source name for Apple Music.
+	 * @description Privided by lavasrc
+	 */
+	AppleMusic = "applemusic",
+	/**
+	 * The lavasrc built-in source name for Yandex Music.
+	 * @description Privided by lavasrc
+	 */
+	YandexMusic = "yandexmusic",
+	/**
+	 * The lavasrc built-in source name for Flowery TTS.
+	 * @description Privided by lavasrc
+	 */
+	FloweryTTS = "flowery-tts",
+}
+
+/**
+ * The track result.
+ */
+interface TrackResult {
+	/**
+	 * The load type of the result.
+	 * @type {LoadType.Track}
+	 */
+	loadType: LoadType.Track;
+	/**
+	 * The track data of the result.
+	 * @type {LavalinkTrack}
+	 */
+	data: LavalinkTrack;
+}
+
+/**
+ * The playlist result.
+ */
+interface PlaylistResult {
+	/**
+	 * The load type of the result.
+	 * @type {LoadType.Playlist}
+	 */
+	loadType: LoadType.Playlist;
+	/**
+	 * The playlist data of the result.
+	 * @type {Playlist}
+	 */
+	data: Playlist;
+}
+
+/**
+ * The search result.
+ */
+interface SearchResult {
+	/**
+	 * The load type of the result.
+	 * @type {LoadType.Search}
+	 */
+	loadType: LoadType.Search;
+	/**
+	 * The search data of the result.
+	 * @type {LavalinkTrack[]}
+	 */
+	data: LavalinkTrack[];
+}
+
+/**
+ * The empty result.
+ */
+interface EmptyResult {
+	/**
+	 * The load type of the result.
+	 * @type {LoadType.Empty}
+	 */
+	loadType: LoadType.Empty;
+	/**
+	 * The empty data of the result.
+	 * @type {Record<string, string>}
+	 */
+	data: Record<string, string>;
+}
+
+/**
+ * The error result.
+ */
+interface ErrorResult {
+	/**
+	 * The load type of the result.
+	 * @type {LoadType.Error}
+	 */
+	loadType: LoadType.Error;
+	/**
+	 * The error data of the result.
+	 * @type {Exception}
+	 */
+	data: Exception;
+}
+
+/**
+ * The exception of the result.
+ */
+export interface Exception {
+	/**
+	 * The message of the exception.
+	 * @type {string}
+	 */
+	message: string;
+	/**
+	 * The severity of the exception.
+	 * @type {Severity}
+	 */
+	severity: Severity;
+	/**
+	 * The cause of the exception.
+	 * @type {string}
+	 */
+	cause: string;
+}
+
+/**
+ * The track.
+ */
+export interface LavalinkTrack {
+	/**
+	 * The base64 encoded track.
+	 * @type {string}
+	 */
+	encoded: string;
+	/**
+	 * The plugin information of the track.
+	 * @type {PluginInfo}
+	 */
+	pluginInfo: PluginInfo;
+	/**
+	 * The track information.
+	 * @type {TrackInfo}
+	 */
+	info: TrackInfo;
+	/**
+	 * The user data of the track.
+	 * @type {Record<string, unknown> | undefined}
+	 */
+	userData?: Record<string, unknown>;
+}
+
+/**
+ * The track information.
+ */
+export interface TrackInfo {
+	/**
+	 * The Identifier of the Track.
+	 * @type {string}
+	 */
+	identifier: string;
+	/**
+	 * The track title
+	 * @type {string}
+	 */
+	title: string;
+	/**
+	 * The track author..
+	 * @type {string}
+	 */
+	author: string;
+	/**
+	 * The duration of the Track.
+	 * @type {number}
+	 */
+	duration: number;
+	/**
+	 * The URL of the artwork if available.
+	 * @type {string | null}
+	 */
+	artworkUrl: string | null;
+	/**
+	 * The URL of the track.
+	 * @type {string}
+	 */
+	uri: string;
+	/**
+	 * The source name of the track.
+	 * @type {SourceNames}
+	 */
+	sourceName: SourceNames;
+	/**
+	 * Whether the track is seekable.
+	 * @type {boolean}
+	 */
+	isSeekable: boolean;
+	/**
+	 * Whether the track is a stream.
+	 * @type {boolean}
+	 */
+	isStream: boolean;
+	/**
+	 * If ISRC code is available, it's provided.
+	 * @type {string | null}
+	 */
+	isrc: string | null;
+}
+
+/**
+ * The plugin information.
+ */
+export interface PluginInfo {
+	/**
+	 * The Type provided by a plugin.
+	 * @type {PluginInfoType | undefined}
+	 */
+	type?: PluginInfoType;
+	/**
+	 * The Identifier provided by a plugin.
+	 * @type {string | undefined}
+	 */
+	albumName?: string;
+	/**
+	 * The URL of the album.
+	 * @type {string | undefined}
+	 */
+	albumUrl?: string;
+	/**
+	 * The URL of the album art.
+	 * @type {string | undefined}
+	 */
+	albumArtUrl?: string;
+	/**
+	 * The URL of the artist.
+	 * @type {string | undefined}
+	 */
+	artistUrl?: string;
+	/**
+	 * The URL of the artist artwork.
+	 * @type {string | undefined}
+	 */
+	artistArtworkUrl?: string;
+	/**
+	 * The URL of the preview.
+	 * @type {string | undefined}
+	 */
+	previewUrl?: string;
+	/**
+	 * Whether the track is a preview.
+	 * @type {boolean | undefined}
+	 */
+	isPreview?: boolean;
+	/**
+	 * The total number of tracks in the playlist.
+	 * @type {number | undefined}
+	 */
+	totalTracks?: number;
+	/**
+	 * The Identifier provided by a plugin.
+	 * @type {string | undefined}
+	 */
+	identifier?: string;
+	/**
+	 * The Artwork URL provided by a plugin.
+	 * @type {string | undefined}
+	 */
+	artworkUrl?: string;
+	/**
+	 * The Author Information provided by a plugin.
+	 * @type {string | undefined}
+	 */
+	author?: string;
+	/**
+	 * The URL provided by a plugin.
+	 * @type {string | undefined}
+	 */
+	url?: string;
+}
+
+/**
+ * The playlist information.
+ */
+export interface Playlist {
+	/**
+	 * The plugin information of the playlist.
+	 * @type {PluginInfo}
+	 */
+	pluginInfo: PluginInfo;
+	/**
+	 * The tracks in the playlist.
+	 * @type {LavalinkTrack[]}
+	 */
+	tracks: LavalinkTrack[];
+	/**
+	 * The information of the playlist.
+	 * @type {PlaylistInfo}
+	 */
+	info: PlaylistInfo;
+}
+
+export interface PlaylistInfo {
+	/**
+	 * The name of the playlist.
+	 * @type {string}
+	 */
+	name: string;
+	/**
+	 * The selected track in the playlist.
+	 * @type {number}
+	 */
+	selectedTrack: number;
+}
+
+/**
+ * The ready event for the node.
+ */
+export interface Ready {
+	/**
+	 * The op code for the event.
+	 * @type {OpCodes.Ready}
+	 */
+	op: OpCodes.Ready;
+	/**
+	 * Return if the node is resumed.
+	 * @type {boolean}
+	 */
+	resumed: boolean;
+	/**
+	 * Return the session id of the node.
+	 * @type {string}
+	 */
+	sessionId: string;
+}
+
+/**
+ * The node memory information.
+ */
+export interface NodeMemory {
+	/**
+	 * The total memory of the node.
+	 * @type {number}
+	 */
+	reservable: number;
+	/**
+	 * The used memory of the node.
+	 * @type {number}
+	 */
+	used: number;
+	/**
+	 * The free memory of the node.
+	 * @type {number}
+	 */
+	free: number;
+	/**
+	 * The allocated memory of the node.
+	 * @type {number}
+	 */
+	allocated: number;
+}
+
+/**
+ * The node frame stats.
+ */
+export interface NodeFrameStats {
+	/**
+	 * The amount of frames sent.
+	 * @type {number}
+	 */
+	sent: number;
+	/**
+	 * The amount of frames sent between frames and the expected amount of frames.
+	 * @type {number}
+	 */
+	deficit: number;
+	/**
+	 * The amount of frames nulled.
+	 * @type {number}
+	 */
+	nulled: number;
+}
+
+/**
+ * The node cpu information.
+ */
+export interface NodeCpu {
+	/**
+	 * The amount of cores of the node.
+	 * @type {number}
+	 */
+	cores: number;
+	/**
+	 * The system load of the node.
+	 * @type {number}
+	 */
+	systemLoad: number;
+	/**
+	 * The lavalink load of the node.
+	 * @type {number}
+	 */
+	lavalinkLoad: number;
+}
+
+/**
+ * The stats event for the node.
+ */
+export interface Stats {
+	/**
+	 * The op code for the event.
+	 * @type {OpCodes.Stats}
+	 */
+	op: OpCodes.Stats;
+	/**
+	 * The amount of players on the node.
+	 * @type {number}
+	 */
+	players: number;
+	/**
+	 * The amount of playing players on the node.
+	 * @type {number}
+	 */
+	playingPlayers: number;
+	/**
+	 * The memory stats of the node.
+	 * @type {NodeMemory}
+	 */
+	memory: NodeMemory;
+	/**
+	 * The frame stats of the node.
+	 * @type {NodeFrameStats | null}
+	 */
+	frameStats: NodeFrameStats | null;
+	/**
+	 * The cpu stats of the node.
+	 * @type {NodeCpu}
+	 */
+	cpu: NodeCpu;
+	/**
+	 * The amount of uptime of the node.
+	 * @type {number}
+	 */
+	uptime: number;
+}
+
+/**
+ * The information of the node version.
+ */
+export interface NodeInfoVersion {
+	/**
+	 * The version of the node.
+	 * @type {string}
+	 */
+	semver: string;
+	/**
+	 * The major version of the node.
+	 * @type {number}
+	 */
+	major: number;
+	/**
+	 * The minor version of the node.
+	 * @type {number}
+	 */
+	minor: number;
+	/**
+	 * The patch version of the node.
+	 * @type {number}
+	 */
+	patch: number;
+	/**
+	 * The pre-release version of the node.
+	 * @type {string | undefined}
+	 */
+	preRelease?: string;
+	/**
+	 * The build version of the node.
+	 * @type {string | undefined}
+	 */
+	build?: string;
+}
+
+/**
+ * The git information of the node.
+ */
+export interface NodeInfoGit {
+	/**
+	 * The branch of the node.
+	 * @type {string}
+	 */
+	branch: string;
+	/**
+	 * The commit of the node.
+	 * @type {string}
+	 */
+	commit: string;
+	/**
+	 * The commit time of the node.
+	 * @type {number}
+	 */
+	commitTime: number;
+}
+
+/**
+ * The plugin information of the node.
+ */
+export interface NodeInfoPlugin {
+	/**
+	 * The name of the plugin.
+	 * @type {string}
+	 */
+	name: string;
+	/**
+	 * The version of the plugin.
+	 * @type {string}
+	 */
+	version: string;
+}
+
+/**
+ * The information of the node.
+ */
+export interface NodeInfo {
+	/**
+	 * The version of the node.
+	 * @type {NodeInfoVersion}
+	 */
+	version: NodeInfoVersion;
+	/**
+	 * The build time of the node.
+	 * @type {number}
+	 */
+	buildTime: number;
+	/**
+	 * The git information of the node.
+	 * @type {NodeInfoGit}
+	 */
+	git: NodeInfoGit;
+	/**
+	 * The build java version of the node.
+	 * @type {string}
+	 */
+	jvm: string;
+	/**
+	 * The lavaplayer version of the node.
+	 * @type {string}
+	 */
+	lavaplayer: string;
+	/**
+	 * The source managers available in the node.
+	 * @type {string[]}
+	 */
+	sourceManagers: string[];
+	/**
+	 * The filters available in the node.
+	 * @type {string[]}
+	 */
+	filters: string[];
+	/**
+	 * The plugins installed in the node.
+	 * @type {NodeInfoPlugin[]}
+	 */
+	plugins: NodeInfoPlugin[];
+}
+
+/**
+ * The node options.
+ */
+export interface NodeOptions {
+	/**
+	 * The node host.
+	 * @type {string}
+	 */
+	host: string;
+	/**
+	 * The node port.
+	 * @type {number}
+	 */
+	port: number;
+	/**
+	 * The node password.
+	 * @type {string}
+	 */
+	password: string;
+	/**
+	 * The node id.
+	 * @type {string}
+	 */
+	id?: string;
+	/**
+	 * Enable if the node is secure.
+	 * @type {boolean}
+	 * @default false
+	 */
+	secure?: boolean;
+	/**
+	 * The timeout for the REST in milliseconds.
+	 * @type {number}
+	 * @default 10
+	 */
+	restTimeout?: number;
+	/**
+	 * The amount of retries to reconnect.
+	 * @type {number}
+	 * @default 5
+	 */
+	retryAmount?: number;
+	/**
+	 * The delay between retries in milliseconds.
+	 * @type {number}
+	 * @default 3000
+	 */
+	retryDelay?: number;
+	/**
+	 * The session id of the node.
+	 * @type {string}
+	 */
+	sessionId?: string;
+}
+
+/**
+ * The headers for resumable requests.
+ */
+export interface ResumableHeaders extends Record<string, string> {
+	/**
+	 * The name of the client.
+	 * @type {string}
+	 */
+	"Client-Name": string;
+	/**
+	 * The user agent of the client.
+	 * @type {string}
+	 */
+	"User-Agent": string;
+	/**
+	 * The user id of the client.
+	 * @type {string}
+	 */
+	"User-Id": string;
+	/**
+	 * The session id of the client.
+	 * @type {string}
+	 */
+	"Session-Id": string;
+	/**
+	 * The authorization of the client.
+	 * @type {string}
+	 */
+	Authorization: string;
+}
+
+/**
+ * The search query to use.
+ */
+export interface SearchQuery {
+	/**
+	 * The query to search for.
+	 * @type {string}
+	 */
+	query: string;
+	/**
+	 * The search engine to use.
+	 * @type {SearchEngines}
+	 */
+	engine?: SearchEngines;
+}
+
+/**
+ * The manager node options.
+ */
+export interface HoshimiNodeOptions {
+	/**
+	 * Make the node resumable.
+	 * @type {boolean}
+	 * @default false
+	 */
+	resumable?: boolean;
+	/**
+	 * Hoshimi will try to resume the players in the node if it's possible.
+	 * @type {boolean}
+	 * @default false
+	 */
+	resumeByLibrary?: boolean;
+	/**
+	 * The amount of time to wait for the player to resume. (in milliseconds)
+	 * @type {number}
+	 * @default 5000
+	 */
+	resumeTimeout?: number;
+}
+
+/**
+ * The headers that are not resumable.
+ */
+export type NonResumableHeaders = Omit<ResumableHeaders, "Session-Id">;
+
+/**
+ * The response severity of the result.
+ */
+export type Severity = "common" | "suspicious" | "fault";
+
+/**
+ * The plugin information type.
+ */
+export type PluginInfoType = "album" | "playlist" | "artist" | "recommendations";
+
+/**
+ * The payload for the socket.
+ */
+export type LavalinkPayload =
+	| Ready
+	| Stats
+	| PlayerUpdate
+	| TrackStartEvent
+	| TrackEndEvent
+	| TrackStuckEvent
+	| TrackExceptionEvent
+	| WebSocketClosedEvent;
+
+/**
+ * The response of the result.
+ */
+export type LavalinkSearchResponse =
+	| TrackResult
+	| PlaylistResult
+	| SearchResult
+	| EmptyResult
+	| ErrorResult;
