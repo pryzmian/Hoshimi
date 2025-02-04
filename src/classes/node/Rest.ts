@@ -13,6 +13,13 @@ import { validatePlayerData } from "../../util/functions/validations";
 import type { Node } from "./Node";
 
 /**
+ * The RestError class has been taken from Shoukaku library.
+ * A cute and epic library for lavalink, made in typescript.
+ * So, all the credits goes to the original author.
+ * @link https://github.com/shipgirlproject/Shoukaku/blob/master/src/node/Rest.ts
+ */
+
+/**
  * Class representing a REST error.
  */
 class RestError extends Error {
@@ -144,7 +151,7 @@ export class Rest {
 		this.node.manager.emit(
 			Events.Debug,
 			DebugLevels.Rest,
-			`[Rest] -> [${this.node.id} : ${options.method.toUpperCase()}]: Url: ${this.restUrl} | Endpoint: ${options.endpoint} | Body: ${options.body ? JSON.stringify(options.body) : "None"} | Headers: ${JSON.stringify(headers)}`,
+			`[Rest] -> [${this.node.id} : ${options.method}]: Url: ${this.restUrl} | Endpoint: ${options.endpoint} | Body: ${options.body ? JSON.stringify(options.body) : "None"} | Headers: ${JSON.stringify(headers)}`,
 		);
 
 		const response = await fetch(url, fetchOptions).finally(() => clearTimeout(timeout));
