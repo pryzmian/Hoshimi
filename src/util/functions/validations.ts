@@ -70,7 +70,7 @@ export function validateQuery(search: SearchQuery): string {
 
 		if (isUrl) return sliced;
 
-		return `${engineKey}:${encodeURIComponent(query.slice(engineKey.length + 1))}`;
+		return `${engineKey}:${encodeURIComponent(sliced)}`;
 	}
 
 	const isUrl = validUrl.test(query);
