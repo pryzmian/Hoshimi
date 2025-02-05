@@ -1,7 +1,7 @@
 import "dotenv/config";
 
 import { Client, type ParseClient } from "seyfert";
-import { DebugLevels, Hoshimi, Events } from "hoshimi";
+import { DebugLevels, Hoshimi, Events, SourceNames } from "hoshimi";
 import type { APIUser } from "seyfert/lib/types";
 
 type HoshimiUser = APIUser & {
@@ -31,11 +31,14 @@ client.manager = new Hoshimi({
 	],
 });
 
-client.manager.on(Events.Debug, (level, message) =>
-	console.log(`[Hoshimi] ${DebugLevels[level]}: ${message}`),
-);
+/* client.manager.on(Events.Debug, (level, message) =>
+	client.logger.debug(`[Hoshimi] ${DebugLevels[level]}: ${message}`),
+); */
+
 client.manager.on(Events.TrackStart, async (player, track) => {
 	if (!track) return;
+
+	if (track.info.sourceName === SourceNames.FloweryTTS) return;
 
 	const textId = player.textId;
 	if (!textId) return;
@@ -45,6 +48,8 @@ client.manager.on(Events.TrackStart, async (player, track) => {
 
 client.manager.on(Events.TrackEnd, async (player, track) => {
 	if (!track) return;
+
+	if (track.info.sourceName === SourceNames.FloweryTTS) return;
 
 	const textId = player.textId;
 	if (!textId) return;

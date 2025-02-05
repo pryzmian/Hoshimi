@@ -3,9 +3,10 @@ import { SearchEngines, type HoshimiOptions } from "../../types/Manager";
 import { OptionError } from "../../classes/Errors";
 import type { Node } from "../../classes/node/Node";
 import type { PlayerOptions } from "../../types/Player";
-import type { LavalinkPlayer, UpdatePlayerInfo } from "../../types/Rest";
+import type { UpdatePlayerInfo } from "../../types/Rest";
 
 const validEngines = Object.values(SearchEngines);
+const validUrl = /^(https?:\/\/)?([a-zA-Z0-9\-_]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
 
 /**
  *
@@ -51,29 +52,36 @@ export function validateManagerOptions(options: HoshimiOptions) {
  * @param search The query to validate.
  * @returns
  */
-export function validateQuery(this: Node, search: SearchQuery): SearchQuery {
+export function validateQuery(search: SearchQuery): string {
 	if (typeof search !== "object") throw new OptionError("'query' Must be a valid object.");
 	if (typeof search.query !== "string")
 		throw new OptionError("'query.query' Must be a valid string.");
 
-	const engine = search.engine ?? this.manager.options.defaultSearchEngine;
-	if (typeof engine !== "undefined" && !validEngines.includes(engine))
+	if (typeof search.engine !== "undefined" && !validEngines.includes(search.engine))
 		throw new OptionError("'query.engine' Must be a valid search engine.");
 
-	search.engine ??= engine;
+	const query = search.query.trim().toLowerCase();
+	const engineKey = Object.values(SearchEngines).find((key) =>
+		query.startsWith(key.trim().toLowerCase()),
+	);
+	if (engineKey && query.startsWith(`${engineKey.toLowerCase()}:`)) {
+		const sliced = query.slice(engineKey.length + 1).trim();
+		const isUrl = validUrl.test(sliced);
 
-	const engineKey = Object.keys(SearchEngines).find((key) => search.query.startsWith(`${key}:`));
-	if (engineKey && search.query.startsWith(`${engineKey}:`))
-		search.query = search.query.slice(engineKey.length + 1);
+		if (isUrl) return sliced;
 
-	const isUrl = /^(https?:\/\/)?([a-zA-Z0-9\-_]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/.test(search.query);
-	if (isUrl) search.query = new URL(search.query).toString();
+		return `${engineKey}:${encodeURIComponent(query.slice(engineKey.length + 1))}`;
+	}
 
-	if (search.engine !== SearchEngines.Local && !isUrl)
-		search.query = `${search.engine}:${encodeURIComponent(search.query)}`;
-	if (search.engine === SearchEngines.FloweryTTS) search.query = `//${encodeURI(search.query)}`;
+	const isUrl = validUrl.test(query);
+	if (isUrl) return query;
 
-	return search;
+	if (search.engine === SearchEngines.FloweryTTS)
+		return `${search.engine}://${encodeURIComponent(query)}`;
+	if (search.engine !== SearchEngines.Local)
+		return `${search.engine}:${encodeURIComponent(query)}`;
+
+	return query;
 }
 
 /**
@@ -105,11 +113,7 @@ export function validatePlayerOptions(options: PlayerOptions): void {
  * @param res The lavalink player to validate.
  * @returns
  */
-export function validatePlayerData(
-	this: Node,
-	data: Partial<UpdatePlayerInfo>,
-	res: LavalinkPlayer | null,
-): void {
+export function validatePlayerData(this: Node, data: Partial<UpdatePlayerInfo>): void {
 	if (
 		typeof data === "object" &&
 		typeof data.playerOptions === "object" &&
@@ -129,6 +133,32 @@ export function validatePlayerData(
 		if (typeof data.playerOptions.volume === "number")
 			player.volume = data.playerOptions.volume;
 	}
+}
+
+/**
+ *
+ * Validate the url params.
+ * @param url The url to validate.
+ * @param urlParams The url params to validate.
+ * @returns
+ */
+export function validateUrl(url: URL, urlParams?: URLSearchParams): string {
+	if (!url.searchParams.size) return `${url.origin}${url.pathname}`;
+
+	const encodedParams = [...url.searchParams.entries()].map(([paramKey, paramValue]) => {
+		const decoded = decodeURIComponent(paramValue).trim();
+		if (decoded.includes("://") && !/^https?:\/\//.test(decoded)) {
+			const [key, ...values] = decoded.split("://");
+			const encodedValue = `${key}://${encodeURIComponent(values.join("://"))}`;
+			const additionalParams =
+				urlParams && urlParams.size > 0 ? `?${urlParams.toString()}` : "";
+
+			return `${paramKey}=${encodeURI(encodedValue + additionalParams)}`;
+		}
+		return `${paramKey}=${encodeURIComponent(decoded)}`;
+	});
+
+	return `${url.origin}${url.pathname}?${encodedParams.join("&")}`;
 }
 
 /**

@@ -49,6 +49,32 @@ export enum PlayerEventType {
 }
 
 /**
+ * The reasons a track can end.
+ */
+export enum TrackEndReason {
+	/**
+	 * The track ended normally.
+	 */
+	Finished = "finished",
+	/**
+	 * The track fails to load.
+	 */
+	LoadFailed = "loadFailed",
+	/**
+	 * The track was stopped.
+	 */
+	Stopped = "stopped",
+	/**
+	 * The track was replaced.
+	 */
+	Replaced = "replaced",
+	/**
+	 * The track was cleaned up.
+	 */
+	Cleanup = "cleanup",
+}
+
+/**
  * The base interface for player events.
  */
 export interface PlayerEvent {
@@ -642,8 +668,3 @@ export interface PlayerJson {
  * The voice settings for the player.
  */
 export type LavalinkPlayerVoice = Omit<PlayerVoice, "connected" | "ping">;
-
-/**
- * The reasons a track can end.
- */
-export type TrackEndReason = "finished" | "loadFailed" | "stopped" | "replaced" | "cleanup";

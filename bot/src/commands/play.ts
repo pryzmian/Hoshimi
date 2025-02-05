@@ -18,15 +18,15 @@ export default class PlayCommand extends Command {
 	override async run(ctx: GuildCommandContext<typeof options>) {
 		const { client, options } = ctx;
 
-		const state = await ctx.member.voice();
-		if (!state.channelId)
+		const state = await ctx.member.voice().catch(() => null);
+		if (!state?.channelId)
 			return ctx.editOrReply({
 				content: "You need to be in a voice channel to use this command.",
 			});
 
 		const me = await ctx.me();
-		const bot = await me.voice();
 
+		const bot = await me.voice().catch(() => null);
 		if (bot && bot.channelId !== state.channelId)
 			return ctx.editOrReply({
 				content: "I'm already in a voice channel.",
@@ -70,9 +70,10 @@ export default class PlayCommand extends Command {
 
 					player.queue.add(track);
 
-					await player.play({ noReplace: true });
+					if (!player.playing) await player.play();
+
 					await ctx.editOrReply({
-						content: `Added ${track.info.title} to the queue.`,
+						content: `Added ${track.toHyperlink()} to the queue.`,
 					});
 
 					player.set("enabledAutoplay", true);

@@ -2,7 +2,6 @@ import {
 	type LavalinkSearchResponse,
 	type NodeOptions,
 	State,
-	type NonResumableHeaders,
 	type ResumableHeaders,
 	type SearchQuery,
 	type Stats,
@@ -78,7 +77,7 @@ export class Node {
 
 	/**
 	 * The session of the node.
-	 * @type {LavalinkSession}
+	 * @type {NullableLavalinkSession}
 	 */
 	public session: NullableLavalinkSession = {
 		timeout: null,
@@ -141,12 +140,16 @@ export class Node {
 	 *
 	 * Search for a query.
 	 * @param query The query to search for.
-	 * @param requester The requester of the search.
 	 */
 	public search(query: SearchQuery): Promise<LavalinkSearchResponse | null> {
-		const searchQuery = validateQuery.call(this, query);
+		const search = validateQuery({
+			...query,
+			engine: query.engine ?? this.manager.options.defaultSearchEngine,
+		});
+
 		return this.rest.request<LavalinkSearchResponse>({
-			endpoint: `/loadtracks?identifier=${searchQuery.query}`,
+			endpoint: `/loadtracks?identifier=${search}`,
+			params: query.params,
 		});
 	}
 
@@ -162,7 +165,7 @@ export class Node {
 
 		this.state = State.Connecting;
 
-		const headers: ResumableHeaders | NonResumableHeaders = {
+		const headers: ResumableHeaders = {
 			Authorization: this.options.password,
 			"User-Id": this.manager.options.client.id,
 			"Client-Name": this.manager.options.client.username!,
@@ -174,7 +177,7 @@ export class Node {
 			this.sessionId = this.options.sessionId;
 		}
 
-		this.ws = new WebSocket(this.address, { headers });
+		this.ws = new WebSocket(this.address, { headers: { ...headers } });
 
 		this.ws.on("upgrade", onOpen.bind(this));
 		this.ws.on("close", onClose.bind(this));

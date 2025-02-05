@@ -38,7 +38,18 @@ export class NodeError extends Error {
 	}
 }
 
+/**
+ * Error options for the node.
+ */
 interface NodeErrorOptions {
+	/**
+	 * The message of the error.
+	 * @type {string}
+	 */
 	message: string;
+	/**
+	 * The id of the node.
+	 * @type {string}
+	 */
 	id: string;
 }

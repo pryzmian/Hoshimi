@@ -10,6 +10,7 @@ import {
 	type TrackExceptionEvent,
 	PlayerEventType,
 	type PlayerUpdate,
+	TrackEndReason,
 } from "../../types/Player";
 
 /**
@@ -132,13 +133,13 @@ export async function trackEnd(this: Player, payload: TrackEndEvent): Promise<vo
 		return queueEnd.call(this, current, payload);
 
 	switch (payload.reason) {
-		case "replaced": {
+		case TrackEndReason.Replaced: {
 			this.manager.emit(Events.TrackEnd, this, current, payload);
 			return;
 		}
 
-		case "loadFailed":
-		case "cleanup": {
+		case TrackEndReason.LoadFailed:
+		case TrackEndReason.Cleanup: {
 			this.playing = false;
 
 			await queueTrackEnd.call(this);

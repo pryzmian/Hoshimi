@@ -9,7 +9,7 @@ import {
 	type LavalinkSession,
 } from "../../types/Rest";
 import { HoshimiAgent } from "../../util/constants";
-import { validatePlayerData } from "../../util/functions/validations";
+import { validateUrl, validatePlayerData } from "../../util/functions/validations";
 import type { Node } from "./Node";
 
 /**
@@ -132,8 +132,10 @@ export class Rest {
 
 		options.method ??= RestMethods.Get;
 
-		const url = new URL(`${this.url}/${options.endpoint.replace(/^\//gm, "")}`.trim());
-		if (options.params) url.search = new URLSearchParams(options.params).toString();
+		const url = validateUrl(
+			new URL(`${this.url}/${options.endpoint.replace(/^\//gm, "")}`.trim()),
+			new URLSearchParams(options.params),
+		);
 
 		const abortController = new AbortController();
 		const timeout = setTimeout(() => abortController.abort(), this.restTimeout);
@@ -196,7 +198,7 @@ export class Rest {
 			`[Rest] -> [${this.node.id}]: Updated player data for guild: ${data.guildId} | Object: ${JSON.stringify(data)}`,
 		);
 
-		validatePlayerData.call(this.node, data, res);
+		validatePlayerData.call(this.node, data);
 
 		return res;
 	}

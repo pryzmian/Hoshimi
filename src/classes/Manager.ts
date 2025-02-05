@@ -302,7 +302,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 
 		if (!node) throw new ManagerError("No nodes are available.");
 
-		const res = await node.search({ query: options.query, engine: options.engine });
+		const res = await node.search(options);
 		if (!res)
 			return {
 				loadType: LoadType.Empty,

@@ -158,6 +158,46 @@ export enum SourceNames {
 }
 
 /**
+ * The response severity of the result.
+ */
+export enum Severity {
+	/**
+	 * The severity of the result is common.
+	 */
+	Common = "common",
+	/**
+	 * The severity of the result is suspicious.
+	 */
+	Suspicious = "suspicious",
+	/**
+	 * The severity of the result is fault.
+	 */
+	Fault = "fault",
+}
+
+/**
+ * The plugin information type.
+ */
+export enum PluginInfoType {
+	/**
+	 * The plugin information type is album.
+	 */
+	Album = "album",
+	/**
+	 * The plugin information type is track.
+	 */
+	Playlist = "playlist",
+	/**
+	 * The plugin information type is track.
+	 */
+	Artist = "artist",
+	/**
+	 * The plugin information type is track.
+	 */
+	Recommendations = "recommendations",
+}
+
+/**
  * The track result.
  */
 interface TrackResult {
@@ -752,7 +792,7 @@ export interface NodeOptions {
 /**
  * The headers for resumable requests.
  */
-export interface ResumableHeaders extends Record<string, string> {
+export interface ResumableHeaders {
 	/**
 	 * The name of the client.
 	 * @type {string}
@@ -770,9 +810,9 @@ export interface ResumableHeaders extends Record<string, string> {
 	"User-Id": string;
 	/**
 	 * The session id of the client.
-	 * @type {string}
+	 * @type {string | undefined}
 	 */
-	"Session-Id": string;
+	"Session-Id"?: string;
 	/**
 	 * The authorization of the client.
 	 * @type {string}
@@ -794,6 +834,11 @@ export interface SearchQuery {
 	 * @type {SearchEngines}
 	 */
 	engine?: SearchEngines;
+	/**
+	 * The search params to use.
+	 * @type {Record<string, string> | undefined}
+	 */
+	params?: Record<string, string>;
 }
 
 /**
@@ -819,21 +864,6 @@ export interface HoshimiNodeOptions {
 	 */
 	resumeTimeout?: number;
 }
-
-/**
- * The headers that are not resumable.
- */
-export type NonResumableHeaders = Omit<ResumableHeaders, "Session-Id">;
-
-/**
- * The response severity of the result.
- */
-export type Severity = "common" | "suspicious" | "fault";
-
-/**
- * The plugin information type.
- */
-export type PluginInfoType = "album" | "playlist" | "artist" | "recommendations";
 
 /**
  * The payload for the socket.
