@@ -14,7 +14,11 @@ const maxTracks = 10;
  */
 export async function autoplayFn(player: Player, lastTrack: Track | null): Promise<void> {
 	if (!lastTrack) return;
-	if (!player.get("enabledAutoplay")) return;
+
+	const isEnabled =
+		player.get<boolean | undefined>("enabledAutoplay") ||
+		player.manager.options.queueOptions.autoPlay;
+	if (!isEnabled) return;
 
 	const filter = (tracks: Track[]) =>
 		tracks.filter(

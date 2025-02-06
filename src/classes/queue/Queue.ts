@@ -228,9 +228,9 @@ export class Queue {
 	 * @returns {QueueJson} The queue JSON object.
 	 */
 	public toJSON(): QueueJson {
-		if (this.previous.length > this.player.manager.options.queueOptions!.maxPreviousTracks!)
+		if (this.previous.length > this.player.manager.options.queueOptions.maxPreviousTracks!)
 			this.previous.splice(
-				this.player.manager.options.queueOptions!.maxPreviousTracks!,
+				this.player.manager.options.queueOptions.maxPreviousTracks!,
 				this.previous.length,
 			);
 

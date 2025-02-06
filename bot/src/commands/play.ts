@@ -18,6 +18,11 @@ export default class PlayCommand extends Command {
 	override async run(ctx: GuildCommandContext<typeof options>) {
 		const { client, options } = ctx;
 
+		if (!client.manager.isUseable())
+			return ctx.editOrReply({
+				content: "The bot is not connected to any node. For now is not useable.",
+			});
+
 		const state = await ctx.member.voice().catch(() => null);
 		if (!state?.channelId)
 			return ctx.editOrReply({
@@ -75,8 +80,6 @@ export default class PlayCommand extends Command {
 					await ctx.editOrReply({
 						content: `Added ${track.toHyperlink()} to the queue.`,
 					});
-
-					player.set("enabledAutoplay", true);
 				}
 				break;
 

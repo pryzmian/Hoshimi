@@ -218,13 +218,15 @@ export class Rest {
 			`[Rest] -> [${this.node.id}]: Stopped player for guild: ${guildId}`,
 		);
 
-		return this.updatePlayer({
+		const res = await this.updatePlayer({
 			guildId,
 			playerOptions: {
 				paused: false,
 				track: { encoded: null },
 			},
 		});
+
+		return res;
 	}
 
 	/**

@@ -29,9 +29,9 @@ async function queueTrackEnd(this: Player): Promise<void> {
 		)
 	) {
 		this.queue.previous.unshift(this.queue.current);
-		if (this.queue.previous.length > this.manager.options.queueOptions!.maxPreviousTracks!)
+		if (this.queue.previous.length > this.manager.options.queueOptions.maxPreviousTracks!)
 			this.queue.previous.splice(
-				this.manager.options.queueOptions!.maxPreviousTracks!,
+				this.manager.options.queueOptions.maxPreviousTracks!,
 				this.queue.previous.length,
 			);
 
@@ -94,8 +94,8 @@ async function queueEnd(
 	//if (track) await this.queue.utils.save();
 	//if ((payload as TrackEndEvent).reason !== "stopped") await this.queue.utils.save();
 
-	this.manager.emit(Events.Debug, DebugLevels.Player, "[Player] -> [Queue] The queue has ended.");
 	this.manager.emit(Events.QueueEnd, this, this.queue);
+	this.manager.emit(Events.Debug, DebugLevels.Player, "[Player] -> [Queue] The queue has ended.");
 }
 
 /**
@@ -111,12 +111,12 @@ export async function trackStart(this: Player, payload: TrackStartEvent): Promis
 
 	//if (this.queue.current) await this.queue.utils.save();
 
+	this.manager.emit(Events.TrackStart, this, this.queue.current, payload);
 	this.manager.emit(
 		Events.Debug,
 		DebugLevels.Player,
 		`[Player -> Start] The track: ${this.queue.current?.info.title ?? "Unknown"} has started playing.`,
 	);
-	this.manager.emit(Events.TrackStart, this, this.queue.current, payload);
 }
 
 /**
@@ -147,12 +147,12 @@ export async function trackEnd(this: Player, payload: TrackEndEvent): Promise<vo
 			if (!this.queue.size || !this.queue.current)
 				return queueEnd.call(this, current, payload);
 
+			this.manager.emit(Events.TrackEnd, this, current, payload);
 			this.manager.emit(
 				Events.Debug,
 				DebugLevels.Player,
 				`[Player] -> ÑEnd] The track: ${current?.info.title ?? "Unknown"} has ended.`,
 			);
-			this.manager.emit(Events.TrackEnd, this, current, payload);
 
 			this.queue.current = null;
 
@@ -166,12 +166,12 @@ export async function trackEnd(this: Player, payload: TrackEndEvent): Promise<vo
 
 	this.queue.current = null;
 
-	if (this.queue.size) this.manager.emit(Events.TrackEnd, this, current, payload);
-	else {
+	if (!this.queue.size) {
 		this.playing = false;
 		return queueEnd.call(this, current, payload);
 	}
 
+	this.manager.emit(Events.TrackEnd, this, current, payload);
 	this.manager.emit(
 		Events.Debug,
 		DebugLevels.Player,

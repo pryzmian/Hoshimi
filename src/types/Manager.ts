@@ -246,7 +246,7 @@ export interface HoshimiOptions {
 	 * The client data to use.
 	 * @type {ClientData}
 	 */
-	client?: ClientData;
+	client?: Partial<ClientData>;
 	/**
 	 * The default search engine to use.
 	 * @type {SearchEngines}

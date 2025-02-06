@@ -42,7 +42,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 * The options for the manager.
 	 * @type {HoshimiOptions}
 	 */
-	public options: HoshimiOptions;
+	public options: Required<HoshimiOptions>;
 
 	/**
 	 * The nodes for the manager.
@@ -81,10 +81,11 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 			queueOptions: {
 				maxPreviousTracks: options.queueOptions?.maxPreviousTracks ?? 25,
 				autoplayFn: options.queueOptions?.autoplayFn ?? autoplayFn,
+				autoPlay: options.queueOptions?.autoPlay ?? false,
 			},
 			client: {
+				...options.client,
 				username: options.client?.username ?? "hoshimi-client",
-				id: options.client?.id ?? "",
 			},
 		};
 
@@ -96,7 +97,34 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 * @returns {boolean} If the manager is useable.
 	 */
 	public isUseable(): boolean {
-		return this.ready;
+		const nodes = this.nodes.filter((node) => node.state === State.Connected);
+		return this.ready && nodes.length > 0;
+	}
+
+	/**
+	 *
+	 * Get the least used node.
+	 * @returns {Node} The least used node.
+	 */
+	public getLeastUsedNode(): Node {
+		return this.nodes.reduce((a, b) => (a.penalties < b.penalties ? a : b));
+	}
+
+	/**
+	 *
+	 * Get the player for the guild.
+	 * @param guildId The guild id to get the player.
+	 * @returns {Player | undefined} The player for the guild.
+	 */
+	public getPlayer(guildId: string): Player | undefined {
+		return this.players.get(guildId);
+	}
+
+	/**
+	 * Delete the player for the guild.
+	 */
+	public deletePlayer(guildId: string): boolean {
+		return this.players.delete(guildId);
 	}
 
 	/**
@@ -105,7 +133,9 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 * @param packet The packet to handle
 	 * @returns
 	 */
-	public async sendRaw(packet: VoicePacket | VoiceServer | VoiceState | ChannelDeletePacket) {
+	public async sendRaw(
+		packet: VoicePacket | VoiceServer | VoiceState | ChannelDeletePacket,
+	): Promise<void> {
 		if (!this.ready) {
 			this.emit(
 				Events.Debug,
@@ -162,12 +192,12 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 					if ("token" in data) player.voice.token = data.token;
 					if ("endpoint" in data) player.voice.endpoint = data.endpoint;
 
-					const voice = { ...player.voice } as Partial<LavalinkPlayerVoice>;
+					const voice = { ...player.voice } as LavalinkPlayerVoice;
 
 					if (voice.sessionId && voice.token && voice.endpoint) {
 						await player.node.rest.updatePlayer({
 							guildId: data.guild_id,
-							playerOptions: { voice: voice as LavalinkPlayerVoice },
+							playerOptions: { voice },
 						});
 
 						this.emit(
@@ -175,13 +205,15 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 							DebugLevels.Player,
 							`[Player] -> [Voice] Updated the player voice for: ${data.guild_id} | Session: ${voice.sessionId} | Token: ${voice.token} | Endpoint: ${voice.endpoint}`,
 						);
-					} else {
-						this.emit(
-							Events.Debug,
-							DebugLevels.Player,
-							`[Player] -> [Voice] The player voice is missing for: ${data.guild_id}`,
-						);
+
+						return;
 					}
+
+					this.emit(
+						Events.Debug,
+						DebugLevels.Player,
+						`[Player] -> [Voice] The player voice is missing for: ${data.guild_id}`,
+					);
 				}
 				break;
 		}
@@ -203,7 +235,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 
 		if (!this.options.client.id) throw new ManagerError("You must provide the client id.");
 		if (typeof this.options.client.id !== "string")
-			throw new OptionError("'info.client.id': Must be a string.");
+			throw new OptionError("The client info 'info.client.id': must be a string.");
 
 		let amount = 0;
 
@@ -239,32 +271,6 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 		const node = new Node(this, options);
 		this.nodes.set(node.id, node);
 		return node;
-	}
-
-	/**
-	 *
-	 * Get the least used node.
-	 * @returns {Node} The least used node.
-	 */
-	public getLeastUsedNode(): Node {
-		return this.nodes.reduce((a, b) => (a.penalties < b.penalties ? a : b));
-	}
-
-	/**
-	 *
-	 * Get the player for the guild.
-	 * @param guildId The guild id to get the player.
-	 * @returns {Player | undefined} The player for the guild.
-	 */
-	public getPlayer(guildId: string): Player | undefined {
-		return this.players.get(guildId);
-	}
-
-	/**
-	 * Delete the player for the guild.
-	 */
-	public deletePlayer(guildId: string): boolean {
-		return this.players.delete(guildId);
 	}
 
 	/**

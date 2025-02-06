@@ -16,33 +16,39 @@ const validUrl = /^(https?:\/\/)?([a-zA-Z0-9\-_]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
 export function validateManagerOptions(options: HoshimiOptions) {
 	if (!Array.isArray(options.nodes) || !options.nodes.every(isNode) || !options.nodes.length)
 		throw new OptionError(
-			"'options.nodes': Must be a valid array of nodes and atleast one valid node.",
+			"The manager option 'options.nodes' must be a valid array of nodes and atleast one valid node.",
 		);
 	if (typeof options.sendPayload !== "function")
-		throw new OptionError("'options.sendPayload': Must be a vaid function.");
+		throw new OptionError("The manager option 'options.sendPayload' must be a vaid function.");
 
 	if (
 		typeof options.queueOptions !== "undefined" &&
 		typeof options.queueOptions.maxPreviousTracks !== "number"
 	)
-		throw new OptionError("'options.queue.maxPreviousTracks': Must be a number.");
+		throw new OptionError(
+			"The manager option 'options.queue.maxPreviousTracks' must be a number.",
+		);
 	if (
 		typeof options.queueOptions !== "undefined" &&
 		typeof options.queueOptions.autoplayFn !== "function"
 	)
-		throw new OptionError("'options.queue.autoplayFn': Must be a function.");
+		throw new OptionError("The manager option 'options.queue.autoplayFn' must be a function.");
 
 	if (
 		typeof options.defaultSearchEngine !== "undefined" &&
 		!validEngines.includes(options.defaultSearchEngine)
 	)
-		throw new OptionError("'options.defaultSearchEngine' Must be a valid search engine.");
+		throw new OptionError(
+			"The manager option 'options.defaultSearchEngine' Must be a valid search engine.",
+		);
 	if (typeof options.client !== "undefined" && typeof options.client !== "object")
-		throw new OptionError("'options.client' Must be a valid object.");
+		throw new OptionError("The manager option 'options.client' Must be a valid object.");
 	if (typeof options.client !== "undefined" && typeof options.client.id !== "string")
-		throw new OptionError("'options.client.id' Must be a valid string.");
+		throw new OptionError("The manager option 'options.client.id' Must be a valid string.");
 	if (typeof options.client !== "undefined" && typeof options.client.username !== "string")
-		throw new OptionError("'options.client.username': Must be a valid string.");
+		throw new OptionError(
+			"The manager option 'options.client.username' must be a valid string.",
+		);
 }
 
 /**
@@ -53,17 +59,15 @@ export function validateManagerOptions(options: HoshimiOptions) {
  * @returns
  */
 export function validateQuery(search: SearchQuery): string {
-	if (typeof search !== "object") throw new OptionError("'query' Must be a valid object.");
+	if (typeof search !== "object") throw new OptionError("The 'query' must be a valid object.");
 	if (typeof search.query !== "string")
-		throw new OptionError("'query.query' Must be a valid string.");
+		throw new OptionError("The query option 'query.query' must be a valid string.");
 
 	if (typeof search.engine !== "undefined" && !validEngines.includes(search.engine))
-		throw new OptionError("'query.engine' Must be a valid search engine.");
+		throw new OptionError("The query option 'query.engine' must be a valid search engine.");
 
 	const query = search.query.trim().toLowerCase();
-	const engineKey = Object.values(SearchEngines).find((key) =>
-		query.startsWith(key.trim().toLowerCase()),
-	);
+	const engineKey = Object.values(SearchEngines).find((key) => query.startsWith(key));
 	if (engineKey && query.startsWith(`${engineKey.toLowerCase()}:`)) {
 		const sliced = query.slice(engineKey.length + 1).trim();
 		const isUrl = validUrl.test(sliced);
@@ -91,18 +95,18 @@ export function validateQuery(search: SearchQuery): string {
  */
 export function validatePlayerOptions(options: PlayerOptions): void {
 	if (typeof options.guildId !== "string")
-		throw new OptionError("options.guildId: Must be a string.");
+		throw new OptionError("The player option 'options.guildId' must be a string.");
 	if (typeof options.voiceId !== "string")
-		throw new OptionError("options.voiceId: Must be a string.");
+		throw new OptionError("The player option 'options.voiceId' Must be a string.");
 	if (typeof options.textId !== "undefined" && typeof options.textId !== "string")
-		throw new OptionError("options.textId: Must be a string.");
+		throw new OptionError("The player option 'options.textId' Must be a string.");
 
 	if (typeof options.selfDeaf !== "undefined" && typeof options.selfDeaf !== "boolean")
-		throw new OptionError("options.selfDeaf: Must be a boolean.");
+		throw new OptionError("The player option 'options.selfDeaf' Must be a boolean.");
 	if (typeof options.selfMute !== "undefined" && typeof options.selfMute !== "boolean")
-		throw new OptionError("options.selfMute: Mute must be a boolean.");
+		throw new OptionError("The player option 'options.selfMute' Mute must be a boolean.");
 	if (typeof options.volume !== "undefined" && typeof options.volume !== "number")
-		throw new OptionError("options.volume: Must be a number.");
+		throw new OptionError("The player option 'options.volume' Must be a number.");
 }
 
 /**

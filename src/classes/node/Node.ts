@@ -163,6 +163,12 @@ export class Node {
 				id: this.id,
 			});
 
+		if (!this.manager.options.client.id)
+			throw new NodeError({
+				message: "No valid client id provided.",
+				id: this.id,
+			});
+
 		this.state = State.Connecting;
 
 		const headers: ResumableHeaders = {

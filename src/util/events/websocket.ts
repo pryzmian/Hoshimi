@@ -92,8 +92,9 @@ export function onMessage(this: Node, message: Buffer | string) {
 						this.manager.emit(
 							Events.Debug,
 							DebugLevels.Node,
-							`[Socket] -> [${this.id}]: Session id was not provided. Breaking up the connection.`,
+							`[Socket] -> [${this.id}]: Session id was not provided. Breaking up the connection...`,
 						);
+						this.disconnect();
 						return;
 					}
 
@@ -117,7 +118,6 @@ export function onMessage(this: Node, message: Buffer | string) {
 				switch (payload.type) {
 					case PlayerEventType.TrackEnd:
 						return trackEnd.call(player, payload);
-
 					case PlayerEventType.TrackStart:
 						return trackStart.call(player, payload);
 				}

@@ -7,7 +7,7 @@ import type { Awaitable } from "./Manager";
  */
 export interface HoshimiQueueOptions {
 	/**
-	 * The maximum amount of tracks that can be in the queue.
+	 * The maximum amount of tracks that can be saved in the queue.
 	 * @type {number}
 	 * @default 25
 	 */
@@ -19,6 +19,12 @@ export interface HoshimiQueueOptions {
 	 * @param track The last track played.
 	 */
 	autoplayFn?(player: Player, lastTrack: Track | null): Awaitable<void>;
+	/**
+	 * Enable the auto play for the queue. (Only has `youtube` and `spotify` support)
+	 * @type {boolean}
+	 * @default false
+	 */
+	autoPlay?: boolean;
 }
 
 /**
