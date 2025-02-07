@@ -9,7 +9,7 @@ import {
 	type LavalinkSession,
 } from "../../types/Rest";
 import { HoshimiAgent } from "../../util/constants";
-import { validateUrl, validatePlayerData } from "../../util/functions/validations";
+import { validatePlayerData } from "../../util/functions/validations";
 import type { Node } from "./Node";
 
 /**
@@ -132,10 +132,9 @@ export class Rest {
 
 		options.method ??= RestMethods.Get;
 
-		const url = validateUrl(
-			new URL(`${this.url}/${options.endpoint.replace(/^\//gm, "")}`.trim()),
-			new URLSearchParams(options.params),
-		);
+		const url = new URL(`${this.url}/${options.endpoint.replace(/^\//gm, "")}`.trim());
+
+		if (options.params) url.search = new URLSearchParams(options.params).toString();
 
 		const abortController = new AbortController();
 		const timeout = setTimeout(() => abortController.abort(), this.restTimeout);

@@ -141,32 +141,6 @@ export function validatePlayerData(this: Node, data: Partial<UpdatePlayerInfo>):
 
 /**
  *
- * Validate the url params.
- * @param url The url to validate.
- * @param urlParams The url params to validate.
- * @returns
- */
-export function validateUrl(url: URL, urlParams?: URLSearchParams): string {
-	if (!url.searchParams.size) return `${url.origin}${url.pathname}`;
-
-	const encodedParams = [...url.searchParams.entries()].map(([paramKey, paramValue]) => {
-		const decoded = decodeURIComponent(paramValue).trim();
-		if (decoded.includes("://") && !/^https?:\/\//.test(decoded)) {
-			const [key, ...values] = decoded.split("://");
-			const encodedValue = `${key}://${encodeURIComponent(values.join("://"))}`;
-			const additionalParams =
-				urlParams && urlParams.size > 0 ? `?${urlParams.toString()}` : "";
-
-			return `${paramKey}=${encodeURI(encodedValue + additionalParams)}`;
-		}
-		return `${paramKey}=${encodeURIComponent(decoded)}`;
-	});
-
-	return `${url.origin}${url.pathname}?${encodedParams.join("&")}`;
-}
-
-/**
- *
  * Validate if the node options are correct.
  * @param options The node options to validate.
  * @returns

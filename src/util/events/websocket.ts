@@ -64,7 +64,7 @@ export function onError(this: Node, error?: Error): void {
  * @param this The node that emitted the event.
  * @param message The message received from the socket.
  */
-export function onMessage(this: Node, message: Buffer | string) {
+export async function onMessage(this: Node, message: Buffer | string): Promise<void> {
 	if (Array.isArray(message)) message = Buffer.concat(message);
 	else if (message instanceof ArrayBuffer) message = Buffer.from(message);
 
@@ -117,16 +117,19 @@ export function onMessage(this: Node, message: Buffer | string) {
 
 				switch (payload.type) {
 					case PlayerEventType.TrackEnd:
-						return trackEnd.call(player, payload);
+						await trackEnd.call(player, payload);
+						break;
 					case PlayerEventType.TrackStart:
-						return trackStart.call(player, payload);
+						await trackStart.call(player, payload);
+						break;
 				}
 
 				break;
 			}
 
 			case OpCodes.PlayerUpdate: {
-				return playerUpdate.call(this, payload);
+				await playerUpdate.call(this, payload);
+				break;
 			}
 		}
 
