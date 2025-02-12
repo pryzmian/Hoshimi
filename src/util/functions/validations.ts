@@ -43,9 +43,17 @@ export function validateManagerOptions(options: HoshimiOptions) {
 		);
 	if (typeof options.client !== "undefined" && typeof options.client !== "object")
 		throw new OptionError("The manager option 'options.client' Must be a valid object.");
-	if (typeof options.client !== "undefined" && typeof options.client.id !== "string")
+	if (
+		typeof options.client !== "undefined" &&
+		typeof options.client.id !== "undefined" &&
+		typeof options.client.id !== "string"
+	)
 		throw new OptionError("The manager option 'options.client.id' Must be a valid string.");
-	if (typeof options.client !== "undefined" && typeof options.client.username !== "string")
+	if (
+		typeof options.client !== "undefined" &&
+		typeof options.client.id !== "undefined" &&
+		typeof options.client.username !== "string"
+	)
 		throw new OptionError(
 			"The manager option 'options.client.username' must be a valid string.",
 		);

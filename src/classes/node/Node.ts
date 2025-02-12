@@ -153,11 +153,8 @@ export class Node {
 		});
 
 		return this.rest.request<LavalinkSearchResponse>({
-			endpoint: "/loadtracks",
-			params: {
-				identifier: search,
-				...query.params,
-			},
+			endpoint: `/loadtracks?identifier=${search}`,
+			params: query.params,
 		});
 	}
 

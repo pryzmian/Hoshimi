@@ -14,7 +14,7 @@ import {
 	type PlayerOptions,
 } from "../types/Player";
 import { validatePlayerOptions } from "../util/functions/validations";
-import { OptionError, PlayerError } from "./Errors";
+import { PlayerError } from "./Errors";
 import type { Hoshimi } from "./Manager";
 import type { Node } from "./node/Node";
 import { Queue } from "./queue/Queue";

@@ -84,7 +84,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 				autoPlay: options.queueOptions?.autoPlay ?? false,
 			},
 			client: {
-				...options.client,
+				id: options.client?.id,
 				username: options.client?.username ?? "hoshimi-client",
 			},
 		};
@@ -192,18 +192,22 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 					if ("token" in data) player.voice.token = data.token;
 					if ("endpoint" in data) player.voice.endpoint = data.endpoint;
 
-					const voice = { ...player.voice } as LavalinkPlayerVoice;
-
-					if (voice.sessionId && voice.token && voice.endpoint) {
+					if (player.voice.sessionId && player.voice.token && player.voice.endpoint) {
 						await player.node.updatePlayer({
 							guildId: data.guild_id,
-							playerOptions: { voice },
+							playerOptions: {
+								voice: {
+									endpoint: player.voice.endpoint,
+									sessionId: player.voice.sessionId,
+									token: player.voice.token,
+								},
+							},
 						});
 
 						this.emit(
 							Events.Debug,
 							DebugLevels.Player,
-							`[Player] -> [Voice] Updated the player voice for: ${data.guild_id} | Session: ${voice.sessionId} | Token: ${voice.token} | Endpoint: ${voice.endpoint}`,
+							`[Player] -> [Voice] Updated the player voice for: ${data.guild_id} | Session: ${player.voice.sessionId} | Token: ${player.voice.token} | Endpoint: ${player.voice.endpoint}`,
 						);
 
 						return;
