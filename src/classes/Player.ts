@@ -45,12 +45,6 @@ export class Player {
 	readonly queue: Queue;
 
 	/**
-	 * The node for the player.
-	 * @type {Node}
-	 */
-	readonly node: Node;
-
-	/**
 	 * Check if the player is self deafened.
 	 * @type {boolean}
 	 */
@@ -150,12 +144,22 @@ export class Player {
 		this.textId = options.textId;
 
 		this.queue = new Queue(this);
-		this.node =
-			(typeof options.node === "string"
-				? this.manager.nodes.get(options.node)
-				: options.node) ?? this.manager.getLeastUsedNode();
 
 		validatePlayerOptions(this.options);
+	}
+
+	/**
+	 *
+	 * The node for the player.
+	 * @type {Node}
+	 * @readonly
+	 */
+	public get node(): Node {
+		return (
+			(typeof this.options.node === "string"
+				? this.manager.nodes.get(this.options.node)
+				: this.options.node) ?? this.manager.getLeastUsedNode()
+		);
 	}
 
 	/**
@@ -236,7 +240,7 @@ export class Player {
 
 		if (!this.playing && !this.queue.current) return this.play();
 
-		await this.node.rest.stopPlayer(this.guildId);
+		await this.node.stopPlayer(this.guildId);
 
 		return;
 	}
@@ -299,7 +303,7 @@ export class Player {
 			`[Player] -> [Play] A new track is playing: ${this.queue.current.info.title}`,
 		);
 
-		await this.node.rest.updatePlayer({
+		await this.node.updatePlayer({
 			guildId: this.guildId,
 			noReplace: options.noReplace,
 			playerOptions: {

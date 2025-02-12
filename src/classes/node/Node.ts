@@ -15,7 +15,12 @@ import { WebSocket } from "ws";
 
 import { onClose, onError, onMessage, onOpen } from "../../util/events/websocket";
 import { validateQuery } from "../../util/functions/validations";
-import type { LavalinkPlayer, LavalinkSession, NullableLavalinkSession } from "../../types/Rest";
+import type {
+	LavalinkPlayer,
+	LavalinkSession,
+	NullableLavalinkSession,
+	UpdatePlayerInfo,
+} from "../../types/Rest";
 import { DebugLevels, Events } from "../../types/Manager";
 
 /**
@@ -148,8 +153,11 @@ export class Node {
 		});
 
 		return this.rest.request<LavalinkSearchResponse>({
-			endpoint: `/loadtracks?identifier=${search}`,
-			params: query.params,
+			endpoint: "/loadtracks",
+			params: {
+				identifier: search,
+				...query.params,
+			},
 		});
 	}
 
@@ -213,7 +221,7 @@ export class Node {
 	 * @param data The player data to update.
 	 * @returns
 	 */
-	public updatePlayer(data: Partial<LavalinkPlayer>): Promise<LavalinkPlayer | null> {
+	public updatePlayer(data: Partial<UpdatePlayerInfo>): Promise<LavalinkPlayer | null> {
 		return this.rest.updatePlayer(data);
 	}
 

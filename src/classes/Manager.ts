@@ -195,7 +195,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 					const voice = { ...player.voice } as LavalinkPlayerVoice;
 
 					if (voice.sessionId && voice.token && voice.endpoint) {
-						await player.node.rest.updatePlayer({
+						await player.node.updatePlayer({
 							guildId: data.guild_id,
 							playerOptions: { voice },
 						});
