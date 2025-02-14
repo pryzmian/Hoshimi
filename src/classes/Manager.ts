@@ -107,7 +107,8 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 * @returns {Node} The least used node.
 	 */
 	public getLeastUsedNode(): Node {
-		return this.nodes.reduce((a, b) => (a.penalties < b.penalties ? a : b));
+		const nodes = this.nodes.filter((node) => node.state === State.Connected);
+		return nodes.reduce((a, b) => (a.penalties < b.penalties ? a : b));
 	}
 
 	/**
