@@ -12,8 +12,9 @@ const validUrl = /^(https?:\/\/)?([a-zA-Z0-9\-_]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
  *
  * Validate the manager options.
  * @param options The options to validate.
+ * @returns {void} Nothing, yeah, nothing.
  */
-export function validateManagerOptions(options: HoshimiOptions) {
+export function validateManagerOptions(options: HoshimiOptions): void {
 	if (!Array.isArray(options.nodes) || !options.nodes.every(isNode) || !options.nodes.length)
 		throw new OptionError(
 			"The manager option 'options.nodes' must be a valid array of nodes and atleast one valid node.",
@@ -64,7 +65,7 @@ export function validateManagerOptions(options: HoshimiOptions) {
  * Validate the query for the node.
  * @param this The node to validate the query for.
  * @param search The query to validate.
- * @returns
+ * @returns {string} The validated query.
  */
 export function validateQuery(search: SearchQuery): string {
 	if (typeof search !== "object") throw new OptionError("The 'query' must be a valid object.");
@@ -100,6 +101,7 @@ export function validateQuery(search: SearchQuery): string {
  *
  * Validate the player options.
  * @param options The player options.
+ * @returns {void} Nothing, yeah, nothing, again.
  */
 export function validatePlayerOptions(options: PlayerOptions): void {
 	if (typeof options.guildId !== "string")
@@ -123,7 +125,7 @@ export function validatePlayerOptions(options: PlayerOptions): void {
  * @param this The node to validate the player data for.
  * @param data The data to validate.
  * @param res The lavalink player to validate.
- * @returns
+ * @returns {void} Nothing.
  */
 export function validatePlayerData(this: Node, data: Partial<UpdatePlayerInfo>): void {
 	if (
@@ -151,9 +153,9 @@ export function validatePlayerData(this: Node, data: Partial<UpdatePlayerInfo>):
  *
  * Validate if the node options are correct.
  * @param options The node options to validate.
- * @returns
+ * @returns {boolean} If the node options are correct.
  */
-function isNode(options: NodeOptions) {
+function isNode(options: NodeOptions): boolean {
 	return (
 		typeof options.host === "string" &&
 		typeof options.port === "number" &&

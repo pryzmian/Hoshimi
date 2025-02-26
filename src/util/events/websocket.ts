@@ -1,6 +1,6 @@
 import type { IncomingMessage } from "node:http";
 import type { Node } from "../../classes/node/Node";
-import { type LavalinkPayload, State, OpCodes } from "../../types/Node";
+import { type LavalinkPayload, State, OpCodes, type NodeInfo } from "../../types/Node";
 import { DebugLevels, Events } from "../../types/Manager";
 import { PlayerEventType } from "../../types/Player";
 import { playerUpdate, trackEnd, trackStart } from "./player";
@@ -9,6 +9,8 @@ import { playerUpdate, trackEnd, trackStart } from "./player";
  *
  * Emitted when the socket connection is opened.
  * @param this The node that emitted the event.
+ * @param res The response from the socket connection.
+ * @returns {void} Nothing new.
  */
 export function onOpen(this: Node, res: IncomingMessage): void {
 	const isResume = res.headers["session-resumed"] === "true";
@@ -27,6 +29,7 @@ export function onOpen(this: Node, res: IncomingMessage): void {
  * @param this The node that emitted the event.
  * @param code The close code of the connection.
  * @param reason The close reason message.
+ * @returns {void} The same thing as above.
  */
 export function onClose(this: Node, code: number, reason: string): void {
 	this.manager.emit(
@@ -41,6 +44,7 @@ export function onClose(this: Node, code: number, reason: string): void {
  * Emitted when an error occurs.
  * @param this The node that emitted the event.
  * @param error The error that occurred.
+ * @returns {void} Did you know that void is a type in TypeScript?
  */
 export function onError(this: Node, error?: Error): void {
 	if (!error) return;
@@ -63,6 +67,7 @@ export function onError(this: Node, error?: Error): void {
  * Emitted when a message is received from the socket.
  * @param this The node that emitted the event.
  * @param message The message received from the socket.
+ * @returns {Promise<void>} I'm running out of ideas for this.
  */
 export async function onMessage(this: Node, message: Buffer | string): Promise<void> {
 	if (Array.isArray(message)) message = Buffer.concat(message);
@@ -101,6 +106,8 @@ export async function onMessage(this: Node, message: Buffer | string): Promise<v
 					this.state = State.Connected;
 					this.sessionId = payload.sessionId;
 					this.session.resuming = payload.resumed;
+
+					this.info = await this.rest.request<NodeInfo>({ endpoint: "/info" });
 
 					this.manager.emit(
 						Events.Debug,

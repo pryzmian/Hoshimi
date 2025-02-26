@@ -1,7 +1,7 @@
 import { DebugLevels, Events } from "../../types/Manager";
 import {
 	type FetchOptions,
-	RestMethods,
+	HttpMethods,
 	type LavalinkRestError,
 	type RestOptions,
 	type LavalinkPlayer,
@@ -130,9 +130,9 @@ export class Rest {
 			...options.headers,
 		};
 
-		options.method ??= RestMethods.Get;
+		options.method ??= HttpMethods.Get;
 
-		const url = new URL(`${this.url}/${options.endpoint.replace(/^\//gm, "")}`.trim());
+		const url = new URL(`${this.url}${options.endpoint}`);
 
 		if (options.params) url.search = new URLSearchParams(options.params).toString();
 
@@ -145,17 +145,19 @@ export class Rest {
 			signal: abortController.signal,
 		};
 
-		if (![RestMethods.Get, RestMethods.Head].includes(options.method) && options.body) {
+		if (![HttpMethods.Get, HttpMethods.Head].includes(options.method) && options.body) {
 			fetchOptions.body = JSON.stringify(options.body);
 		}
 
 		this.node.manager.emit(
 			Events.Debug,
 			DebugLevels.Rest,
-			`[Rest] -> [${this.node.id} : ${options.method}]: Url: ${this.restUrl} | Endpoint: ${options.endpoint} | Body: ${options.body ? JSON.stringify(options.body) : "None"} | Headers: ${JSON.stringify(headers)}`,
+			`[Rest] -> [${this.node.id} : ${options.method}]: Url: ${this.restUrl} | Endpoint: ${options.endpoint} | Params: ${url.search} | Body: ${options.body ? JSON.stringify(options.body) : "None"} | Headers: ${JSON.stringify(headers)}`,
 		);
 
-		const response = await fetch(url, fetchOptions).finally(() => clearTimeout(timeout));
+		const response = await fetch(url.toString(), fetchOptions).finally(() =>
+			clearTimeout(timeout),
+		);
 		if (!response.ok) {
 			const restError = (await response.json().catch(() => null)) as LavalinkRestError | null;
 
@@ -185,7 +187,7 @@ export class Rest {
 		if (!this.node.sessionId) return null;
 
 		const res = await this.request<LavalinkPlayer>({
-			method: RestMethods.Patch,
+			method: HttpMethods.Patch,
 			endpoint: `/sessions/${this.node.sessionId}/players/${data.guildId}`,
 			body: { ...data.playerOptions },
 			params: { noReplace: `${data.noReplace ?? false}` },
@@ -243,7 +245,7 @@ export class Rest {
 		);
 
 		await this.request({
-			method: RestMethods.Delete,
+			method: HttpMethods.Delete,
 			endpoint: `/sessions/${this.node.sessionId}/players/${guildId}`,
 		});
 	}
@@ -268,7 +270,7 @@ export class Rest {
 		);
 
 		const res = await this.request<LavalinkSession>({
-			method: RestMethods.Patch,
+			method: HttpMethods.Patch,
 			endpoint: `/sessions/${this.node.sessionId}`,
 			body: { resuming, timeout },
 		});

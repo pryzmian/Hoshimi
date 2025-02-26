@@ -3,9 +3,9 @@ import type { LavalinkTrack } from "./Node";
 import type { FilterOptions, LavalinkPlayerVoice, LavalinkPlayOptions } from "./Player";
 
 /**
- * The methods for the REST.
+ * The methods for http requests
  */
-export enum RestMethods {
+export enum HttpMethods {
 	/**
 	 * The GET method requests a representation of the specified resource. Requests using GET should only retrieve data.
 	 */
@@ -43,9 +43,9 @@ export interface RestOptions {
 	endpoint: `/${string}`;
 	/**
 	 * The method for the REST.
-	 * @type {RestMethods}
+	 * @type {HttpMethods}
 	 */
-	method?: RestMethods;
+	method?: HttpMethods;
 	/**
 	 * The headers for the REST.
 	 * @type {Record<string, string>}

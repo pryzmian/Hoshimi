@@ -31,9 +31,9 @@ client.manager = new Hoshimi({
 	],
 });
 
-/* client.manager.on(Events.Debug, (level, message) =>
+client.manager.on(Events.Debug, (level, message) =>
 	client.logger.debug(`[Hoshimi] ${DebugLevels[level]}: ${message}`),
-); */
+);
 
 client.manager.on(Events.TrackStart, async (player, track) => {
 	if (!track) return;

@@ -10,7 +10,7 @@ const maxTracks = 10;
  * The autoplay function for the player.
  * @param player The player for the autoplay function.
  * @param lastTrack The last track that was played.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} The promise for the autoplay function.
  */
 export async function autoplayFn(player: Player, lastTrack: Track | null): Promise<void> {
 	if (!lastTrack) return;

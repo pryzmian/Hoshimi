@@ -5,6 +5,7 @@ import {
 	type ResumableHeaders,
 	type SearchQuery,
 	type Stats,
+	type NodeInfo,
 } from "../../types/Node";
 import type { Hoshimi } from "../Manager";
 
@@ -76,9 +77,15 @@ export class Node {
 
 	/**
 	 * The public stats of the node.
-	 * @type {Stats}
+	 * @type {Stats | null}
 	 */
 	public stats: Stats | null = null;
+
+	/**
+	 * The public info of the node.
+	 * @type {NodeInfo | null}
+	 */
+	public info: NodeInfo | null = null;
 
 	/**
 	 * The session of the node.
