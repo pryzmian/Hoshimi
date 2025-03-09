@@ -41,9 +41,7 @@ export function onClose(this: Node, code: number, reason: string): void {
 	this.manager.emit(Events.NodeDisconnect, this);
 
 	if (code !== 1000 || reason !== "Node-Destroy") {
-		if (this.manager.nodes.has(this.id)) {
-			this.reconnect();
-		}
+		if (this.manager.nodes.has(this.id)) this.reconnect();
 	}
 }
 
