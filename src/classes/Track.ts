@@ -50,10 +50,12 @@ export class Track {
 	/**
 	 *
 	 * Get the hyperlink of the track.
+	 * @param {boolean} [embedable=true] Whether the hyperlink should be embedable or not.
 	 * @returns {string} The hyperlink of the track.
 	 */
-	public toHyperlink(): string {
-		return `[${this.info.title}](${this.info.uri})`;
+	public toHyperlink(embedable: boolean = true): string {
+		if (embedable) return `[${this.info.title}](${this.info.uri})`;
+		return `[${this.info.title}](<${this.info.uri}>)`;
 	}
 }
 

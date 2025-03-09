@@ -263,6 +263,7 @@ export interface PlayerOptions {
 	/**
 	 * Set if the player should be muted.
 	 * @type {boolean | undefined}
+	 * @default false
 	 */
 	selfMute?: boolean;
 	/**
@@ -272,7 +273,7 @@ export interface PlayerOptions {
 	textId?: string;
 	/**
 	 * Lavalink node of the player.
-	 * @type {string | undefined}
+	 * @type {string | Node | undefined}
 	 */
 	node?: string | Node;
 }

@@ -19,7 +19,7 @@ export function onOpen(this: Node, res: IncomingMessage): void {
 	this.manager.emit(
 		Events.Debug,
 		DebugLevels.Node,
-		`[Socket] -> [${this.id}]: Connection handshake complete with ${this.address}. | API Version: ${apiVersion} | Resumed: ${isResume}`,
+		`[Socket] -> [${this.id}]: Connection handshake complete with ${this.address}. | API Version: ${apiVersion ?? "Unknown"} | Resumed: ${isResume}`,
 	);
 }
 
@@ -37,6 +37,14 @@ export function onClose(this: Node, code: number, reason: string): void {
 		DebugLevels.Node,
 		`[Socket] -> [${this.id}]: Connection closed with ${this.address}. | Code: ${code} | Reason: ${reason}`,
 	);
+
+	this.manager.emit(Events.NodeDisconnect, this);
+
+	if (code !== 1000 || reason !== "Node-Destroy") {
+		if (this.manager.nodes.has(this.id)) {
+			this.reconnect();
+		}
+	}
 }
 
 /**

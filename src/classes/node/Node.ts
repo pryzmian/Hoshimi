@@ -6,6 +6,7 @@ import {
 	type SearchQuery,
 	type Stats,
 	type NodeInfo,
+	type NodeDestroyInfo,
 } from "../../types/Node";
 import type { Hoshimi } from "../Manager";
 
@@ -47,6 +48,12 @@ export class Node {
 	readonly manager: Hoshimi;
 
 	/**
+	 * The amount of reconnect attempts.
+	 * @type {number}
+	 */
+	public retryAmount: number;
+
+	/**
 	 * The WebSocket for the node.
 	 * @type {WebSocket | null}
 	 */
@@ -62,12 +69,6 @@ export class Node {
 	 * The session id of the node.
 	 */
 	public sessionId: string | null = null;
-
-	/**
-	 * The amount of times the node has tried to reconnect.
-	 * @type {number}
-	 */
-	public reconnectAttempts: number = 0;
 
 	/**
 	 * The interval for the reconnect.
@@ -109,9 +110,11 @@ export class Node {
 			restTimeout: options.restTimeout ?? 10000,
 			secure: options.secure ?? false,
 			retryAmount: options.retryAmount ?? 5,
-			retryDelay: options.retryDelay ?? 3000,
+			retryDelay: options.retryDelay ?? 20000,
 			...options,
 		};
+
+		this.retryAmount = this.options.retryAmount!;
 
 		if (this.options.secure && this.options.port !== 443) this.options.port = 443;
 
@@ -167,6 +170,7 @@ export class Node {
 
 	/**
 	 * Connect the node to the server.
+	 * @returns {Promise<void>}
 	 */
 	public async connect(): Promise<void> {
 		if (!this.manager.options.client)
@@ -205,7 +209,7 @@ export class Node {
 		this.manager.emit(
 			Events.Debug,
 			DebugLevels.Node,
-			`[Socket] -> [${this.id}]: Connecting to ${this.address}... | State: ${this.state} | Session: ${this.sessionId} | Resumed: ${this.session.resuming} | Penalties: ${this.penalties} | Reconnects: ${this.reconnectAttempts} | Headers: ${JSON.stringify(headers)}`,
+			`[Socket] -> [${this.id}]: Connecting to ${this.address}... | State: ${this.state} | Session: ${this.sessionId} | Resumed: ${this.session.resuming} | Penalties: ${this.penalties} | Reconnects: ${this.retryAmount} | Headers: ${JSON.stringify(headers)}`,
 		);
 	}
 
@@ -213,7 +217,7 @@ export class Node {
 	 *
 	 * Stop the track in player for the guild.
 	 * @param guildId the guild id to stop the player
-	 * @returns
+	 * @returns {Promise<LavalinkPlayer | null>}
 	 */
 	public stopPlayer(guildId: string): Promise<LavalinkPlayer | null> {
 		return this.rest.stopPlayer(guildId);
@@ -223,7 +227,7 @@ export class Node {
 	 *
 	 * Update the player data.
 	 * @param data The player data to update.
-	 * @returns
+	 * @returns {Promise<LavalinkPlayer | null>}
 	 */
 	public updatePlayer(data: Partial<UpdatePlayerInfo>): Promise<LavalinkPlayer | null> {
 		return this.rest.updatePlayer(data);
@@ -248,8 +252,9 @@ export class Node {
 		this.ws?.close(1000);
 		this.ws?.removeAllListeners();
 		this.ws = null;
+		this.state = State.Disconnected;
 
-		this.reconnectAttempts = 0;
+		this.retryAmount = 0;
 
 		if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
 
@@ -258,10 +263,31 @@ export class Node {
 
 	/**
 	 *
+	 * Destroy the node.
+	 * @param destroy The destroy options for the node.
+	 * @returns {void}
+	 */
+	public destroy(destroy?: NodeDestroyInfo): void {
+		if (this.state !== State.Connected) return;
+
+		this.ws?.close(1000, "Node-Destroy");
+		this.ws?.removeAllListeners();
+		this.ws = null;
+		this.retryAmount = 0;
+		this.state = State.Destroyed;
+
+		if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
+
+		this.manager.emit(Events.NodeDestroy, this, destroy ?? {});
+		this.manager.deleteNode(this.id);
+	}
+
+	/**
+	 *
 	 * Update the session for the node
 	 * @param resuming Enable resuming for the session.
 	 * @param timeout The timeout for the session.
-	 * @returns
+	 * @returns {Promise<LavalinkSession | null>}
 	 */
 	public async updateSession(
 		resuming: boolean,
@@ -273,5 +299,40 @@ export class Node {
 		if (res) this.session = res;
 
 		return res;
+	}
+
+	/**
+	 * Reconnect the node.
+	 * @returns {void}
+	 */
+	public reconnect(): void {
+		this.manager.emit(Events.NodeReconnecting, this, this.retryAmount);
+		this.state = State.Idle;
+
+		this.reconnectTimeout = setTimeout(() => {
+			this.reconnectTimeout = null;
+
+			if (this.retryAmount === 0) {
+				this.manager.emit(
+					Events.NodeError,
+					this,
+					new NodeError({
+						message: `Failed to reconnect after ${this.options.retryAmount} retries.`,
+						id: this.id,
+					}),
+				);
+				this.destroy({
+					code: 1000,
+					reason: "Failed to reconnect after 5 retries.",
+				});
+
+				return;
+			}
+
+			this.ws?.removeAllListeners();
+			this.ws = null;
+			this.retryAmount--;
+			this.connect();
+		}, this.options.retryDelay);
 	}
 }

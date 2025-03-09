@@ -7,6 +7,7 @@ import type {
 	HoshimiNodeOptions,
 	LavalinkPayload,
 	LoadType,
+	NodeDestroyInfo,
 	NodeOptions,
 	Playlist,
 	PluginInfo,
@@ -108,6 +109,14 @@ export enum Events {
 	 * Emitted when the node is disconnected.
 	 */
 	NodeDisconnect = "nodeDisconnect",
+	/**
+	 * Emitted when the node reconnects.
+	 */
+	NodeReconnecting = "nodeReconnecting",
+	/**
+	 * Emitted when the node is destroyed.
+	 */
+	NodeDestroy = "nodeDestroy",
 
 	/**
 	 * Emitted when the player is created.
@@ -303,6 +312,17 @@ export interface HoshimiEvents {
 	 * @param node The node that was disconnected.
 	 */
 	nodeDisconnect: [node: Node];
+	/**
+	 * Emitted when the node reconnects.
+	 * @param node The node that was reconnected.
+	 */
+	nodeReconnecting: [node: Node, retriesLeft: number];
+	/**
+	 * Emitted when the node is destroyed.
+	 * @param node The node that was destroyed.
+	 * @param options The options for the destroy.
+	 */
+	nodeDestroy: [node: Node, destroy: NodeDestroyInfo];
 
 	/**
 	 * Emitted when the player is created.

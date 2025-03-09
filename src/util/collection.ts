@@ -105,41 +105,4 @@ export class Collection<K, V> extends Map<K, V> {
 
 		return undefined;
 	}
-
-	/**
-	 *
-	 * Return the first value that satisfies the provided testing function.
-	 * @param fn The function to test each element of the collection.
-	 * @param initialValue The value to return if no element passes the test.
-	 * @returns The accumulated value that is returned by the last callback invocation.
-	 * @example
-	 * const collection = new Collection<number, number>();
-	 * collection.set(1, 1);
-	 * collection.set(2, 2);
-	 * collection.set(3, 3);
-	 * const sum = collection.reduce((acc, value) => acc + value, 0);
-	 * console.log(sum); // Output: 6
-	 */
-	public reduce(
-		fn: (accumulator: V, value: V, key: K, collection: this) => V,
-		initialValue?: V,
-	): V {
-		if (typeof fn !== "function")
-			throw new TypeError("The filter function must be a function.");
-
-		let accumulator = initialValue;
-		if (!accumulator) {
-			const firstEntry = this.entries().next();
-			if (firstEntry.done)
-				throw new TypeError("Reduce of empty collection with no initial value.");
-
-			accumulator = firstEntry.value[1];
-		}
-
-		for (const [key, value] of this.entries()) {
-			accumulator = fn(accumulator, value, key, this);
-		}
-
-		return accumulator;
-	}
 }

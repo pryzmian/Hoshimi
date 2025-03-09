@@ -41,6 +41,8 @@ export default class PlayCommand extends Command {
 			guildId: ctx.guildId,
 			voiceId: state.channelId,
 			textId: ctx.channelId,
+			volume: 100,
+			selfDeaf: true,
 		});
 
 		const { loadType, tracks, playlist } = await player.search({

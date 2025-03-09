@@ -188,7 +188,7 @@ export class Player {
 	 *
 	 * Delete the data from the player.
 	 * @param key The key to delete the data from.
-	 * @returns
+	 * @returns {boolean} If the data was deleted.
 	 */
 	public delete(key: string): boolean {
 		if (this.data[key]) {
@@ -203,7 +203,7 @@ export class Player {
 	 *
 	 * Search for a track or playlist.
 	 * @param options The options for the search.
-	 * @returns
+	 * @returns {Promise<SearchResult>} The search result.
 	 */
 	public search(options: QueryOptions): Promise<SearchResult> {
 		return this.manager.search({

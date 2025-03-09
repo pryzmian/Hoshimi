@@ -71,10 +71,7 @@ async function queueEnd(
 	this.paused = false;
 	this.queue.current = null;
 
-	if (
-		this.manager.options.queueOptions &&
-		typeof this.manager.options.queueOptions.autoplayFn === "function"
-	) {
+	if (typeof this.manager.options.queueOptions.autoplayFn === "function") {
 		await this.manager.options.queueOptions.autoplayFn(this, this.queue.current ?? track);
 		if (this.queue.size > 0) await queueTrackEnd.call(this);
 		if (this.queue.current) {

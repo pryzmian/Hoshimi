@@ -779,7 +779,7 @@ export interface NodeOptions {
 	/**
 	 * The delay between retries in milliseconds.
 	 * @type {number}
-	 * @default 3000
+	 * @default 20000
 	 */
 	retryDelay?: number;
 	/**
@@ -846,6 +846,12 @@ export interface SearchQuery {
  */
 export interface HoshimiNodeOptions {
 	/**
+	 * The user agent for the requests.
+	 * @type {UserAgent}
+	 * @example `hoshimi/v${string} (${string})`
+	 */
+	userAgent?: UserAgent;
+	/**
 	 * Make the node resumable.
 	 * @type {boolean}
 	 * @default false
@@ -864,6 +870,24 @@ export interface HoshimiNodeOptions {
 	 */
 	resumeTimeout?: number;
 }
+
+export interface NodeDestroyInfo {
+	/**
+	 * The code for the destroy.
+	 * @type {number | undefined}
+	 */
+	code?: number;
+	/**
+	 * The reason for the destroy.
+	 * @type {string | undefined}
+	 */
+	reason?: string;
+}
+
+/**
+ * The user agent for the requests.
+ */
+export type UserAgent = `${string}/v${string} (${string})`;
 
 /**
  * The payload for the socket.

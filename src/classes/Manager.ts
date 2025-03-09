@@ -15,7 +15,7 @@ import {
 	Events,
 } from "../types/Manager";
 import { LoadType, State, type NodeOptions } from "../types/Node";
-import type { LavalinkPlayerVoice, PlayerOptions } from "../types/Player";
+import type { PlayerOptions } from "../types/Player";
 import { Player } from "./Player";
 
 import { Node } from "./node/Node";
@@ -25,6 +25,7 @@ import { validateManagerOptions } from "../util/functions/validations";
 import { ManagerError, OptionError } from "./Errors";
 import { Track } from "./Track";
 import { autoplayFn } from "../util/functions/autoplay";
+import { HoshimiAgent } from "../util/constants";
 
 /**
  * The events for the manager.
@@ -74,6 +75,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 			...options,
 			defaultSearchEngine: options.defaultSearchEngine ?? SearchEngines.Youtube,
 			nodeOptions: {
+				userAgent: options.nodeOptions?.userAgent ?? HoshimiAgent,
 				resumable: options.nodeOptions?.resumable ?? false,
 				resumeByLibrary: options.nodeOptions?.resumeByLibrary ?? false,
 				resumeTimeout: options.nodeOptions?.resumeTimeout ?? 5000,
@@ -123,6 +125,8 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 
 	/**
 	 * Delete the player for the guild.
+	 * @param guildId The guild id to delete the player.
+	 * @returns {boolean} If the player was deleted.
 	 */
 	public deletePlayer(guildId: string): boolean {
 		return this.players.delete(guildId);
@@ -130,9 +134,19 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 
 	/**
 	 *
+	 * Delete the node.
+	 * @param id The id of the node to delete.
+	 * @returns {boolean} If the node was deleted.
+	 */
+	public deleteNode(id: string): boolean {
+		return this.nodes.delete(id);
+	}
+
+	/**
+	 *
 	 * Handle the raw packet.
 	 * @param packet The packet to handle
-	 * @returns
+	 * @returns {Promise<void>}
 	 */
 	public async sendRaw(
 		packet: VoicePacket | VoiceServer | VoiceState | ChannelDeletePacket,
@@ -282,7 +296,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 *
 	 * Create a new player.
 	 * @param options The options for the player.
-	 * @returns
+	 * @returns {Player} The created player.
 	 */
 	public createPlayer(options: PlayerOptions): Player {
 		if (this.players.has(options.guildId)) return this.players.get(options.guildId)!;
@@ -299,7 +313,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 *
 	 * Search for a track or playlist.
 	 * @param options The options for the search.
-	 * @returns
+	 * @returns {Promise<SearchResult>} The search result.
 	 */
 	public async search(options: QueryOptions): Promise<SearchResult> {
 		let node: Node | null = null;

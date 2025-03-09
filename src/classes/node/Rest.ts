@@ -1,4 +1,5 @@
 import { DebugLevels, Events } from "../../types/Manager";
+import type { UserAgent } from "../../types/Node";
 import {
 	type FetchOptions,
 	HttpMethods,
@@ -14,7 +15,7 @@ import type { Node } from "./Node";
 
 /**
  * The RestError class has been taken from Shoukaku library.
- * A cute and epic library for lavalink, made in typescript.
+ * A cute and epic lavalink wrapper, made in typescript.
  * So, all the credits goes to the original author.
  * @link https://github.com/shipgirlproject/Shoukaku/blob/master/src/node/Rest.ts
  */
@@ -87,9 +88,9 @@ export class Rest {
 
 	/**
 	 * The user agent for the REST.
-	 * @type {string}
+	 * @type {UserAgent}
 	 */
-	readonly userAgent: string = HoshimiAgent;
+	readonly userAgent: UserAgent;
 
 	/**
 	 * The node for the REST.
@@ -105,6 +106,7 @@ export class Rest {
 	constructor(node: Node) {
 		this.url = `${node.options.secure ? "https" : "http"}://${node.options.host}:${node.options.port}/${this.version}`;
 		this.restTimeout = node.options.restTimeout ?? 10000;
+		this.userAgent = node.manager.options.nodeOptions.userAgent ?? HoshimiAgent;
 		this.node = node;
 	}
 
@@ -120,7 +122,7 @@ export class Rest {
 	 *
 	 * Make a request to the node.
 	 * @param options The options to make the request.
-	 * @returns {Promise<T | null>}
+	 * @returns {Promise<T | null>} The response from the node.
 	 */
 	public async request<T>(options: RestOptions): Promise<T | null> {
 		const headers = {
@@ -181,7 +183,7 @@ export class Rest {
 	 *
 	 * Update the player data.
 	 * @param data The player data to update.
-	 * @returns
+	 * @returns {LavalinkPlayer | null} The updated player data.
 	 */
 	public async updatePlayer(data: Partial<UpdatePlayerInfo>): Promise<LavalinkPlayer | null> {
 		if (!this.node.sessionId) return null;
@@ -208,7 +210,7 @@ export class Rest {
 	 *
 	 * Stop the track in player for the guild.
 	 * @param guildId the guild id to stop the player
-	 * @returns
+	 * @returns {Promise<LavalinkPlayer | null>} The updated player data.
 	 */
 	public async stopPlayer(guildId: string): Promise<LavalinkPlayer | null> {
 		if (!this.node.sessionId) return null;
@@ -255,7 +257,7 @@ export class Rest {
 	 * Update the session for the node
 	 * @param resuming Enable resuming for the session.
 	 * @param timeout The timeout for the session.
-	 * @returns
+	 * @returns {Promise<LavalinkSession | null>} The updated session data.
 	 */
 	public async updateSession(
 		resuming: boolean,

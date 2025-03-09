@@ -178,7 +178,7 @@ export class Queue {
 	 * Move a track to a specific position in the queue.
 	 * @param track The track to move.
 	 * @param to The position to move.
-	 * @returns
+	 * @returns {this} The queue instance.
 	 */
 	public move(track: Track, to: number): this {
 		const index = this.tracks.indexOf(track);
