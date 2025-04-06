@@ -15,7 +15,7 @@
 		"type": "git"
 	},
 	"scripts": {
-		"build": "tsup",
+		"build": "pnpm typecheck && tsup",
 		"lint": "biome lint .",
 		"typecheck": "tsc --noEmit",
 		"format": "biome format --write .",
