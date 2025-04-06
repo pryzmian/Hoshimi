@@ -77,6 +77,8 @@ export function validateQuery(search: SearchQuery): string {
 	const isUrl = UrlRegex.test(query);
 	if (isUrl) return query;
 
+	// funny thing, but it is more useful than
+	// parsing the text as the way they come.
 	query = query.toLowerCase();
 
 	const engineKey = Object.values(SearchEngines).find((key) => query.startsWith(key));
