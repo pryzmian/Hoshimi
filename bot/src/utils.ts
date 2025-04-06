@@ -1,8 +1,8 @@
 /**
  *
  * Omit keys from an object.
- * @param obj The object to omit keys from.
- * @param keys The keys to omit.
+ * @param {T} obj The object to omit keys from.
+ * @param {K} keys The keys to omit.
  * @returns {Omit<T, K>}
  */
 export const omitKeys = <T extends Record<string, any>, K extends keyof T>(

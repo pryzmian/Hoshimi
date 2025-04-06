@@ -16,7 +16,7 @@ import {
 /**
  *
  * Queue the track end event.
- * @param this The player that emitted the event.
+ * @param {this} this The player that emitted the event.
  * @returns {Promise<void>} The promise, nothing new.
  */
 async function queueTrackEnd(this: Player): Promise<void> {
@@ -57,9 +57,9 @@ async function queueTrackEnd(this: Player): Promise<void> {
 /**
  *
  * Emitted when the queue ends.
- * @param this The player that emitted the event.
- * @param track The track that ended.
- * @param payload The payload of the event.
+ * @param {this} this The player that emitted the event.
+ * @param {Track | null} track The track that ended.
+ * @param {TrackEndEvent | TrackStuckEvent | TrackExceptionEvent} payload The payload of the event.
  * @returns {Promise<void>} The promise, nothing new here either.
  */
 async function queueEnd(
@@ -98,8 +98,8 @@ async function queueEnd(
 /**
  *
  * Emitted when a track starts playing.
- * @param this The player that emitted the event.
- * @param payload The payload of the event.
+ * @param {this} this The player that emitted the event.
+ * @param {TrackStartEvent} payload The payload of the event.
  * @returns {Promise<void>} The promise, nothing new... again.
  */
 export async function trackStart(this: Player, payload: TrackStartEvent): Promise<void> {
@@ -119,8 +119,8 @@ export async function trackStart(this: Player, payload: TrackStartEvent): Promis
 /**
  *
  * Emitted when a track ends.
- * @param this The player that emitted the event.
- * @param payload The payload of the event.
+ * @param {this} this The player that emitted the event.
+ * @param {TrackEndEvent} payload The payload of the event.
  * @returns {Promise<void>} The promise, nothing new... again and again.
  */
 export async function trackEnd(this: Player, payload: TrackEndEvent): Promise<void> {
@@ -180,8 +180,8 @@ export async function trackEnd(this: Player, payload: TrackEndEvent): Promise<vo
 
 /**
  *
- * @param this The node that emitted the event.
- * @param payload The payload of the event.
+ * @param {this} this The node that emitted the event.
+ * @param {PlayerUpdate} payload The payload of the event.
  * @returns {Promise<void>} Yeah, i don't know what to say here.
  */
 export async function playerUpdate(this: Node, payload: PlayerUpdate): Promise<void> {

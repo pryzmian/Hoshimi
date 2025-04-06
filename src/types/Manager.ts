@@ -242,8 +242,8 @@ export interface HoshimiOptions {
 	/**
 	 *
 	 * Send the payload to discord.
-	 * @param guildId The guild id to send the payload to.
-	 * @param payload The payload to send.
+	 * @param {string} guildId The guild id to send the payload to.
+	 * @param {GatewaySendPayload} payload The payload to send.
 	 */
 	sendPayload(guildId: string, payload: GatewaySendPayload): Awaitable<void>;
 	/**
@@ -280,93 +280,97 @@ export interface HoshimiOptions {
 export interface HoshimiEvents {
 	/**
 	 * Emitted when the manager emits a debug message.
-	 * @param level The debug level of the message.
-	 * @param message The message that was emitted.
+	 * @param {DebugLevels} level The debug level of the message.
+	 * @param {string} message The message that was emitted.
 	 */
 	debug: [level: DebugLevels, message: string];
 	/**
 	 * Emitted when the manager emits an error.
-	 * @param error The error that was emitted.
+	 * @param {Error | unknown} error The error that was emitted.
 	 */
 	error: [error: Error | unknown];
 
 	/**
 	 * Emitted when the node gives a response.
-	 * @param node The node that emitted the event.
-	 * @param message The message that was received.
+	 * @param {Node} node The node that emitted the event.
+	 * @param {LavalinkPayload} message The message that was received.
 	 */
 	nodeRaw: [node: Node, message: LavalinkPayload];
 	/**
 	 * Emitted when the node gives an error.
-	 * @param node The node that emitted the event.
-	 * @param error The error that was received.
+	 * @param {Node} node The node that emitted the event.
+	 * @param {Error | unknown} error The error that was received.
 	 */
 	nodeError: [node: Node, error: Error | unknown];
 	/**
 	 * Emitted when the node is ready.
-	 * @param node The node that emitted the event.
+	 * @param {Node} node The node that emitted the event.
+	 * @param {Ready} payload The payload of the event.
 	 */
 	nodeReady: [node: Node, payload: Ready];
 	/**
 	 * Emitted when the node is disconnected.
-	 * @param node The node that was disconnected.
+	 * @param {Node} node The node that was disconnected.
 	 */
 	nodeDisconnect: [node: Node];
 	/**
 	 * Emitted when the node reconnects.
-	 * @param node The node that was reconnected.
+	 * @param {Node} node The node that was reconnected.
+	 * @param {number} retriesLeft The number of retries left.
 	 */
 	nodeReconnecting: [node: Node, retriesLeft: number];
 	/**
 	 * Emitted when the node is destroyed.
-	 * @param node The node that was destroyed.
-	 * @param options The options for the destroy.
+	 * @param {Node} node The node that was destroyed.
+	 * @param {NodeDestroyInfo} options The options for the destroy.
 	 */
 	nodeDestroy: [node: Node, destroy: NodeDestroyInfo];
 
 	/**
 	 * Emitted when the player is created.
-	 * @param player The player that was created.
+	 * @param {Player} player The player that was created.
 	 */
 	playerCreate: [player: Player];
 	/**
 	 * Emitted when the player updates.
-	 * @param newPlayer The new player.
-	 * @param oldPlayer The old player.
+	 * @param {Player} newPlayer The new player.
+	 * @param {PlayerJson} oldPlayer The old player.
 	 */
 	playerUpdate: [newPlayer: Player, oldPlayer: PlayerJson, payload: PlayerUpdate];
 	/**
 	 * Emitted when the player is destroyed.
-	 * @param player The player that was destroyed.
+	 * @param {Player} player The player that was destroyed.
+	 * @param {string} reason The reason for the destroy.
 	 */
 	playerDestroy: [player: Player, reason: string];
 
 	/**
 	 * Emitted when a track starts playing.
-	 * @param player The player that emitted the event.
-	 * @param track The track that was started.
-	 * @param payload The payload of the event.
+	 * @param {Player} player The player that emitted the event.
+	 * @param {Track | null} track The track that was started.
+	 * @param {TrackStartEvent} payload The payload of the event.
 	 */
 	trackStart: [player: Player, track: Track | null, payload: TrackStartEvent];
 	/**
 	 * Emitted when a track ends.
-	 * @param player The player that emitted the event.
-	 * @param track The track that ended.
-	 * @param payload The payload of the event.
+	 * @param {Player} player The player that emitted the event.
+	 * @param {Track | null} track The track that ended.
+	 * @param {TrackEndEvent} payload The payload of the event.
 	 */
 	trackEnd: [player: Player, track: Track | null, payload: TrackEndEvent];
 
 	/**
 	 * Emitted when the queue ends.
-	 * @param player The player that emitted the event.
-	 * @param queue The queue that ended.
+	 * @param {Player} player The player that emitted the event.
+	 * @param {Queue} queue The queue that ended.
 	 */
 	queueEnd: [player: Player, queue: Queue];
 	/**
 	 * Emitted when the queue updates.
-	 * @param queue The queue that updated.
+	 * @param {Player} player The player that emitted the event.
+	 * @param {Queue} queue The queue that updated.
 	 */
-	queueUpdate: [queue: Queue];
+	queueUpdate: [player: Player, queue: Queue];
 }
 
 /**

@@ -128,8 +128,8 @@ export class Player {
 	/**
 	 *
 	 * Create a new player.
-	 * @param manager The manager for the player.
-	 * @param options The options for the player.
+	 * @param {Hoshimi} manager The manager for the player.
+	 * @param {PlayOptions} options The options for the player.
 	 */
 	constructor(manager: Hoshimi, options: PlayerOptions) {
 		this.manager = manager;
@@ -165,8 +165,8 @@ export class Player {
 	/**
 	 *
 	 * Set the data for the player.
-	 * @param key The key to set the data to.
-	 * @param value The value to set the data to.
+	 * @param {string} key The key to set the data to.
+	 * @param {T} value The value to set the data to.
 	 * @returns {this} The player.
 	 */
 	public set<T>(key: string, value: T): this {
@@ -177,7 +177,7 @@ export class Player {
 	/**
 	 *
 	 * Get the data from the player.
-	 * @param key The key to get the data from.
+	 * @param {string} key The key to get the data from.
 	 * @returns {T | undefined} The data from the player.
 	 */
 	public get<T>(key: string): T | undefined {
@@ -187,7 +187,7 @@ export class Player {
 	/**
 	 *
 	 * Delete the data from the player.
-	 * @param key The key to delete the data from.
+	 * @param {string} key The key to delete the data from.
 	 * @returns {boolean} If the data was deleted.
 	 */
 	public delete(key: string): boolean {
@@ -202,7 +202,7 @@ export class Player {
 	/**
 	 *
 	 * Search for a track or playlist.
-	 * @param options The options for the search.
+	 * @param {QueryOptions} options The options for the search.
 	 * @returns {Promise<SearchResult>} The search result.
 	 */
 	public search(options: QueryOptions): Promise<SearchResult> {
@@ -215,7 +215,7 @@ export class Player {
 	/**
 	 *
 	 * Play the next track in the queue.
-	 * @param to The amount of tracks to skip.
+	 * @param {number} [to] The amount of tracks to skip.
 	 * @returns {Promise<void>}
 	 */
 	public async skip(to: number = 0): Promise<void> {
@@ -269,7 +269,7 @@ export class Player {
 	/**
 	 *
 	 * Destroy and disconnect the player.
-	 * @param reason The reason for destroying the player.
+	 * @param {DestroyReasons} [reason] The reason for destroying the player.
 	 * @returns {Promise<void>}
 	 */
 	public async destroy(reason: DestroyReasons = DestroyReasons.Stop): Promise<boolean> {
@@ -289,7 +289,7 @@ export class Player {
 	/**
 	 *
 	 * Play a track in the player.
-	 * @param options The options to play the track.
+	 * @param {Partial<PlayOptions>} [options] The options to play the track.
 	 */
 	public async play(options: Partial<PlayOptions> = {}): Promise<void> {
 		if (options.track) this.queue.current = options.track;
@@ -310,7 +310,6 @@ export class Player {
 				...options,
 				track: {
 					encoded: this.queue.current.encoded,
-					userData: this.queue.current.userData,
 				},
 			},
 		});

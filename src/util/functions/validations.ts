@@ -4,14 +4,12 @@ import { OptionError } from "../../classes/Errors";
 import type { Node } from "../../classes/node/Node";
 import type { PlayerOptions } from "../../types/Player";
 import type { UpdatePlayerInfo } from "../../types/Rest";
-
-const validEngines = Object.values(SearchEngines);
-const validUrl = /^(https?:\/\/)?([a-zA-Z0-9\-_]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
+import { UrlRegex, ValidEngines } from "../constants";
 
 /**
  *
  * Validate the manager options.
- * @param options The options to validate.
+ * @param {HoshimiOptions} options The options to validate.
  * @returns {void} Nothing, yeah, nothing.
  */
 export function validateManagerOptions(options: HoshimiOptions): void {
@@ -37,7 +35,7 @@ export function validateManagerOptions(options: HoshimiOptions): void {
 
 	if (
 		typeof options.defaultSearchEngine !== "undefined" &&
-		!validEngines.includes(options.defaultSearchEngine)
+		!ValidEngines.includes(options.defaultSearchEngine)
 	)
 		throw new OptionError(
 			"The manager option 'options.defaultSearchEngine' Must be a valid search engine.",
@@ -63,8 +61,7 @@ export function validateManagerOptions(options: HoshimiOptions): void {
 /**
  *
  * Validate the query for the node.
- * @param this The node to validate the query for.
- * @param search The query to validate.
+ * @param {SearchQuery} search The query to validate.
  * @returns {string} The validated query.
  */
 export function validateQuery(search: SearchQuery): string {
@@ -72,22 +69,25 @@ export function validateQuery(search: SearchQuery): string {
 	if (typeof search.query !== "string")
 		throw new OptionError("The query option 'query.query' must be a valid string.");
 
-	if (typeof search.engine !== "undefined" && !validEngines.includes(search.engine))
+	if (typeof search.engine !== "undefined" && !ValidEngines.includes(search.engine))
 		throw new OptionError("The query option 'query.engine' must be a valid search engine.");
 
-	const query = search.query.trim().toLowerCase();
+	let query = search.query.trim();
+
+	const isUrl = UrlRegex.test(query);
+	if (isUrl) return query;
+
+	query = query.toLowerCase();
+
 	const engineKey = Object.values(SearchEngines).find((key) => query.startsWith(key));
 	if (engineKey && query.startsWith(`${engineKey.toLowerCase()}:`)) {
 		const sliced = query.slice(engineKey.length + 1).trim();
-		const isUrl = validUrl.test(sliced);
+		const isUrl = UrlRegex.test(sliced);
 
 		if (isUrl) return sliced;
 
 		return `${engineKey}:${encodeURIComponent(sliced)}`;
 	}
-
-	const isUrl = validUrl.test(query);
-	if (isUrl) return query;
 
 	if (search.engine === SearchEngines.FloweryTTS)
 		return `${search.engine}://${encodeURIComponent(query)}`;
@@ -100,7 +100,7 @@ export function validateQuery(search: SearchQuery): string {
 /**
  *
  * Validate the player options.
- * @param options The player options.
+ * @param {PlayerOptions} options The player options.
  * @returns {void} Nothing, yeah, nothing, again.
  */
 export function validatePlayerOptions(options: PlayerOptions): void {
@@ -122,9 +122,8 @@ export function validatePlayerOptions(options: PlayerOptions): void {
 /**
  *
  * Validate the player data.
- * @param this The node to validate the player data for.
- * @param data The data to validate.
- * @param res The lavalink player to validate.
+ * @param {this} this The node to validate the player data for.
+ * @param {Partial<UpdatePlayerInfo>} data The data to validate.
  * @returns {void} Nothing.
  */
 export function validatePlayerData(this: Node, data: Partial<UpdatePlayerInfo>): void {
@@ -152,7 +151,7 @@ export function validatePlayerData(this: Node, data: Partial<UpdatePlayerInfo>):
 /**
  *
  * Validate if the node options are correct.
- * @param options The node options to validate.
+ * @param {NodeOptions} options The node options to validate.
  * @returns {boolean} If the node options are correct.
  */
 function isNode(options: NodeOptions): boolean {

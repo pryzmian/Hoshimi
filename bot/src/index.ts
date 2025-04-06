@@ -1,7 +1,7 @@
 import "dotenv/config";
 
 import { Client, type ParseClient } from "seyfert";
-import { DebugLevels, Hoshimi, Events, SourceNames } from "hoshimi";
+import { DebugLevels, Hoshimi, Events, SourceNames, SearchEngines } from "hoshimi";
 import type { APIUser } from "seyfert/lib/types";
 import { HandleCommand } from "seyfert/lib/commands/handle";
 import { Yuna } from "yunaforseyfert";
@@ -22,6 +22,7 @@ const client = new Client({
 });
 
 client.manager = new Hoshimi({
+	defaultSearchEngine: SearchEngines.Youtube,
 	sendPayload: (guildId, payload) =>
 		client.gateway.send(client.gateway.calculateShardId(guildId), payload),
 	nodes: [
@@ -35,7 +36,11 @@ client.manager = new Hoshimi({
 
 client.setServices({
 	handleCommand: class extends HandleCommand {
-		override argsParser = Yuna.parser();
+		override argsParser = Yuna.parser({
+			syntax: {
+				namedOptions: ["-", "--"],
+			},
+		});
 	},
 });
 

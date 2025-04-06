@@ -15,12 +15,12 @@ export interface HoshimiQueueOptions {
 	/**
 	 *
 	 * The function to use for autoplay.
-	 * @param player The player.
-	 * @param track The last track played.
+	 * @param {Player} player The player.
+	 * @param {Track | null} lastTrack The last track played.
 	 */
 	autoplayFn?(player: Player, lastTrack: Track | null): Awaitable<void>;
 	/**
-	 * Enable the auto play for the queue. (Only has `youtube` and `spotify` support)
+	 * Enable the auto play for the queue. (By default, only supports `youtube` and `spotify`, add more with your own function)
 	 * @type {boolean}
 	 * @default false
 	 */

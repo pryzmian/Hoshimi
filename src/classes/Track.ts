@@ -29,22 +29,15 @@ export class Track {
 	public requester: InferableRequester;
 
 	/**
-	 * The user data of the track.
-	 * @type {InferableRequester}
-	 */
-	public userData: InferableRequester;
-
-	/**
 	 * The constructor for the track.
-	 * @param track The track to construct the track from.
-	 * @param requester The requester of the track.
+	 * @param {LavalinkTrack} track The track to construct the track from.
+	 * @param {InferableRequester} requester The requester of the track.
 	 */
 	constructor(track: LavalinkTrack, requester: InferableRequester) {
 		this.info = track.info;
 		this.encoded = track.encoded;
 		this.requester = requester;
 		this.pluginInfo = track.pluginInfo;
-		this.userData = requester;
 	}
 
 	/**

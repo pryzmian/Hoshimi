@@ -101,7 +101,7 @@ export class Rest {
 	/**
 	 *
 	 * Create a new REST.
-	 * @param node The node for the REST.
+	 * @param {Node} node The node for the REST.
 	 */
 	constructor(node: Node) {
 		this.url = `${node.options.secure ? "https" : "http"}://${node.options.host}:${node.options.port}/${this.version}`;
@@ -121,7 +121,7 @@ export class Rest {
 	/**
 	 *
 	 * Make a request to the node.
-	 * @param options The options to make the request.
+	 * @param {RestOptions} options The options to make the request.
 	 * @returns {Promise<T | null>} The response from the node.
 	 */
 	public async request<T>(options: RestOptions): Promise<T | null> {
@@ -136,7 +136,11 @@ export class Rest {
 
 		const url = new URL(`${this.url}${options.endpoint}`);
 
-		if (options.params) url.search = new URLSearchParams(options.params).toString();
+		if (options.params) {
+			for (const [key, value] of Object.entries(options.params)) {
+				url.searchParams.append(key, value);
+			}
+		}
 
 		const abortController = new AbortController();
 		const timeout = setTimeout(() => abortController.abort(), this.restTimeout);
@@ -182,7 +186,7 @@ export class Rest {
 	/**
 	 *
 	 * Update the player data.
-	 * @param data The player data to update.
+	 * @param {Partial<UpdatePlayerInfo>} data The player data to update.
 	 * @returns {LavalinkPlayer | null} The updated player data.
 	 */
 	public async updatePlayer(data: Partial<UpdatePlayerInfo>): Promise<LavalinkPlayer | null> {
@@ -209,7 +213,7 @@ export class Rest {
 	/**
 	 *
 	 * Stop the track in player for the guild.
-	 * @param guildId the guild id to stop the player
+	 * @param {string} guildId the guild id to stop the player
 	 * @returns {Promise<LavalinkPlayer | null>} The updated player data.
 	 */
 	public async stopPlayer(guildId: string): Promise<LavalinkPlayer | null> {
@@ -235,7 +239,7 @@ export class Rest {
 	/**
 	 *
 	 * Destroy the player for the guild.
-	 * @param guildId The guild id to destroy the player.
+	 * @param {string} guildId The guild id to destroy the player.
 	 */
 	public async destroyPlayer(guildId: string): Promise<void> {
 		if (!this.node.sessionId) return;
@@ -255,8 +259,8 @@ export class Rest {
 	/**
 	 *
 	 * Update the session for the node
-	 * @param resuming Enable resuming for the session.
-	 * @param timeout The timeout for the session.
+	 * @param {boolean} resuming Enable resuming for the session.
+	 * @param {number | null} timeout The timeout for the session.
 	 * @returns {Promise<LavalinkSession | null>} The updated session data.
 	 */
 	public async updateSession(

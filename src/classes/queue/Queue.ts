@@ -33,7 +33,7 @@ export class Queue {
 	/**
 	 *
 	 * Constructor of the queue.
-	 * @param player Player instance.
+	 * @param {Player}  player Player instance.
 	 */
 	constructor(player: Player) {
 		this.player = player;
@@ -80,7 +80,7 @@ export class Queue {
 	/**
 	 *
 	 * Add a track or tracks to the queue.
-	 * @param track The track or tracks to add.
+	 * @param {Track | Track[]} track The track or tracks to add.
 	 * @returns {this} The queue instance.
 	 */
 	public add(track: Track | Track[], position?: number): this {
@@ -113,7 +113,7 @@ export class Queue {
 	/**
 	 *
 	 * Add tracks to the beginning of the queue.
-	 * @param tracks The tracks to add.
+	 * @param {Track[]} tracks The tracks to add.
 	 * @returns {this} The queue instance.
 	 */
 	public unshift(...tracks: Track[]): this {
@@ -143,7 +143,7 @@ export class Queue {
 			}
 		}
 
-		this.player.manager.emit(Events.QueueUpdate, this);
+		this.player.manager.emit(Events.QueueUpdate, this.player, this);
 		this.player.manager.emit(
 			Events.Debug,
 			DebugLevels.Queue,
@@ -163,7 +163,7 @@ export class Queue {
 		this.previous = [];
 		this.current = null;
 
-		this.player.manager.emit(Events.QueueUpdate, this);
+		this.player.manager.emit(Events.QueueUpdate, this.player, this);
 		this.player.manager.emit(
 			Events.Debug,
 			DebugLevels.Queue,
@@ -176,8 +176,8 @@ export class Queue {
 	/**
 	 *
 	 * Move a track to a specific position in the queue.
-	 * @param track The track to move.
-	 * @param to The position to move.
+	 * @param {Track} track The track to move.
+	 * @param {number} to The position to move.
 	 * @returns {this} The queue instance.
 	 */
 	public move(track: Track, to: number): this {
@@ -187,7 +187,7 @@ export class Queue {
 		this.tracks.splice(index, 1);
 		this.add(track, to - 1);
 
-		this.player.manager.emit(Events.QueueUpdate, this);
+		this.player.manager.emit(Events.QueueUpdate, this.player, this);
 		this.player.manager.emit(
 			Events.Debug,
 			DebugLevels.Queue,
@@ -200,9 +200,9 @@ export class Queue {
 	/**
 	 *
 	 * Delete tracks from the queue.
-	 * @param start The start index.
-	 * @param deleteCount The number of tracks to delete.
-	 * @param tracks The tracks to add.
+	 * @param {number} start The start index.
+	 * @param {number} deleteCount The number of tracks to delete.
+	 * @param {Track | Track[]} [tracks] The tracks to add.
 	 * @returns {this} The queue instance.
 	 */
 	public splice(start: number, deleteCount: number, tracks?: Track | Track[]): this {
@@ -212,7 +212,7 @@ export class Queue {
 			this.tracks.splice(start, deleteCount, ...(Array.isArray(tracks) ? tracks : [tracks]));
 		else this.tracks.splice(start, deleteCount);
 
-		this.player.manager.emit(Events.QueueUpdate, this);
+		this.player.manager.emit(Events.QueueUpdate, this.player, this);
 		this.player.manager.emit(
 			Events.Debug,
 			DebugLevels.Queue,

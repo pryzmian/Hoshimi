@@ -64,7 +64,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 
 	/**
 	 * The constructor for the manager.
-	 * @param options The options for the manager.
+	 * @param {HoshimiOptions} options The options for the manager.
 	 */
 	constructor(options: HoshimiOptions) {
 		super();
@@ -116,7 +116,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	/**
 	 *
 	 * Get the player for the guild.
-	 * @param guildId The guild id to get the player.
+	 * @param {string} guildId The guild id to get the player.
 	 * @returns {Player | undefined} The player for the guild.
 	 */
 	public getPlayer(guildId: string): Player | undefined {
@@ -125,7 +125,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 
 	/**
 	 * Delete the player for the guild.
-	 * @param guildId The guild id to delete the player.
+	 * @param {string} guildId The guild id to delete the player.
 	 * @returns {boolean} If the player was deleted.
 	 */
 	public deletePlayer(guildId: string): boolean {
@@ -135,7 +135,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	/**
 	 *
 	 * Delete the node.
-	 * @param id The id of the node to delete.
+	 * @param {string} id The id of the node to delete.
 	 * @returns {boolean} If the node was deleted.
 	 */
 	public deleteNode(id: string): boolean {
@@ -145,7 +145,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	/**
 	 *
 	 * Handle the raw packet.
-	 * @param packet The packet to handle
+	 * @param {VoicePacket | VoiceServer | VoiceServer | ChannelDeletePacket} packet The packet to handle
 	 * @returns {Promise<void>}
 	 */
 	public async sendRaw(
@@ -241,10 +241,10 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	/**
 	 *
 	 * Initialize the manager.
-	 * @param info The client data to use.
-	 * @returns {Promise<void>}
+	 * @param {ClientData} info The client data to use.
+	 * @returns {void}
 	 */
-	public async init(info: ClientData): Promise<void> {
+	public init(info: ClientData): void {
 		if (this.ready) return;
 
 		this.options.client = {
@@ -262,7 +262,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 			const node = this.createNode(options);
 
 			try {
-				await node.connect();
+				node.connect();
 				amount++;
 			} catch (error) {
 				this.emit(Events.NodeError, node, error);
@@ -280,7 +280,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	/**
 	 *
 	 * Create a new node.
-	 * @param options The options for the node.
+	 * @param {NodeOptions} options The options for the node.
 	 * @returns {Node} The created node.
 	 */
 	public createNode(options: NodeOptions): Node {
@@ -295,7 +295,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	/**
 	 *
 	 * Create a new player.
-	 * @param options The options for the player.
+	 * @param {PlayerOptions} options The options for the player.
 	 * @returns {Player} The created player.
 	 */
 	public createPlayer(options: PlayerOptions): Player {
@@ -312,7 +312,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	/**
 	 *
 	 * Search for a track or playlist.
-	 * @param options The options for the search.
+	 * @param {QueryOptions} options The options for the search.
 	 * @returns {Promise<SearchResult>} The search result.
 	 */
 	public async search(options: QueryOptions): Promise<SearchResult> {

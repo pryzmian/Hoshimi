@@ -16,7 +16,6 @@ import { Rest } from "./Rest";
 import { WebSocket } from "ws";
 
 import { onClose, onError, onMessage, onOpen } from "../../util/events/websocket";
-import { validateQuery } from "../../util/functions/validations";
 import type {
 	LavalinkPlayer,
 	LavalinkSession,
@@ -24,6 +23,7 @@ import type {
 	UpdatePlayerInfo,
 } from "../../types/Rest";
 import { DebugLevels, Events } from "../../types/Manager";
+import { validateQuery } from "../../util/functions/validations";
 
 /**
  * Class representing a Lavalink node.
@@ -100,18 +100,18 @@ export class Node {
 	/**
 	 *
 	 * Create a new Lavalink node.
-	 * @param manager The manager for the node.
-	 * @param options The options for the node.
+	 * @param {Hoshimi} manager The manager for the node.
+	 * @param {NodeOptions} options The options for the node.
 	 */
 	constructor(manager: Hoshimi, options: NodeOptions) {
 		this.manager = manager;
 		this.options = {
+			...options,
 			id: options.id ?? `${options.host}:${options.port}`,
 			restTimeout: options.restTimeout ?? 10000,
 			secure: options.secure ?? false,
 			retryAmount: options.retryAmount ?? 5,
 			retryDelay: options.retryDelay ?? 20000,
-			...options,
 		};
 
 		this.retryAmount = this.options.retryAmount!;
@@ -154,25 +154,24 @@ export class Node {
 	/**
 	 *
 	 * Search for a query.
-	 * @param query The query to search for.
+	 * @param {SearchQuery} search The query to search for.
 	 */
-	public search(query: SearchQuery): Promise<LavalinkSearchResponse | null> {
-		const search = validateQuery({
-			...query,
-			engine: query.engine ?? this.manager.options.defaultSearchEngine,
-		});
+	public search(search: SearchQuery): Promise<LavalinkSearchResponse | null> {
+		search.engine ??= this.manager.options.defaultSearchEngine;
+
+		const identifier = validateQuery(search);
 
 		return this.rest.request<LavalinkSearchResponse>({
-			endpoint: `/loadtracks?identifier=${search}`,
-			params: query.params,
+			endpoint: `/loadtracks?identifier=${identifier}`,
+			params: search.params,
 		});
 	}
 
 	/**
-	 * Connect the node to the server.
-	 * @returns {Promise<void>}
+	 * Connect the node to the websocket.
+	 * @returns {void}
 	 */
-	public async connect(): Promise<void> {
+	public connect(): void {
 		if (!this.manager.options.client)
 			throw new NodeError({
 				message: "No valid client data provided.",
@@ -216,7 +215,7 @@ export class Node {
 	/**
 	 *
 	 * Stop the track in player for the guild.
-	 * @param guildId the guild id to stop the player
+	 * @param {string} guildId the guild id to stop the player
 	 * @returns {Promise<LavalinkPlayer | null>}
 	 */
 	public stopPlayer(guildId: string): Promise<LavalinkPlayer | null> {
@@ -226,7 +225,7 @@ export class Node {
 	/**
 	 *
 	 * Update the player data.
-	 * @param data The player data to update.
+	 * @param {Partial<UpdatePlayerInfo>} data The player data to update.
 	 * @returns {Promise<LavalinkPlayer | null>}
 	 */
 	public updatePlayer(data: Partial<UpdatePlayerInfo>): Promise<LavalinkPlayer | null> {
@@ -246,10 +245,10 @@ export class Node {
 	 * Disconnect the node from the websocket.
 	 * @returns {Promise<void>}
 	 */
-	public disconnect(): void {
+	public disconnect(code?: number, reason?: string): void {
 		if (this.state !== State.Connected) return;
 
-		this.ws?.close(1000);
+		this.ws?.close(code ?? 1000, reason ?? "Unknown-Reason");
 		this.ws?.removeAllListeners();
 		this.ws = null;
 		this.state = State.Disconnected;
@@ -264,29 +263,27 @@ export class Node {
 	/**
 	 *
 	 * Destroy the node.
-	 * @param destroy The destroy options for the node.
+	 * @param {NodeDestroyInfo} [destroy] The destroy options for the node.
 	 * @returns {void}
 	 */
 	public destroy(destroy?: NodeDestroyInfo): void {
 		if (this.state !== State.Connected) return;
 
-		this.ws?.close(1000, "Node-Destroy");
-		this.ws?.removeAllListeners();
-		this.ws = null;
-		this.retryAmount = 0;
+		destroy ??= {};
+
+		this.disconnect(1000, "Node-Destroy");
+
 		this.state = State.Destroyed;
 
-		if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
-
-		this.manager.emit(Events.NodeDestroy, this, destroy ?? {});
+		this.manager.emit(Events.NodeDestroy, this, destroy);
 		this.manager.deleteNode(this.id);
 	}
 
 	/**
 	 *
 	 * Update the session for the node
-	 * @param resuming Enable resuming for the session.
-	 * @param timeout The timeout for the session.
+	 * @param {boolean} resuming Enable resuming for the session.
+	 * @param {number | null} timeout The timeout for the session.
 	 * @returns {Promise<LavalinkSession | null>}
 	 */
 	public async updateSession(
