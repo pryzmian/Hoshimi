@@ -18,6 +18,10 @@
 		"noUncheckedIndexedAccess": true,
 		"noImplicitOverride": true,
 
+		"noUnusedParameters": true,
+		"noUnusedLocals": true,
+		"noFallthroughCasesInSwitch": true,
+
 		/* If NOT transpiling with TypeScript: */
 		"module": "node16",
 		"noEmit": true,

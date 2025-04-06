@@ -185,7 +185,7 @@ export async function trackEnd(this: Player, payload: TrackEndEvent): Promise<vo
  * @returns {Promise<void>} Yeah, i don't know what to say here.
  */
 export async function playerUpdate(this: Node, payload: PlayerUpdate): Promise<void> {
-	const player = this.manager.getPlayer(payload.guildId);
+	const player = this.nodeManager.getPlayer(payload.guildId);
 	if (!player) return;
 
 	const oldPlayer = player.toJSON();
@@ -195,10 +195,10 @@ export async function playerUpdate(this: Node, payload: PlayerUpdate): Promise<v
 	player.createdTimestamp = payload.state.time;
 	player.position = payload.state.position;
 
-	this.manager.emit(
+	this.nodeManager.emit(
 		Events.Debug,
 		DebugLevels.Node,
 		`[Player] -> [Update] Player updated: ${player.guildId} | Object: ${JSON.stringify(payload)}`,
 	);
-	this.manager.emit(Events.PlayerUpdate, player, oldPlayer, payload);
+	this.nodeManager.emit(Events.PlayerUpdate, player, oldPlayer, payload);
 }

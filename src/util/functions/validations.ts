@@ -133,7 +133,7 @@ export function validatePlayerData(this: Node, data: Partial<UpdatePlayerInfo>):
 		typeof data.guildId === "string" &&
 		Object.keys(data.playerOptions).length > 0
 	) {
-		const player = this.manager.getPlayer(data.guildId);
+		const player = this.nodeManager.getPlayer(data.guildId);
 		if (!player) return;
 
 		if (typeof data.playerOptions.voice === "object") player.voice = data.playerOptions.voice;

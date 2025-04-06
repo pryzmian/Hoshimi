@@ -14,18 +14,18 @@ import {
 	DebugLevels,
 	Events,
 } from "../types/Manager";
-import { LoadType, State, type NodeOptions } from "../types/Node";
+import { LoadType, State } from "../types/Node";
 import type { PlayerOptions } from "../types/Player";
+import type { Node } from "./node/Node";
+
 import { Player } from "./Player";
-
-import { Node } from "./node/Node";
-
 import { Collection } from "../util/collection";
 import { validateManagerOptions } from "../util/functions/validations";
 import { ManagerError, OptionError } from "./Errors";
 import { Track } from "./Track";
 import { autoplayFn } from "../util/functions/autoplay";
 import { HoshimiAgent } from "../util/constants";
+import { NodeManager } from "./node/NodeManager";
 
 /**
  * The events for the manager.
@@ -46,15 +46,18 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	public options: Required<HoshimiOptions>;
 
 	/**
-	 * The nodes for the manager.
-	 * @type {Collection<string, Node>}
-	 */
-	readonly nodes: Collection<string, Node> = new Collection();
-	/**
 	 * The players for the manager.
 	 * @type {Collection<string, Player>}
+	 * @readonly
 	 */
 	readonly players: Collection<string, Player> = new Collection();
+
+	/**
+	 * THe node manager for the manager.
+	 * @type {NodeManager}
+	 * @readonly
+	 */
+	readonly nodeManager: NodeManager;
 
 	/**
 	 * If the manager is ready.
@@ -91,6 +94,8 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 			},
 		};
 
+		this.nodeManager = new NodeManager(this);
+
 		validateManagerOptions(this.options);
 	}
 
@@ -99,18 +104,8 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 * @returns {boolean} If the manager is useable.
 	 */
 	public isUseable(): boolean {
-		const nodes = this.nodes.filter((node) => node.state === State.Connected);
+		const nodes = this.nodeManager.nodes.filter((node) => node.state === State.Connected);
 		return this.ready && nodes.length > 0;
-	}
-
-	/**
-	 *
-	 * Get the least used node.
-	 * @returns {Node} The least used node.
-	 */
-	public getLeastUsedNode(): Node {
-		const nodes = this.nodes.filter((node) => node.state === State.Connected);
-		return nodes.reduce((a, b) => (a.penalties < b.penalties ? a : b));
 	}
 
 	/**
@@ -130,16 +125,6 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 */
 	public deletePlayer(guildId: string): boolean {
 		return this.players.delete(guildId);
-	}
-
-	/**
-	 *
-	 * Delete the node.
-	 * @param {string} id The id of the node to delete.
-	 * @returns {boolean} If the node was deleted.
-	 */
-	public deleteNode(id: string): boolean {
-		return this.nodes.delete(id);
 	}
 
 	/**
@@ -259,7 +244,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 		let amount = 0;
 
 		for (const options of this.options.nodes) {
-			const node = this.createNode(options);
+			const node = this.nodeManager.createNode(options);
 
 			try {
 				node.connect();
@@ -273,23 +258,8 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 		this.emit(
 			Events.Debug,
 			DebugLevels.Player,
-			`[Manager] -> [Init] The manager is ready: ${this.ready} | Nodes: ${amount} of ${this.nodes.size}`,
+			`[Manager] -> [Init] The manager is ready: ${this.ready} | Nodes: ${amount} of ${this.nodeManager.nodes.size}`,
 		);
-	}
-
-	/**
-	 *
-	 * Create a new node.
-	 * @param {NodeOptions} options The options for the node.
-	 * @returns {Node} The created node.
-	 */
-	public createNode(options: NodeOptions): Node {
-		if (this.nodes.has(options.id ?? `${options.host}:${options.port}`))
-			return this.nodes.get(options.id ?? `${options.host}:${options.port}`)!;
-
-		const node = new Node(this, options);
-		this.nodes.set(node.id, node);
-		return node;
 	}
 
 	/**
@@ -320,9 +290,9 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 
 		if (options.node) {
 			const nodeId = typeof options.node === "string" ? options.node : options.node.id;
-			node = this.nodes.get(nodeId) ?? null;
+			node = this.nodeManager.getNode(nodeId) ?? null;
 		} else {
-			node = this.getLeastUsedNode();
+			node = this.nodeManager.getLeastUsedNode();
 		}
 
 		if (!node) throw new ManagerError("No nodes are available.");

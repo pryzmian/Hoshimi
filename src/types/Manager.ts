@@ -317,8 +317,9 @@ export interface HoshimiEvents {
 	 * Emitted when the node reconnects.
 	 * @param {Node} node The node that was reconnected.
 	 * @param {number} retriesLeft The number of retries left.
+	 * @param {number} delay The delay before the next retry.
 	 */
-	nodeReconnecting: [node: Node, retriesLeft: number];
+	nodeReconnecting: [node: Node, retriesLeft: number, delay: number];
 	/**
 	 * Emitted when the node is destroyed.
 	 * @param {Node} node The node that was destroyed.

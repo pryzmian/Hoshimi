@@ -16,7 +16,9 @@ export function onOpen(this: Node, res: IncomingMessage): void {
 	const isResume = res.headers["session-resumed"] === "true";
 	const apiVersion = res.headers["lavalink-api-version"];
 
-	this.manager.emit(
+	this.retryAmount = this.options.retryAmount!;
+
+	this.nodeManager.manager.emit(
 		Events.Debug,
 		DebugLevels.Node,
 		`[Socket] -> [${this.id}]: Connection handshake complete with ${this.address}. | API Version: ${apiVersion ?? "Unknown"} | Resumed: ${isResume}`,
@@ -32,16 +34,16 @@ export function onOpen(this: Node, res: IncomingMessage): void {
  * @returns {void} The same thing as above.
  */
 export function onClose(this: Node, code: number, reason: string): void {
-	this.manager.emit(
+	this.nodeManager.manager.emit(
 		Events.Debug,
 		DebugLevels.Node,
 		`[Socket] -> [${this.id}]: Connection closed with ${this.address}. | Code: ${code} | Reason: ${reason}`,
 	);
 
-	this.manager.emit(Events.NodeDisconnect, this);
+	this.nodeManager.manager.emit(Events.NodeDisconnect, this);
 
 	if (code !== 1000 || reason !== "Node-Destroy") {
-		if (this.manager.nodes.has(this.id)) this.reconnect();
+		if (this.nodeManager.nodes.has(this.id)) this.reconnect();
 	}
 }
 
@@ -60,12 +62,12 @@ export function onError(this: Node, error?: Error): void {
 		this.reconnectTimeout = null;
 	}
 
-	this.manager.emit(
+	this.nodeManager.manager.emit(
 		Events.Debug,
 		DebugLevels.Node,
 		`[Socket] -> [${this.id}]: Connection error with ${this.address}. | Error: ${error.message}`,
 	);
-	this.manager.emit(Events.NodeError, this, error);
+	this.nodeManager.manager.emit(Events.NodeError, this, error);
 }
 
 /**
@@ -83,13 +85,13 @@ export async function onMessage(this: Node, message: Buffer | string): Promise<v
 		const payload: LavalinkPayload = JSON.parse(message.toString());
 		if (!payload.op) return;
 
-		this.manager.emit(Events.NodeRaw, this, payload);
+		this.nodeManager.manager.emit(Events.NodeRaw, this, payload);
 
 		switch (payload.op) {
 			case OpCodes.Stats:
 				{
 					this.stats = payload;
-					this.manager.emit(
+					this.nodeManager.manager.emit(
 						Events.Debug,
 						DebugLevels.Node,
 						`[Socket] <- [${this.id}]: Received stats. | System load: ${this.penalties}`,
@@ -100,7 +102,7 @@ export async function onMessage(this: Node, message: Buffer | string): Promise<v
 			case OpCodes.Ready:
 				{
 					if (!payload.sessionId) {
-						this.manager.emit(
+						this.nodeManager.manager.emit(
 							Events.Debug,
 							DebugLevels.Node,
 							`[Socket] -> [${this.id}]: Session id was not provided. Breaking up the connection...`,
@@ -115,17 +117,17 @@ export async function onMessage(this: Node, message: Buffer | string): Promise<v
 
 					this.info = await this.rest.request<NodeInfo>({ endpoint: "/info" });
 
-					this.manager.emit(
+					this.nodeManager.manager.emit(
 						Events.Debug,
 						DebugLevels.Node,
 						`[Socket] <- [${this.id}]: Received ready event. | Session id: ${payload.sessionId} | Resumed: ${payload.resumed}`,
 					);
-					this.manager.emit(Events.NodeReady, this, payload);
+					this.nodeManager.manager.emit(Events.NodeReady, this, payload);
 				}
 				break;
 
 			case OpCodes.Event: {
-				const player = this.manager.getPlayer(payload.guildId);
+				const player = this.nodeManager.manager.getPlayer(payload.guildId);
 				if (!player) return;
 
 				switch (payload.type) {
@@ -146,12 +148,12 @@ export async function onMessage(this: Node, message: Buffer | string): Promise<v
 			}
 		}
 
-		this.manager.emit(
+		this.nodeManager.manager.emit(
 			Events.Debug,
 			DebugLevels.Node,
 			`[Socket] -> [${this.id}]: Received payload: ${JSON.stringify(payload)}`,
 		);
 	} catch (error) {
-		this.manager.emit(Events.NodeError, this, error);
+		this.nodeManager.manager.emit(Events.NodeError, this, error);
 	}
 }

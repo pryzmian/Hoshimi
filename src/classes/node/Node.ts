@@ -7,13 +7,11 @@ import {
 	type Stats,
 	type NodeInfo,
 	type NodeDestroyInfo,
+	type NodeDisconnectInfo,
 } from "../../types/Node";
-import type { Hoshimi } from "../Manager";
 
 import { NodeError } from "../Errors";
 import { Rest } from "./Rest";
-
-import { WebSocket } from "ws";
 
 import { onClose, onError, onMessage, onOpen } from "../../util/events/websocket";
 import type {
@@ -22,8 +20,11 @@ import type {
 	NullableLavalinkSession,
 	UpdatePlayerInfo,
 } from "../../types/Rest";
+import type { NodeManager } from "./NodeManager";
+
 import { DebugLevels, Events } from "../../types/Manager";
 import { validateQuery } from "../../util/functions/validations";
+import { WebSocket } from "ws";
 
 /**
  * Class representing a Lavalink node.
@@ -43,12 +44,18 @@ export class Node {
 
 	/**
 	 * The manager for the node.
-	 * @type {Hoshimi}
+	 * @type {NodeManager}
 	 */
-	readonly manager: Hoshimi;
+	readonly nodeManager: NodeManager;
 
 	/**
-	 * The amount of reconnect attempts.
+	 * The delay between reconnect attempts.
+	 * @type {number}
+	 */
+	readonly retryDelay: number;
+
+	/**
+	 * The amount of reconnect attempts left.
 	 * @type {number}
 	 */
 	public retryAmount: number;
@@ -100,11 +107,10 @@ export class Node {
 	/**
 	 *
 	 * Create a new Lavalink node.
-	 * @param {Hoshimi} manager The manager for the node.
+	 * @param {NodeManager} nodeManager The manager for the node.
 	 * @param {NodeOptions} options The options for the node.
 	 */
-	constructor(manager: Hoshimi, options: NodeOptions) {
-		this.manager = manager;
+	constructor(nodeManager: NodeManager, options: NodeOptions) {
 		this.options = {
 			...options,
 			id: options.id ?? `${options.host}:${options.port}`,
@@ -115,6 +121,8 @@ export class Node {
 		};
 
 		this.retryAmount = this.options.retryAmount!;
+		this.retryDelay = this.options.retryDelay!;
+		this.nodeManager = nodeManager;
 
 		if (this.options.secure && this.options.port !== 443) this.options.port = 443;
 
@@ -157,7 +165,7 @@ export class Node {
 	 * @param {SearchQuery} search The query to search for.
 	 */
 	public search(search: SearchQuery): Promise<LavalinkSearchResponse | null> {
-		search.engine ??= this.manager.options.defaultSearchEngine;
+		search.engine ??= this.nodeManager.manager.options.defaultSearchEngine;
 
 		const identifier = validateQuery(search);
 
@@ -172,13 +180,13 @@ export class Node {
 	 * @returns {void}
 	 */
 	public connect(): void {
-		if (!this.manager.options.client)
+		if (!this.nodeManager.manager.options.client)
 			throw new NodeError({
 				message: "No valid client data provided.",
 				id: this.id,
 			});
 
-		if (!this.manager.options.client.id)
+		if (!this.nodeManager.manager.options.client.id)
 			throw new NodeError({
 				message: "No valid client id provided.",
 				id: this.id,
@@ -188,8 +196,8 @@ export class Node {
 
 		const headers: ResumableHeaders = {
 			Authorization: this.options.password,
-			"User-Id": this.manager.options.client.id,
-			"Client-Name": this.manager.options.client.username!,
+			"User-Id": this.nodeManager.manager.options.client.id,
+			"Client-Name": this.nodeManager.manager.options.client.username!,
 			"User-Agent": this.rest.userAgent,
 		};
 
@@ -205,7 +213,7 @@ export class Node {
 		this.ws.on("error", onError.bind(this));
 		this.ws.on("message", onMessage.bind(this));
 
-		this.manager.emit(
+		this.nodeManager.manager.emit(
 			Events.Debug,
 			DebugLevels.Node,
 			`[Socket] -> [${this.id}]: Connecting to ${this.address}... | State: ${this.state} | Session: ${this.sessionId} | Resumed: ${this.session.resuming} | Penalties: ${this.penalties} | Reconnects: ${this.retryAmount} | Headers: ${JSON.stringify(headers)}`,
@@ -245,19 +253,19 @@ export class Node {
 	 * Disconnect the node from the websocket.
 	 * @returns {Promise<void>}
 	 */
-	public disconnect(code?: number, reason?: string): void {
+	public disconnect(disconnect: NodeDisconnectInfo = {}): void {
 		if (this.state !== State.Connected) return;
 
-		this.ws?.close(code ?? 1000, reason ?? "Unknown-Reason");
+		this.ws?.close(disconnect.code, disconnect.reason);
 		this.ws?.removeAllListeners();
 		this.ws = null;
 		this.state = State.Disconnected;
 
-		this.retryAmount = 0;
+		this.retryAmount = this.options.retryAmount!;
 
 		if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
 
-		this.manager.emit(Events.NodeDisconnect, this);
+		this.nodeManager.manager.emit(Events.NodeDisconnect, this);
 	}
 
 	/**
@@ -266,17 +274,20 @@ export class Node {
 	 * @param {NodeDestroyInfo} [destroy] The destroy options for the node.
 	 * @returns {void}
 	 */
-	public destroy(destroy?: NodeDestroyInfo): void {
+	public destroy(destroy: NodeDestroyInfo = {}): void {
 		if (this.state !== State.Connected) return;
 
-		destroy ??= {};
-
-		this.disconnect(1000, "Node-Destroy");
-
+		this.ws?.close(destroy.code, destroy.reason);
+		this.ws?.removeAllListeners();
+		this.ws = null;
 		this.state = State.Destroyed;
 
-		this.manager.emit(Events.NodeDestroy, this, destroy);
-		this.manager.deleteNode(this.id);
+		this.retryAmount = 0;
+
+		if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
+
+		this.nodeManager.manager.emit(Events.NodeDestroy, this, destroy);
+		this.nodeManager.deleteNode(this.id);
 	}
 
 	/**
@@ -303,14 +314,21 @@ export class Node {
 	 * @returns {void}
 	 */
 	public reconnect(): void {
-		this.manager.emit(Events.NodeReconnecting, this, this.retryAmount);
 		this.state = State.Idle;
+
+		this.nodeManager.manager.emit(
+			Events.NodeReconnecting,
+			this,
+			this.retryAmount,
+			this.retryDelay,
+		);
 
 		this.reconnectTimeout = setTimeout(() => {
 			this.reconnectTimeout = null;
 
 			if (this.retryAmount === 0) {
-				this.manager.emit(
+				this.destroy({ code: 1000, reason: "Node-Destroy" });
+				this.nodeManager.manager.emit(
 					Events.NodeError,
 					this,
 					new NodeError({
@@ -318,10 +336,6 @@ export class Node {
 						id: this.id,
 					}),
 				);
-				this.destroy({
-					code: 1000,
-					reason: "Failed to reconnect after 5 retries.",
-				});
 
 				return;
 			}

@@ -5,6 +5,7 @@ import { DebugLevels, Hoshimi, Events, SourceNames, SearchEngines } from "hoshim
 import type { APIUser } from "seyfert/lib/types";
 import { HandleCommand } from "seyfert/lib/commands/handle";
 import { Yuna } from "yunaforseyfert";
+import { TimeFormat } from "./time";
 
 type HoshimiUser = APIUser & {
 	tag: string;
@@ -47,7 +48,9 @@ client.setServices({
 client.manager.on(Events.NodeReady, (node) => client.logger.info(`Node ${node.id} is ready.`));
 
 client.manager.on(Events.NodeDestroy, (node, destroy) =>
-	client.logger.warn(`Node ${node.id} is destroyed: ${destroy}`),
+	client.logger.warn(
+		`Node ${node.id} is destroyed with the reason ${destroy.reason} (${destroy.code}).`,
+	),
 );
 
 client.manager.on(Events.NodeError, (node, error) =>
@@ -58,8 +61,10 @@ client.manager.on(Events.NodeDisconnect, (node) =>
 	client.logger.error(`Node ${node.id} disconnected.`),
 );
 
-client.manager.on(Events.NodeReconnecting, (node, retriesLeft) =>
-	client.logger.warn(`Node ${node.id} is reconnecting with ${retriesLeft} retries left...`),
+client.manager.on(Events.NodeReconnecting, (node, retriesLeft, delay) =>
+	client.logger.warn(
+		`Node ${node.id} is reconnecting with ${retriesLeft} retries left in ${TimeFormat.toHumanize(delay)}...`,
+	),
 );
 
 client.manager.on(Events.Debug, async (level, message) => {

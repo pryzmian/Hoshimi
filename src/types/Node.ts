@@ -871,6 +871,9 @@ export interface HoshimiNodeOptions {
 	resumeTimeout?: number;
 }
 
+/**
+ * The interface of the node destroy object.
+ */
 export interface NodeDestroyInfo {
 	/**
 	 * The code for the destroy.
@@ -883,6 +886,11 @@ export interface NodeDestroyInfo {
 	 */
 	reason?: string;
 }
+
+/**
+ * The interface of the node disconnect object.
+ */
+export type NodeDisconnectInfo = NodeDestroyInfo;
 
 /**
  * The user agent for the requests.

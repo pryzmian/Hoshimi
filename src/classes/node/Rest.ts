@@ -106,7 +106,7 @@ export class Rest {
 	constructor(node: Node) {
 		this.url = `${node.options.secure ? "https" : "http"}://${node.options.host}:${node.options.port}/${this.version}`;
 		this.restTimeout = node.options.restTimeout ?? 10000;
-		this.userAgent = node.manager.options.nodeOptions.userAgent ?? HoshimiAgent;
+		this.userAgent = node.nodeManager.manager.options.nodeOptions.userAgent ?? HoshimiAgent;
 		this.node = node;
 	}
 
@@ -155,7 +155,7 @@ export class Rest {
 			fetchOptions.body = JSON.stringify(options.body);
 		}
 
-		this.node.manager.emit(
+		this.node.nodeManager.manager.emit(
 			Events.Debug,
 			DebugLevels.Rest,
 			`[Rest] -> [${this.node.id} : ${options.method}]: Url: ${this.restUrl} | Endpoint: ${options.endpoint} | Params: ${url.search} | Body: ${options.body ? JSON.stringify(options.body) : "None"} | Headers: ${JSON.stringify(headers)}`,
@@ -199,7 +199,7 @@ export class Rest {
 			params: { noReplace: `${data.noReplace ?? false}` },
 		});
 
-		this.node.manager.emit(
+		this.node.nodeManager.manager.emit(
 			Events.Debug,
 			DebugLevels.Rest,
 			`[Rest] -> [${this.node.id}]: Updated player data for guild: ${data.guildId} | Object: ${JSON.stringify(data)}`,
@@ -219,7 +219,7 @@ export class Rest {
 	public async stopPlayer(guildId: string): Promise<LavalinkPlayer | null> {
 		if (!this.node.sessionId) return null;
 
-		this.node.manager.emit(
+		this.node.nodeManager.manager.emit(
 			Events.Debug,
 			DebugLevels.Rest,
 			`[Rest] -> [${this.node.id}]: Stopped player for guild: ${guildId}`,
@@ -244,7 +244,7 @@ export class Rest {
 	public async destroyPlayer(guildId: string): Promise<void> {
 		if (!this.node.sessionId) return;
 
-		this.node.manager.emit(
+		this.node.nodeManager.manager.emit(
 			Events.Debug,
 			DebugLevels.Rest,
 			`[Rest] -> [${this.node.id}]: Destroyed player for guild: ${guildId}`,
@@ -269,7 +269,7 @@ export class Rest {
 	): Promise<LavalinkSession | null> {
 		if (!this.node.sessionId) return null;
 
-		this.node.manager.emit(
+		this.node.nodeManager.manager.emit(
 			Events.Debug,
 			DebugLevels.Rest,
 			`[Rest] -> [${this.node.id}]: Updated session for resumed: ${resuming} | Timeout: ${timeout ?? "None"}`,
