@@ -72,17 +72,12 @@ export function validateQuery(search: SearchQuery): string {
 	if (typeof search.engine !== "undefined" && !ValidEngines.includes(search.engine))
 		throw new OptionError("The query option 'query.engine' must be a valid search engine.");
 
-	let query = search.query.trim();
+	const query = search.query.trim();
 
-	const isUrl = UrlRegex.test(query);
-	if (isUrl) return query;
-
-	// funny thing, but it is more useful than
-	// parsing the text as the way it comes
-	query = query.toLowerCase();
-
-	const engineKey = Object.values(SearchEngines).find((key) => query.startsWith(key));
-	if (engineKey && query.startsWith(`${engineKey.toLowerCase()}:`)) {
+	const engineKey = Object.values(SearchEngines).find((key) =>
+		query.toLowerCase().startsWith(key),
+	);
+	if (engineKey && query.toLowerCase().startsWith(`${engineKey}:`)) {
 		const sliced = query.slice(engineKey.length + 1).trim();
 		const isUrl = UrlRegex.test(sliced);
 
@@ -90,6 +85,9 @@ export function validateQuery(search: SearchQuery): string {
 
 		return `${engineKey}:${encodeURIComponent(sliced)}`;
 	}
+
+	const isUrl = UrlRegex.test(query);
+	if (isUrl) return query;
 
 	if (search.engine === SearchEngines.FloweryTTS)
 		return `${search.engine}://${encodeURIComponent(query)}`;
