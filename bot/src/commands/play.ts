@@ -1,6 +1,7 @@
 import { Command, createStringOption, Declare, Options, type GuildCommandContext } from "seyfert";
 import { LoadType } from "hoshimi";
 import { omitKeys } from "../utils";
+import { TimeFormat } from "../time";
 
 const options = {
 	query: createStringOption({
@@ -80,7 +81,7 @@ export default class PlayCommand extends Command {
 					if (!player.playing) await player.play();
 
 					await ctx.editOrReply({
-						content: `Added ${track.toHyperlink()} to the queue.`,
+						content: `Added ${track.toHyperlink()} (${TimeFormat.toHumanize(track.info.length)}) to the queue.`,
 					});
 				}
 				break;

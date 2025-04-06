@@ -347,7 +347,7 @@ export interface TrackInfo {
 	 * The duration of the Track.
 	 * @type {number}
 	 */
-	duration: number;
+	length: number;
 	/**
 	 * The URL of the artwork if available.
 	 * @type {string | null}
@@ -378,6 +378,11 @@ export interface TrackInfo {
 	 * @type {string | null}
 	 */
 	isrc: string | null;
+	/**
+	 * The position of the track.
+	 * @type {number}
+	 */
+	position: number;
 }
 
 /**

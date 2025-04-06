@@ -80,7 +80,11 @@ client.manager.on(Events.TrackStart, async (player, track) => {
 	const textId = player.textId;
 	if (!textId) return;
 
-	await client.messages.write(textId, { content: `Now playing: ${track.toHyperlink()}` });
+	console.info({ track });
+
+	await client.messages.write(textId, {
+		content: `Now playing: ${track.toHyperlink()} (${TimeFormat.toHumanize(track.info.length)})`,
+	});
 });
 
 client.manager.on(Events.TrackEnd, async (player, track) => {
