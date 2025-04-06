@@ -81,7 +81,7 @@ client.manager.on(Events.TrackStart, async (player, track) => {
 	if (!textId) return;
 
 	await client.messages.write(textId, {
-		content: `Now playing: ${track.toHyperlink()} (${TimeFormat.toHumanize(track.info.length)})`,
+		content: `Now playing: ${track.toHyperlink()} (${TimeFormat.toHumanize(track.info.length)}), By: ${track.requester.tag}`,
 	});
 });
 
