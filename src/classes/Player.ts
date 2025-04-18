@@ -37,7 +37,7 @@ export class Player {
 	 * The data for the player.
 	 * @type {Record<string, unknown>}
 	 */
-	readonly data: Record<string, unknown> = {};
+	readonly data: Record<PlayerStorageKeys, PlayerStorageValues> = {};
 	/**
 	 * The queue for the player.
 	 * @type {Queue}
@@ -165,11 +165,14 @@ export class Player {
 	/**
 	 *
 	 * Set the data for the player.
-	 * @param {string} key The key to set the data to.
-	 * @param {T} value The value to set the data to.
+	 * @param {K} key The key to set the data to.
+	 * @param {V} value The value to set the data to.
 	 * @returns {this} The player.
 	 */
-	public set<T>(key: string, value: T): this {
+	public set<
+		K extends PlayerStorageKeys = PlayerStorageKeys,
+		V extends PlayerStorageValues<K> = PlayerStorageValues<K>,
+	>(key: K, value: V): this {
 		this.data[key] = value;
 		return this;
 	}
@@ -177,20 +180,23 @@ export class Player {
 	/**
 	 *
 	 * Get the data from the player.
-	 * @param {string} key The key to get the data from.
-	 * @returns {T | undefined} The data from the player.
+	 * @param {K} key The key to get the data from.
+	 * @returns {V | undefined} The data from the player.
 	 */
-	public get<T>(key: string): T | undefined {
-		return this.data[key] as T;
+	public get<
+		K extends PlayerStorageKeys = PlayerStorageKeys,
+		V extends PlayerStorageValues<K> = PlayerStorageValues<K>,
+	>(key: K): V | undefined {
+		return this.data[key] as V | undefined;
 	}
 
 	/**
 	 *
 	 * Delete the data from the player.
-	 * @param {string} key The key to delete the data from.
+	 * @param {K} key The key to delete the data from.
 	 * @returns {boolean} If the data was deleted.
 	 */
-	public delete(key: string): boolean {
+	public delete<K extends PlayerStorageKeys = PlayerStorageKeys>(key: K): boolean {
 		if (this.data[key]) {
 			delete this.data[key];
 			return true;
@@ -370,3 +376,18 @@ export class Player {
 		};
 	}
 }
+
+/**
+ * Interface representing the customizable player storage.
+ */
+export interface CustomizablePlayerStorage {}
+
+/**
+ * Type representing the customizable player storage.
+ */
+type PlayerStorageKeys = keyof CustomizablePlayerStorage | (string & {});
+/**
+ * Type representing the customizable player storage values.
+ */
+type PlayerStorageValues<V extends PlayerStorageKeys = PlayerStorageKeys> =
+	V extends keyof CustomizablePlayerStorage ? CustomizablePlayerStorage[V] : unknown;

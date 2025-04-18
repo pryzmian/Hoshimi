@@ -123,4 +123,6 @@ declare module "hoshimi" {
 	interface CustomizableTrack {
 		requester: HoshimiUser;
 	}
+
+	interface CustomizablePlayerStorage {}
 }

@@ -3,7 +3,12 @@ import type { Track } from "../../classes/Track";
 import { SearchEngines } from "../../types/Manager";
 import { SourceNames } from "../../types/Node";
 
-const maxTracks = 10;
+/**
+ * The maximum number of tracks to be added to the queue.
+ * @type {number}
+ * @default 10
+ */
+const maxTracks: number = 10;
 
 /**
  *
@@ -16,11 +21,17 @@ export async function autoplayFn(player: Player, lastTrack: Track | null): Promi
 	if (!lastTrack) return;
 
 	const isEnabled =
-		player.get<boolean | undefined>("enabledAutoplay") ||
+		player.get<"enabledAutoplay", boolean>("enabledAutoplay") ||
 		player.manager.options.queueOptions.autoPlay;
 	if (!isEnabled) return;
 
-	const filter = (tracks: Track[]) =>
+	/**
+	 *
+	 * Filter the tracks to remove the last track and the previous tracks.
+	 * @param {Track[]} tracks The tracks to filter.
+	 * @returns {Track[]} The filtered tracks.
+	 */
+	const filter = (tracks: Track[]): Track[] =>
 		tracks.filter(
 			(track) =>
 				!(
@@ -50,9 +61,9 @@ export async function autoplayFn(player: Player, lastTrack: Track | null): Promi
 			});
 
 			if (res.tracks.length) {
-				const track = filter(res.tracks)[
-					Math.floor(Math.random() * res.tracks.length)
-				] as Track;
+				const index = Math.floor(Math.random() * res.tracks.length);
+				const track = filter(res.tracks)[index] as Track;
+
 				player.queue.add(track);
 			}
 			break;
@@ -68,7 +79,7 @@ export async function autoplayFn(player: Player, lastTrack: Track | null): Promi
 
 			if (res.tracks.length) {
 				const random = Math.floor(Math.random() * res.tracks.length);
-				const tracks = filter(res.tracks).slice(random, random + maxTracks) as Track[];
+				const tracks = filter(res.tracks).slice(random, random + maxTracks);
 				player.queue.add(tracks);
 			}
 		}
