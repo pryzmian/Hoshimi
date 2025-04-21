@@ -1,6 +1,6 @@
 import { type NodeOptions, State } from "../../types/Node";
 import { Collection } from "../../util/collection";
-import type { Hoshimi } from "../Manager";
+import type { Hoshimi } from "../Hoshimi";
 import { Node } from "./Node";
 
 /**

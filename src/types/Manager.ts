@@ -408,7 +408,7 @@ export interface SearchResult {
 /**
  * The query options.
  */
-export interface QueryOptions extends SearchQuery {
+export interface SearchOptions extends SearchQuery {
 	/**
 	 * The requester of the query.
 	 * @type {InferableRequester}

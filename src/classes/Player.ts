@@ -3,7 +3,7 @@ import {
 	DestroyReasons,
 	Events,
 	type Nullable,
-	type QueryOptions,
+	type SearchOptions,
 	type SearchResult,
 } from "../types/Manager";
 import {
@@ -15,7 +15,7 @@ import {
 } from "../types/Player";
 import { validatePlayerOptions } from "../util/functions/validations";
 import { PlayerError } from "./Errors";
-import type { Hoshimi } from "./Manager";
+import type { Hoshimi } from "./Hoshimi";
 import type { Node } from "./node/Node";
 import { Queue } from "./queue/Queue";
 
@@ -208,10 +208,10 @@ export class Player {
 	/**
 	 *
 	 * Search for a track or playlist.
-	 * @param {QueryOptions} options The options for the search.
+	 * @param {SearchOptions} options The options for the search.
 	 * @returns {Promise<SearchResult>} The search result.
 	 */
-	public search(options: QueryOptions): Promise<SearchResult> {
+	public search(options: SearchOptions): Promise<SearchResult> {
 		return this.manager.search({
 			...options,
 			node: this.node,

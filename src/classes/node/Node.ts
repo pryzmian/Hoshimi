@@ -20,7 +20,7 @@ import type {
 	NullableLavalinkSession,
 	UpdatePlayerInfo,
 } from "../../types/Rest";
-import type { NodeManager } from "./NodeManager";
+import type { NodeManager } from "./Manager";
 
 import { DebugLevels, Events } from "../../types/Manager";
 import { validateQuery } from "../../util/functions/validations";

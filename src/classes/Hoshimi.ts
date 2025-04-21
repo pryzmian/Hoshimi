@@ -6,7 +6,7 @@ import {
 	type HoshimiEvents,
 	type HoshimiOptions,
 	type SearchResult,
-	type QueryOptions,
+	type SearchOptions,
 	type VoicePacket,
 	type VoiceServer,
 	type VoiceState,
@@ -14,7 +14,7 @@ import {
 	DebugLevels,
 	Events,
 } from "../types/Manager";
-import { LoadType, State } from "../types/Node";
+import { type LavalinkSearchResponse, LoadType, State } from "../types/Node";
 import type { PlayerOptions } from "../types/Player";
 import type { Node } from "./node/Node";
 
@@ -25,7 +25,7 @@ import { ManagerError, OptionError } from "./Errors";
 import { Track } from "./Track";
 import { autoplayFn } from "../util/functions/autoplay";
 import { HoshimiAgent } from "../util/constants";
-import { NodeManager } from "./node/NodeManager";
+import { NodeManager } from "./node/Manager";
 
 /**
  * The events for the manager.
@@ -269,7 +269,8 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 * @returns {Player} The created player.
 	 */
 	public createPlayer(options: PlayerOptions): Player {
-		if (this.players.has(options.guildId)) return this.players.get(options.guildId)!;
+		const oldPlayer: Player | undefined = this.getPlayer(options.guildId);
+		if (oldPlayer) return oldPlayer;
 
 		const player = new Player(this, options);
 
@@ -282,10 +283,10 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	/**
 	 *
 	 * Search for a track or playlist.
-	 * @param {QueryOptions} options The options for the search.
+	 * @param {SearchOptions} options The options for the search.
 	 * @returns {Promise<SearchResult>} The search result.
 	 */
-	public async search(options: QueryOptions): Promise<SearchResult> {
+	public async search(options: SearchOptions): Promise<SearchResult> {
 		let node: Node | null = null;
 
 		if (options.node) {
@@ -297,7 +298,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 
 		if (!node) throw new ManagerError("No nodes are available.");
 
-		const res = await node.search(options);
+		const res: LavalinkSearchResponse | null = await node.search(options);
 		if (!res)
 			return {
 				loadType: LoadType.Empty,

@@ -7,7 +7,7 @@ export * from "./classes/queue/Queue";
 
 // Exports related to package classes.
 export * from "./classes/Errors";
-export * from "./classes/Manager";
+export * from "./classes/Hoshimi";
 export * from "./classes/Player";
 export * from "./classes/Track";
 
