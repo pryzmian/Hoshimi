@@ -10,12 +10,14 @@ export class NodeManager {
 	/**
 	 * The manager for the node.
 	 * @type {Hoshimi}
+	 * @readonly
 	 */
-	public manager: Hoshimi;
+	readonly manager: Hoshimi;
 
 	/**
 	 * The nodes for the manager.
 	 * @type {Collection<string, Node>}
+	 * @readonly
 	 */
 	readonly nodes: Collection<string, Node> = new Collection();
 
@@ -65,9 +67,9 @@ export class NodeManager {
 	 * @returns {Node} The created node.
 	 */
 	public createNode(options: NodeOptions): Node {
-		const oldNode: Node | undefined = this.nodes.get(
-			options.id ?? `${options.host}:${options.port}`,
-		);
+		options.id ??= `${options.host}:${options.port}`;
+
+		const oldNode: Node | undefined = this.nodes.get(options.id);
 		if (oldNode) return oldNode;
 
 		const node = new Node(this, options);

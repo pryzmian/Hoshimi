@@ -188,6 +188,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 						return;
 					}
 
+					// this is the most funny thing i've ever made.
 					if ("session_id" in data) player.voice.sessionId = data.session_id;
 					if ("token" in data) player.voice.token = data.token;
 					if ("endpoint" in data) player.voice.endpoint = data.endpoint;

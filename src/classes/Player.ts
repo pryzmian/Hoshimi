@@ -37,7 +37,7 @@ export class Player {
 	 * The data for the player.
 	 * @type {Record<string, unknown>}
 	 */
-	readonly data: Record<PlayerStorageKeys, PlayerStorageValues> = {};
+	readonly data: Record<StorageKeys, StorageValues> = {};
 	/**
 	 * The queue for the player.
 	 * @type {Queue}
@@ -169,10 +169,10 @@ export class Player {
 	 * @param {V} value The value to set the data to.
 	 * @returns {this} The player.
 	 */
-	public set<
-		K extends PlayerStorageKeys = PlayerStorageKeys,
-		V extends PlayerStorageValues<K> = PlayerStorageValues<K>,
-	>(key: K, value: V): this {
+	public set<K extends StorageKeys = StorageKeys, V extends StorageValues<K> = StorageValues<K>>(
+		key: K,
+		value: V,
+	): this {
 		this.data[key] = value;
 		return this;
 	}
@@ -183,10 +183,9 @@ export class Player {
 	 * @param {K} key The key to get the data from.
 	 * @returns {V | undefined} The data from the player.
 	 */
-	public get<
-		K extends PlayerStorageKeys = PlayerStorageKeys,
-		V extends PlayerStorageValues<K> = PlayerStorageValues<K>,
-	>(key: K): V | undefined {
+	public get<K extends StorageKeys = StorageKeys, V extends StorageValues<K> = StorageValues<K>>(
+		key: K,
+	): V | undefined {
 		return this.data[key] as V | undefined;
 	}
 
@@ -196,7 +195,7 @@ export class Player {
 	 * @param {K} key The key to delete the data from.
 	 * @returns {boolean} If the data was deleted.
 	 */
-	public delete<K extends PlayerStorageKeys = PlayerStorageKeys>(key: K): boolean {
+	public delete<K extends StorageKeys = StorageKeys>(key: K): boolean {
 		if (this.data[key]) {
 			delete this.data[key];
 			return true;
@@ -385,9 +384,10 @@ export interface CustomizablePlayerStorage {}
 /**
  * Type representing the customizable player storage.
  */
-type PlayerStorageKeys = keyof CustomizablePlayerStorage | (string & {});
+type StorageKeys = keyof CustomizablePlayerStorage | (string & {});
 /**
  * Type representing the customizable player storage values.
  */
-type PlayerStorageValues<V extends PlayerStorageKeys = PlayerStorageKeys> =
-	V extends keyof CustomizablePlayerStorage ? CustomizablePlayerStorage[V] : unknown;
+type StorageValues<V extends StorageKeys = StorageKeys> = V extends keyof CustomizablePlayerStorage
+	? CustomizablePlayerStorage[V]
+	: unknown;
