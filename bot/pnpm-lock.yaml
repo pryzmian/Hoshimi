@@ -16,7 +16,7 @@ importers:
         version: link:..
       seyfert:
         specifier: github:tiramisulabs/seyfert
-        version: https://codeload.github.com/tiramisulabs/seyfert/tar.gz/ecc007b438929b96e373526e940bfbbec0d0789f
+        version: https://codeload.github.com/tiramisulabs/seyfert/tar.gz/f74b75fceffa7f150f9fde6ab91c4113da63ec65
       yunaforseyfert:
         specifier: github:SagiriIkeda/yunaforseyfert
         version: https://codeload.github.com/SagiriIkeda/yunaforseyfert/tar.gz/b4e47dd94e75ad2aa849813d07348b433a8faaac
@@ -25,11 +25,11 @@ importers:
         specifier: ^1.9.4
         version: 1.9.4
       '@types/node':
-        specifier: ^22.15.2
-        version: 22.15.2
+        specifier: ^22.15.3
+        version: 22.15.3
       tsx:
-        specifier: ^4.19.3
-        version: 4.19.3
+        specifier: ^4.19.4
+        version: 4.19.4
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -239,8 +239,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@types/node@22.15.2':
-    resolution: {integrity: sha512-uKXqKN9beGoMdBfcaTY1ecwz6ctxuJAcUlwE55938g0ZJ8lRxwAZqRz2AJ4pzpt5dHdTPMB863UZ0ESiFUcP7A==}
+  '@types/node@22.15.3':
+    resolution: {integrity: sha512-lX7HFZeHf4QG/J7tBZqrCAXwz9J5RD56Y6MpP0eJkka8p+K0RY/yBTW7CYFJ4VGCclxqOLKmiGP5juQc6MKgcw==}
 
   dotenv@16.5.0:
     resolution: {integrity: sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==}
@@ -262,12 +262,12 @@ packages:
   resolve-pkg-maps@1.0.0:
     resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
 
-  seyfert@https://codeload.github.com/tiramisulabs/seyfert/tar.gz/ecc007b438929b96e373526e940bfbbec0d0789f:
-    resolution: {tarball: https://codeload.github.com/tiramisulabs/seyfert/tar.gz/ecc007b438929b96e373526e940bfbbec0d0789f}
-    version: 3.0.0
+  seyfert@https://codeload.github.com/tiramisulabs/seyfert/tar.gz/f74b75fceffa7f150f9fde6ab91c4113da63ec65:
+    resolution: {tarball: https://codeload.github.com/tiramisulabs/seyfert/tar.gz/f74b75fceffa7f150f9fde6ab91c4113da63ec65}
+    version: 3.1.2
 
-  tsx@4.19.3:
-    resolution: {integrity: sha512-4H8vUNGNjQ4V2EOoGw005+c+dGuPSnhpPBPHBtsZdGZBk/iJb4kguGlPWaZTZ3q5nMtFOEsY0nRDlh9PJyd6SQ==}
+  tsx@4.19.4:
+    resolution: {integrity: sha512-gK5GVzDkJK1SI1zwHf32Mqxf2tSJkNx+eYcNly5+nHvWqXUJYUkWBQtKauoESz3ymezAI++ZwT855x5p5eop+Q==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -395,7 +395,7 @@ snapshots:
   '@esbuild/win32-x64@0.25.3':
     optional: true
 
-  '@types/node@22.15.2':
+  '@types/node@22.15.3':
     dependencies:
       undici-types: 6.21.0
 
@@ -438,9 +438,9 @@ snapshots:
 
   resolve-pkg-maps@1.0.0: {}
 
-  seyfert@https://codeload.github.com/tiramisulabs/seyfert/tar.gz/ecc007b438929b96e373526e940bfbbec0d0789f: {}
+  seyfert@https://codeload.github.com/tiramisulabs/seyfert/tar.gz/f74b75fceffa7f150f9fde6ab91c4113da63ec65: {}
 
-  tsx@4.19.3:
+  tsx@4.19.4:
     dependencies:
       esbuild: 0.25.3
       get-tsconfig: 4.10.0

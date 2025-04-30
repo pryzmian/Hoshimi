@@ -19,13 +19,13 @@ import {
  * @param {this} this The player that emitted the event.
  * @returns {Promise<void>} The promise, nothing new.
  */
-async function queueTrackEnd(this: Player): Promise<void> {
+async function handleTrackEnd(this: Player): Promise<void> {
 	if (
 		this.queue.current &&
 		!this.queue.previous.find(
 			(x) =>
-				x.info.identifier === this.queue.current?.info.identifier &&
-				x.info.title === this.queue.current?.info.title,
+				x.info.identifier === this.queue.current!.info.identifier &&
+				x.info.title === this.queue.current!.info.title,
 		)
 	) {
 		this.queue.previous.unshift(this.queue.current);
@@ -40,7 +40,7 @@ async function queueTrackEnd(this: Player): Promise<void> {
 		this.manager.emit(
 			Events.Debug,
 			DebugLevels.Player,
-			`[Player] -> [Previous] The track: ${this.queue.current?.info.title} has been added to the previous track list.`,
+			`[Player] -> [Previous] The track: ${this.queue.current.info.title} has been added to the previous track list.`,
 		);
 	}
 
@@ -73,7 +73,8 @@ async function queueEnd(
 
 	if (typeof this.manager.options.queueOptions.autoplayFn === "function") {
 		await this.manager.options.queueOptions.autoplayFn(this, this.queue.current ?? track);
-		if (this.queue.size > 0) await queueTrackEnd.call(this);
+
+		if (this.queue.size > 0) await handleTrackEnd.call(this);
 		if (this.queue.current) {
 			if (payload.type === PlayerEventType.TrackEnd)
 				this.manager.emit(Events.TrackEnd, this, track, payload);
@@ -89,7 +90,7 @@ async function queueEnd(
 	}
 
 	//if (track) await this.queue.utils.save();
-	//if ((payload as TrackEndEvent).reason !== "stopped") await this.queue.utils.save();
+	//if (payload.type === PlayerEventType.TrackEnd && payload.reason !== TrackEndReason.Stopped) await this.queue.utils.save();
 
 	this.manager.emit(Events.QueueEnd, this, this.queue);
 	this.manager.emit(Events.Debug, DebugLevels.Player, "[Player] -> [Queue] The queue has ended.");
@@ -139,7 +140,7 @@ export async function trackEnd(this: Player, payload: TrackEndEvent): Promise<vo
 		case TrackEndReason.Cleanup: {
 			this.playing = false;
 
-			await queueTrackEnd.call(this);
+			await handleTrackEnd.call(this);
 
 			if (!this.queue.size || !this.queue.current)
 				return queueEnd.call(this, current, payload);
@@ -159,7 +160,7 @@ export async function trackEnd(this: Player, payload: TrackEndEvent): Promise<vo
 
 	//if (current) await this.queue.utils.save();
 
-	await queueTrackEnd.call(this);
+	await handleTrackEnd.call(this);
 
 	this.queue.current = null;
 
@@ -195,10 +196,10 @@ export async function playerUpdate(this: Node, payload: PlayerUpdate): Promise<v
 	player.createdTimestamp = payload.state.time;
 	player.position = payload.state.position;
 
+	this.nodeManager.manager.emit(Events.PlayerUpdate, player, oldPlayer, payload);
 	this.nodeManager.manager.emit(
 		Events.Debug,
 		DebugLevels.Node,
 		`[Player] -> [Update] Player updated: ${player.guildId} | Object: ${JSON.stringify(payload)}`,
 	);
-	this.nodeManager.manager.emit(Events.PlayerUpdate, player, oldPlayer, payload);
 }
