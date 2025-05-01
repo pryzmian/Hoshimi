@@ -12,6 +12,7 @@ export class Queue {
 	 * @type {Track[]}
 	 */
 	public tracks: Track[] = [];
+
 	/**
 	 * Previous tracks of the queue.
 	 * @type {Track[]}
@@ -70,6 +71,7 @@ export class Queue {
 	/**
 	 *
 	 * Get the previous track of the queue.
+	 * @param {boolean} [remove=false] Whether to remove the track from the previous queue.
 	 * @returns {Track | null} The previous track of the queue.
 	 */
 	public getPrevious(remove?: boolean): Track | null {
@@ -81,6 +83,7 @@ export class Queue {
 	 *
 	 * Add a track or tracks to the queue.
 	 * @param {Track | Track[]} track The track or tracks to add.
+	 * @param {number} [position] The position to add the track or tracks.
 	 * @returns {this} The queue instance.
 	 */
 	public add(track: Track | Track[], position?: number): this {

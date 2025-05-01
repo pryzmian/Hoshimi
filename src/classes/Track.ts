@@ -10,6 +10,7 @@ export class Track {
 	 * @type {string}
 	 */
 	readonly encoded: string;
+
 	/**
 	 * The track info.
 	 * @type {TrackInfo}

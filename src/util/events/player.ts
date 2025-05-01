@@ -72,7 +72,13 @@ async function queueEnd(
 	this.queue.current = null;
 
 	if (typeof this.manager.options.queueOptions.autoplayFn === "function") {
-		await this.manager.options.queueOptions.autoplayFn(this, this.queue.current ?? track);
+		await this.manager.options.queueOptions.autoplayFn(this, track);
+
+		this.manager.emit(
+			Events.Debug,
+			DebugLevels.Player,
+			"[Queue] -> [Autoplay] Autoplay function executed.",
+		);
 
 		if (this.queue.size > 0) await handleTrackEnd.call(this);
 		if (this.queue.current) {
@@ -113,7 +119,7 @@ export async function trackStart(this: Player, payload: TrackStartEvent): Promis
 	this.manager.emit(
 		Events.Debug,
 		DebugLevels.Player,
-		`[Player -> Start] The track: ${this.queue.current?.info.title ?? "Unknown"} has started playing.`,
+		`[Player] -> [Start] The track: ${this.queue.current?.info.title ?? "Unknown"} has started playing.`,
 	);
 }
 
@@ -149,7 +155,7 @@ export async function trackEnd(this: Player, payload: TrackEndEvent): Promise<vo
 			this.manager.emit(
 				Events.Debug,
 				DebugLevels.Player,
-				`[Player] -> ÑEnd] The track: ${current?.info.title ?? "Unknown"} has ended.`,
+				`[Player] -> [End] The track: ${current?.info.title ?? "Unknown"} has ended.`,
 			);
 
 			this.queue.current = null;
@@ -200,6 +206,6 @@ export async function playerUpdate(this: Node, payload: PlayerUpdate): Promise<v
 	this.nodeManager.manager.emit(
 		Events.Debug,
 		DebugLevels.Node,
-		`[Player] -> [Update] Player updated: ${player.guildId} | Object: ${JSON.stringify(payload)}`,
+		`[Player] -> [Update] Player updated: ${player.guildId} | Payload: ${JSON.stringify(payload)}`,
 	);
 }

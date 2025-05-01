@@ -1,23 +1,15 @@
-import { Command, createIntegerOption, Declare, Options, type GuildCommandContext } from "seyfert";
-
-const options = {
-	to: createIntegerOption({
-		description: "Amount of tracks to skip.",
-		min_value: 1,
-	}),
-};
+import { Command, Declare, type GuildCommandContext } from "seyfert";
 
 @Declare({
-	name: "skip",
-	description: "Skip track(s).",
-	aliases: ["s"],
+	name: "autoplay",
+	description: "Enable or disable autoplay.",
+	aliases: ["ap", "aplay"],
 	integrationTypes: ["GuildInstall"],
 	contexts: ["Guild"],
 })
-@Options(options)
-export default class SkipCommand extends Command {
-	override async run(ctx: GuildCommandContext<typeof options>) {
-		const { client, options } = ctx;
+export default class AutoplayCommand extends Command {
+	override async run(ctx: GuildCommandContext) {
+		const { client } = ctx;
 
 		const state = await ctx.member.voice();
 		if (!state.channelId)
@@ -34,9 +26,11 @@ export default class SkipCommand extends Command {
 		const player = client.manager.getPlayer(ctx.guildId);
 		if (!player) return ctx.editOrReply({ content: "No player found." });
 
-		await player.skip(options.to);
-		await ctx.editOrReply({
-			content: `Skipped ${options.to ?? 1} track(s).`,
-		});
+		player.set("enabledAutoplay", !player.get("enabledAutoplay"));
+
+		const autoplay = player.get("enabledAutoplay");
+		const type = autoplay ? "enabled" : "disabled";
+
+		await ctx.editOrReply({ content: `Autoplay is now **${type}**.` });
 	}
 }

@@ -28,6 +28,11 @@ import { HoshimiAgent } from "../util/constants";
 import { NodeManager } from "./node/Manager";
 
 /**
+ * The packet type for the manager.
+ */
+type GatewayPackets = VoicePacket | VoiceServer | VoiceState | ChannelDeletePacket;
+
+/**
  * The events for the manager.
  * This allows to extend the events.
  */
@@ -130,12 +135,10 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	/**
 	 *
 	 * Handle the raw packet.
-	 * @param {VoicePacket | VoiceServer | VoiceServer | ChannelDeletePacket} packet The packet to handle
+	 * @param {GatewayPackets} packet The packet to handle
 	 * @returns {Promise<void>}
 	 */
-	public async sendRaw(
-		packet: VoicePacket | VoiceServer | VoiceState | ChannelDeletePacket,
-	): Promise<void> {
+	public async sendRaw(packet: GatewayPackets): Promise<void> {
 		if (!this.ready) {
 			this.emit(
 				Events.Debug,
@@ -291,7 +294,9 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 		let node: Node | null = null;
 
 		if (options.node) {
-			const nodeId = typeof options.node === "string" ? options.node : options.node.id;
+			const nodeId: string =
+				typeof options.node === "string" ? options.node : options.node.id;
+
 			node = this.nodeManager.getNode(nodeId) ?? null;
 		} else {
 			node = this.nodeManager.getLeastUsedNode();
@@ -311,8 +316,8 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 
 		this.emit(
 			Events.Debug,
-			DebugLevels.Player,
-			`[Player] -> [Search] Searching for: ${options.query} (${options.engine ?? this.options.defaultSearchEngine}) | Result: ${JSON.stringify(res)}`,
+			DebugLevels.Manager,
+			`[Manager] -> [Search] Searching for: ${options.query} (${options.engine ?? this.options.defaultSearchEngine}) | Result: ${JSON.stringify(res)}`,
 		);
 
 		switch (res.loadType) {

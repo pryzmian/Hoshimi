@@ -23,9 +23,9 @@ const client = new Client({
 });
 
 client.manager = new Hoshimi({
-	defaultSearchEngine: SearchEngines.Youtube,
 	sendPayload: (guildId, payload) =>
 		client.gateway.send(client.gateway.calculateShardId(guildId), payload),
+	defaultSearchEngine: SearchEngines.Youtube,
 	nodes: [
 		{
 			host: "localhost",
@@ -103,7 +103,7 @@ client.manager.on(Events.QueueEnd, async (player) => {
 	await client.messages.write(textId, { content: "Queue has ended." });
 });
 
-(async () => {
+(async (): Promise<void> => {
 	await client.start();
 })();
 
@@ -124,5 +124,7 @@ declare module "hoshimi" {
 		requester: HoshimiUser;
 	}
 
-	interface CustomizablePlayerStorage {}
+	interface CustomizablePlayerStorage {
+		enabledAutoplay: boolean;
+	}
 }

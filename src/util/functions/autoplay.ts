@@ -62,7 +62,9 @@ export async function autoplayFn(player: Player, lastTrack: Track | null): Promi
 
 			if (res.tracks.length) {
 				const index = Math.floor(Math.random() * res.tracks.length);
-				const track = filter(res.tracks)[index] as Track;
+
+				const track = filter(res.tracks)[index];
+				if (!track) return;
 
 				player.queue.add(track);
 			}
@@ -80,6 +82,7 @@ export async function autoplayFn(player: Player, lastTrack: Track | null): Promi
 			if (res.tracks.length) {
 				const random = Math.floor(Math.random() * res.tracks.length);
 				const tracks = filter(res.tracks).slice(random, random + maxTracks);
+
 				player.queue.add(tracks);
 			}
 		}

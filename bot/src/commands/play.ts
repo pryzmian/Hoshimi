@@ -13,6 +13,9 @@ const options = {
 @Declare({
 	name: "play",
 	description: "Play a song.",
+	aliases: ["p"],
+	integrationTypes: ["GuildInstall"],
+	contexts: ["Guild"],
 })
 @Options(options)
 export default class PlayCommand extends Command {
@@ -34,9 +37,7 @@ export default class PlayCommand extends Command {
 
 		const bot = await me.voice().catch(() => null);
 		if (bot && bot.channelId !== state.channelId)
-			return ctx.editOrReply({
-				content: "I'm already in a voice channel.",
-			});
+			return ctx.editOrReply({ content: "I'm already in a voice channel." });
 
 		const player = client.manager.createPlayer({
 			guildId: ctx.guildId,
@@ -81,7 +82,7 @@ export default class PlayCommand extends Command {
 					if (!player.playing) await player.play();
 
 					await ctx.editOrReply({
-						content: `Added ${track.toHyperlink()} (${TimeFormat.toHumanize(track.info.length)}) to the queue.`,
+						content: `Added ${track.toHyperlink(false)} (${TimeFormat.toHumanize(track.info.length)}) to the queue.`,
 					});
 				}
 				break;

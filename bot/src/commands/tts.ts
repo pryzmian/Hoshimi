@@ -1,5 +1,5 @@
 import { Command, createStringOption, Declare, Options, type GuildCommandContext } from "seyfert";
-import { LoadType, SearchEngines } from "hoshimi";
+import { SearchEngines } from "hoshimi";
 import { omitKeys } from "../utils";
 
 const options = {
@@ -15,6 +15,9 @@ const options = {
 @Declare({
 	name: "tts",
 	description: "Speak with the bot.",
+	aliases: ["say"],
+	integrationTypes: ["GuildInstall"],
+	contexts: ["Guild"],
 })
 @Options(options)
 export default class TtsCommand extends Command {

@@ -126,10 +126,10 @@ export class Rest {
 	 */
 	public async request<T>(options: RestOptions): Promise<T | null> {
 		const headers = {
+			...options.headers,
 			"Content-Type": "application/json",
 			"User-Agent": this.userAgent,
 			Authorization: this.node.options.password,
-			...options.headers,
 		};
 
 		options.method ??= HttpMethods.Get;
@@ -202,7 +202,7 @@ export class Rest {
 		this.node.nodeManager.manager.emit(
 			Events.Debug,
 			DebugLevels.Rest,
-			`[Rest] -> [${this.node.id}]: Updated player data for guild: ${data.guildId} | Object: ${JSON.stringify(data)}`,
+			`[Rest] -> [${this.node.id}]: Updated player data for guild: ${data.guildId} | Payload: ${JSON.stringify(data)}`,
 		);
 
 		validatePlayerData.call(this.node, data);
