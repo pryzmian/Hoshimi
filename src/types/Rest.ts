@@ -33,6 +33,97 @@ export enum HttpMethods {
 }
 
 /**
+ * The status codes for the REST.
+ * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+ */
+export enum HttpStatusCodes {
+	/**
+	 * The request has succeeded.
+	 */
+	OK = 200,
+	/**
+	 * The request has been fulfilled and resulted in a new resource being created.
+	 */
+	Created = 201,
+	/**
+	 * The request has been accepted for processing, but the processing has not been completed.
+	 */
+	Accepted = 202,
+	/**
+	 * The server successfully processed the request, but is not returning any content.
+	 */
+	NoContent = 204,
+	/**
+	 * The resource has been moved permanently to a new URI.
+	 */
+	MovedPermanently = 301,
+	/**
+	 * The requested resource has been found at a different URI.
+	 */
+	Found = 302,
+	/**
+	 * The resource has not been modified since the last request.
+	 */
+	NotModified = 304,
+	/**
+	 * The request cannot be processed due to bad syntax.
+	 */
+	BadRequest = 400,
+	/**
+	 * The request requires user authentication.
+	 */
+	Unauthorized = 401,
+	/**
+	 * The request was valid, but the server is refusing action.
+	 */
+	Forbidden = 403,
+	/**
+	 * The server cannot find the requested resource.
+	 */
+	NotFound = 404,
+	/**
+	 * The request method is known by the server but has been disabled and cannot be used.
+	 */
+	MethodNotAllowed = 405,
+	/**
+	 * The server timed out waiting for the request.
+	 */
+	RequestTimeout = 408,
+	/**
+	 * The request could not be completed due to a conflict with the current state of the resource.
+	 */
+	Conflict = 409,
+	/**
+	 * The requested resource is no longer available and will not be available again.
+	 */
+	Gone = 410,
+	/**
+	 * The user has sent too many requests in a given amount of time.
+	 */
+	TooManyRequests = 429,
+	/**
+	 * A generic error message, given when no more specific message is suitable.
+	 */
+	InternalServerError = 500,
+	/**
+	 * The server does not recognize the request method or lacks the ability to fulfill it.
+	 */
+	NotImplemented = 501,
+	/**
+	 * The server was acting as a gateway and received an invalid response.
+	 */
+	BadGateway = 502,
+	/**
+	 * The server is currently unavailable (overloaded or down).
+	 */
+	ServiceUnavailable = 503,
+	/**
+	 * The server did not receive a timely response from an upstream server.
+	 */
+	GatewayTimeout = 504,
+}
+
+/**
  * The options for the REST.
  */
 export interface RestOptions {
@@ -187,4 +278,19 @@ export interface LavalinkSession {
 	timeout: number;
 }
 
+/**
+ * The rest options.
+ */
+export interface HoshimiRestOptions {
+	/**
+	 * The amount of time to wait for the player to resume. (in milliseconds)
+	 * @type {number}
+	 * @default 10000
+	 */
+	resumeTimeout?: number;
+}
+
+/**
+ * The session of the node.
+ */
 export type NullableLavalinkSession = PickNullable<LavalinkSession, "timeout">;

@@ -13,6 +13,7 @@ import {
 	type ChannelDeletePacket,
 	DebugLevels,
 	Events,
+	type DeepRequired,
 } from "../types/Manager";
 import { type LavalinkSearchResponse, LoadType, State } from "../types/Node";
 import type { PlayerOptions } from "../types/Player";
@@ -48,7 +49,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 * The options for the manager.
 	 * @type {HoshimiOptions}
 	 */
-	public options: Required<HoshimiOptions>;
+	public options: DeepRequired<HoshimiOptions>;
 
 	/**
 	 * The players for the manager.
@@ -82,11 +83,13 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 		this.options = {
 			...options,
 			defaultSearchEngine: options.defaultSearchEngine ?? SearchEngines.Youtube,
+			restOptions: {
+				resumeTimeout: options.restOptions?.resumeTimeout ?? 10000,
+			},
 			nodeOptions: {
 				userAgent: options.nodeOptions?.userAgent ?? HoshimiAgent,
 				resumable: options.nodeOptions?.resumable ?? false,
 				resumeByLibrary: options.nodeOptions?.resumeByLibrary ?? false,
-				resumeTimeout: options.nodeOptions?.resumeTimeout ?? 5000,
 			},
 			queueOptions: {
 				maxPreviousTracks: options.queueOptions?.maxPreviousTracks ?? 25,
@@ -94,7 +97,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 				autoPlay: options.queueOptions?.autoPlay ?? false,
 			},
 			client: {
-				id: options.client?.id,
+				id: options.client?.id ?? "",
 				username: options.client?.username ?? "hoshimi-client",
 			},
 		};

@@ -8,9 +8,11 @@ import {
 	type LavalinkPlayer,
 	type UpdatePlayerInfo,
 	type LavalinkSession,
+	HttpStatusCodes,
 } from "../../types/Rest";
 import { HoshimiAgent } from "../../util/constants";
 import { validatePlayerData } from "../../util/functions/validations";
+import type { Hoshimi } from "../Hoshimi";
 import type { Node } from "./Node";
 
 /**
@@ -26,22 +28,27 @@ import type { Node } from "./Node";
 class RestError extends Error {
 	/**
 	 * The timestamp of the response.
+	 * @type {number}
 	 */
 	public timestamp: number;
 	/**
 	 * The status of the response.
+	 * @type {number}
 	 */
 	public status: number;
 	/**
 	 * The error of the response.
+	 * @type {string}
 	 */
 	public error: string;
 	/**
 	 * The message of the response.
+	 * @type {string}
 	 */
 	public path: string;
 	/**
 	 * The trace of the response.
+	 * @type {string}
 	 */
 	public trace?: string;
 
@@ -104,9 +111,12 @@ export class Rest {
 	 * @param {Node} node The node for the REST.
 	 */
 	constructor(node: Node) {
+		const manager: Hoshimi = node.nodeManager.manager;
+
 		this.url = `${node.options.secure ? "https" : "http"}://${node.options.host}:${node.options.port}/${this.version}`;
-		this.restTimeout = node.options.restTimeout ?? 10000;
-		this.userAgent = node.nodeManager.manager.options.nodeOptions.userAgent ?? HoshimiAgent;
+		this.restTimeout =
+			node.options.restTimeout ?? manager.options.restOptions.resumeTimeout ?? 10000;
+		this.userAgent = manager.options.nodeOptions.userAgent ?? HoshimiAgent;
 		this.node = node;
 	}
 
@@ -116,6 +126,14 @@ export class Rest {
 	 */
 	public get restUrl(): string {
 		return this.url;
+	}
+
+	/**
+	 * The session id of the node.
+	 * @type {string}
+	 */
+	public get sessionId(): string {
+		return this.node.sessionId!;
 	}
 
 	/**
@@ -178,7 +196,7 @@ export class Rest {
 			);
 		}
 
-		if (response.status === 204) return null;
+		if (response.status === HttpStatusCodes.NoContent) return null;
 
 		return response.json().catch(() => null) as Promise<T | null>;
 	}
@@ -190,11 +208,11 @@ export class Rest {
 	 * @returns {LavalinkPlayer | null} The updated player data.
 	 */
 	public async updatePlayer(data: Partial<UpdatePlayerInfo>): Promise<LavalinkPlayer | null> {
-		if (!this.node.sessionId) return null;
+		if (!this.sessionId) return null;
 
 		const res = await this.request<LavalinkPlayer>({
 			method: HttpMethods.Patch,
-			endpoint: `/sessions/${this.node.sessionId}/players/${data.guildId}`,
+			endpoint: `/sessions/${this.sessionId}/players/${data.guildId}`,
 			body: { ...data.playerOptions },
 			params: { noReplace: `${data.noReplace ?? false}` },
 		});
@@ -216,8 +234,8 @@ export class Rest {
 	 * @param {string} guildId the guild id to stop the player
 	 * @returns {Promise<LavalinkPlayer | null>} The updated player data.
 	 */
-	public async stopPlayer(guildId: string): Promise<LavalinkPlayer | null> {
-		if (!this.node.sessionId) return null;
+	public stopPlayer(guildId: string): Promise<LavalinkPlayer | null> {
+		if (!this.sessionId) return Promise.resolve(null);
 
 		this.node.nodeManager.manager.emit(
 			Events.Debug,
@@ -225,15 +243,13 @@ export class Rest {
 			`[Rest] -> [${this.node.id}]: Stopped player for guild: ${guildId}`,
 		);
 
-		const res = await this.updatePlayer({
+		return this.updatePlayer({
 			guildId,
 			playerOptions: {
 				paused: false,
 				track: { encoded: null },
 			},
 		});
-
-		return res;
 	}
 
 	/**
@@ -242,7 +258,7 @@ export class Rest {
 	 * @param {string} guildId The guild id to destroy the player.
 	 */
 	public async destroyPlayer(guildId: string): Promise<void> {
-		if (!this.node.sessionId) return;
+		if (!this.sessionId) return;
 
 		this.node.nodeManager.manager.emit(
 			Events.Debug,
@@ -252,7 +268,7 @@ export class Rest {
 
 		await this.request({
 			method: HttpMethods.Delete,
-			endpoint: `/sessions/${this.node.sessionId}/players/${guildId}`,
+			endpoint: `/sessions/${this.sessionId}/players/${guildId}`,
 		});
 	}
 
@@ -263,11 +279,11 @@ export class Rest {
 	 * @param {number | null} timeout The timeout for the session.
 	 * @returns {Promise<LavalinkSession | null>} The updated session data.
 	 */
-	public async updateSession(
+	public updateSession(
 		resuming: boolean,
 		timeout: number | null = null,
 	): Promise<LavalinkSession | null> {
-		if (!this.node.sessionId) return null;
+		if (!this.sessionId) return Promise.resolve(null);
 
 		this.node.nodeManager.manager.emit(
 			Events.Debug,
@@ -275,12 +291,10 @@ export class Rest {
 			`[Rest] -> [${this.node.id}]: Updated session for resumed: ${resuming} | Timeout: ${timeout ?? "None"}`,
 		);
 
-		const res = await this.request<LavalinkSession>({
+		return this.request<LavalinkSession>({
 			method: HttpMethods.Patch,
-			endpoint: `/sessions/${this.node.sessionId}`,
+			endpoint: `/sessions/${this.sessionId}`,
 			body: { resuming, timeout },
 		});
-
-		return res;
 	}
 }

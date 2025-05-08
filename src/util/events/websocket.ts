@@ -16,7 +16,7 @@ export function onOpen(this: Node, res: IncomingMessage): void {
 	const isResume = res.headers["session-resumed"] === "true";
 	const apiVersion = res.headers["lavalink-api-version"];
 
-	this.retryAmount = this.options.retryAmount!;
+	this.retryAmount = this.options.retryAmount;
 
 	this.nodeManager.manager.emit(
 		Events.Debug,

@@ -772,7 +772,7 @@ export interface NodeOptions {
 	/**
 	 * The timeout for the REST in milliseconds.
 	 * @type {number}
-	 * @default 10
+	 * @default 10000
 	 */
 	restTimeout?: number;
 	/**
@@ -868,12 +868,6 @@ export interface HoshimiNodeOptions {
 	 * @default false
 	 */
 	resumeByLibrary?: boolean;
-	/**
-	 * The amount of time to wait for the player to resume. (in milliseconds)
-	 * @type {number}
-	 * @default 5000
-	 */
-	resumeTimeout?: number;
 }
 
 /**

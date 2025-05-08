@@ -32,9 +32,9 @@ import { WebSocket } from "ws";
 export class Node {
 	/**
 	 * The options for the node.
-	 * @type {NodeOptions}
+	 * @type {Required<NodeOptions>}
 	 */
-	readonly options: NodeOptions;
+	readonly options: Required<NodeOptions>;
 
 	/**
 	 * The REST for the node.
@@ -113,6 +113,7 @@ export class Node {
 	constructor(nodeManager: NodeManager, options: NodeOptions) {
 		this.options = {
 			...options,
+			sessionId: options.sessionId ?? "",
 			id: options.id ?? `${options.host}:${options.port}`,
 			restTimeout: options.restTimeout ?? 10000,
 			secure: options.secure ?? false,
@@ -120,8 +121,8 @@ export class Node {
 			retryDelay: options.retryDelay ?? 20000,
 		};
 
-		this.retryAmount = this.options.retryAmount!;
-		this.retryDelay = this.options.retryDelay!;
+		this.retryAmount = this.options.retryAmount;
+		this.retryDelay = this.options.retryDelay;
 		this.nodeManager = nodeManager;
 
 		if (this.options.secure && this.options.port !== 443) this.options.port = 443;
@@ -133,7 +134,7 @@ export class Node {
 	 * The id of the node.
 	 */
 	public get id(): string {
-		return this.options.id!;
+		return this.options.id;
 	}
 
 	/**
@@ -261,7 +262,7 @@ export class Node {
 		this.ws = null;
 		this.state = State.Disconnected;
 
-		this.retryAmount = this.options.retryAmount!;
+		this.retryAmount = this.options.retryAmount;
 
 		if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
 

@@ -16,6 +16,7 @@ import type {
 } from "./Node";
 import type { PlayerJson, PlayerUpdate, TrackEndEvent, TrackStartEvent } from "./Player";
 import type { HoshimiQueueOptions } from "./Queue";
+import type { HoshimiRestOptions } from "./Rest";
 
 /**
  * The search engines to use.
@@ -272,6 +273,11 @@ export interface HoshimiOptions {
 	 * @type {HoshimiNodeOptions}
 	 */
 	nodeOptions?: HoshimiNodeOptions;
+	/**
+	 * The rest options to use.
+	 * @type {HoshimiRestOptions}
+	 */
+	restOptions?: HoshimiRestOptions;
 }
 
 /**
@@ -582,6 +588,11 @@ export type Awaitable<T> = Promise<T> | T;
 export type Inferable<T, K extends string> = T extends { [key in K]: infer R } ? R : unknown;
 
 /**
+ * Create a type that infers the value of a key from an object.
+ */
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+/**
  * Make a type nullable.
  */
 export type PickNullable<T, K extends keyof T> = {
@@ -593,4 +604,17 @@ export type PickNullable<T, K extends keyof T> = {
  */
 export type Nullable<T> = {
 	[P in keyof T]: T[P] | null;
+};
+
+/**
+ * Make a type required.
+ */
+export type DeepRequired<T> = {
+	[P in keyof T]-?: T[P] extends (...args: any[]) => any
+		? T[P]
+		: T[P] extends any[]
+			? T[P]
+			: T[P] extends object
+				? DeepRequired<T[P]>
+				: Required<T[P]>;
 };
