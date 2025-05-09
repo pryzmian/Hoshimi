@@ -34,6 +34,11 @@ import { NodeManager } from "./node/Manager";
 type GatewayPackets = VoicePacket | VoiceServer | VoiceState | ChannelDeletePacket;
 
 /**
+ * The required options for the manager.
+ */
+type RequiredOptions = DeepRequired<HoshimiOptions>;
+
+/**
  * The events for the manager.
  * This allows to extend the events.
  */
@@ -49,7 +54,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 * The options for the manager.
 	 * @type {HoshimiOptions}
 	 */
-	public options: DeepRequired<HoshimiOptions>;
+	public options: RequiredOptions;
 
 	/**
 	 * The players for the manager.
@@ -74,6 +79,40 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	/**
 	 * The constructor for the manager.
 	 * @param {HoshimiOptions} options The options for the manager.
+	 * @throws {ManagerError} If the options are not provided.
+	 * @example
+	 * ```ts
+	 * const manager = new Hoshimi({
+	 * 	nodes: [
+	 * 		{
+	 * 			host: "localhost",
+	 * 			port: 2333,
+	 * 			password: "youshallnotpass",
+	 * 			secure: false,
+	 * 		},
+	 * 	],
+	 * 	client: {
+	 * 		id: "clientId",
+	 * 		username: "clientUsername",
+	 * 	},
+	 * 	defaultSearchEngine: SearchEngines.Youtube,
+	 * 	restOptions: {
+	 * 		resumeTimeout: 10000,
+	 * 	},
+	 * 	nodeOptions: {
+	 * 		userAgent: HoshimiAgent,
+	 * 		resumable: false,
+	 * 		resumeByLibrary: false,
+	 * 	},
+	 * 	queueOptions: {
+	 * 		maxPreviousTracks: 25,
+	 * 		autoplayFn: autoplayFn,
+	 * 		autoPlay: false,
+	 * 	},
+	 * });
+	 *
+	 * console.log(manager); // The manager instance
+	 * ```
 	 */
 	constructor(options: HoshimiOptions) {
 		super();
@@ -102,14 +141,22 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 			},
 		};
 
-		this.nodeManager = new NodeManager(this);
-
 		validateManagerOptions(this.options);
+
+		this.nodeManager = new NodeManager(this);
 	}
 
 	/**
 	 * Check if the manager is useable.
 	 * @returns {boolean} If the manager is useable.
+	 * @example
+	 * ```ts
+	 * if (manager.isUseable()) {
+	 * 	console.log("The manager is useable.");
+	 * } else {
+	 * 	console.log("The manager is not useable.");
+	 * }
+	 * ```
 	 */
 	public isUseable(): boolean {
 		const nodes = this.nodeManager.nodes.filter((node) => node.state === State.Connected);
@@ -121,6 +168,15 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 * Get the player for the guild.
 	 * @param {string} guildId The guild id to get the player.
 	 * @returns {Player | undefined} The player for the guild.
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer(guildId);
+	 * if (player) {
+	 * 	console.log(`The player for ${guildId} is ${player}`);
+	 * } else {
+	 * 	console.log(`The player for ${guildId} is not found.`);
+	 * }
+	 * ```
 	 */
 	public getPlayer(guildId: string): Player | undefined {
 		return this.players.get(guildId);
@@ -130,6 +186,15 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 * Delete the player for the guild.
 	 * @param {string} guildId The guild id to delete the player.
 	 * @returns {boolean} If the player was deleted.
+	 * @example
+	 * ```ts
+	 * const player = manager.deletePlayer(guildId);
+	 * if (player) {
+	 * 	console.log(`The player for ${guildId} was deleted.`);
+	 * } else {
+	 * 	console.log(`The player for ${guildId} was not found.`);
+	 * }
+	 * ```
 	 */
 	public deletePlayer(guildId: string): boolean {
 		return this.players.delete(guildId);
@@ -140,6 +205,10 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 * Handle the raw packet.
 	 * @param {GatewayPackets} packet The packet to handle
 	 * @returns {Promise<void>}
+	 * @example
+	 * ```ts
+	 * client.on("raw", (packet) => manager.sendRaw(packet));
+	 * ```
 	 */
 	public async sendRaw(packet: GatewayPackets): Promise<void> {
 		if (!this.ready) {
@@ -235,6 +304,13 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 * Initialize the manager.
 	 * @param {ClientData} info The client data to use.
 	 * @returns {void}
+	 * @example
+	 * ```ts
+	 * manager.init({
+	 * 	id: "clientId",
+	 * 	username: "clientUsername",
+	 * });
+	 * ```
 	 */
 	public init(info: ClientData): void {
 		if (this.ready) return;
@@ -274,6 +350,18 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 * Create a new player.
 	 * @param {PlayerOptions} options The options for the player.
 	 * @returns {Player} The created player.
+	 * @example
+	 * ```ts
+	 * const player = manager.createPlayer({
+	 * 	guildId: "guildId",
+	 * 	voiceId: "voiceId",
+	 * });
+	 *
+	 * console.log(player); // The created player
+	 *
+	 * player.connect();
+	 * player.play(track);
+	 * ```
 	 */
 	public createPlayer(options: PlayerOptions): Player {
 		const oldPlayer: Player | undefined = this.getPlayer(options.guildId);
@@ -292,6 +380,15 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 	 * Search for a track or playlist.
 	 * @param {SearchOptions} options The options for the search.
 	 * @returns {Promise<SearchResult>} The search result.
+	 * @example
+	 * ```ts
+	 * const result = await manager.search({
+	 * 	query: "track name",
+	 * 	engine: SearchEngines.Youtube,
+	 * });
+	 *
+	 * console.log(result); // The search result
+	 * ```
 	 */
 	public async search(options: SearchOptions): Promise<SearchResult> {
 		let node: Node | null = null;

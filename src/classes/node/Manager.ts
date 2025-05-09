@@ -25,6 +25,13 @@ export class NodeManager {
 	 *
 	 * The constructor for the node manager.
 	 * @param {Hoshimi} manager The manager for the node.
+	 * @example
+	 * ```ts
+	 * const manager = new Hoshimi();
+	 * const nodeManager = new NodeManager(manager);
+	 *
+	 * console.log(nodeManager.nodes.size); // 0
+	 * ```
 	 */
 	constructor(manager: Hoshimi) {
 		this.manager = manager;
@@ -35,6 +42,11 @@ export class NodeManager {
 	 * Delete the node.
 	 * @param {string} id The id of the node to delete.
 	 * @returns {boolean} If the node was deleted.
+	 * @example
+	 * ```ts
+	 * const node = manager.nodeManager.getNode("node1");
+	 * if (node) manager.nodeManager.deleteNode(node.id); // true if the node was deleted
+	 * ```
 	 */
 	public deleteNode(id: string): boolean {
 		return this.nodes.delete(id);
@@ -45,6 +57,11 @@ export class NodeManager {
 	 * Get the node by id.
 	 * @param {string} id The id of the node.
 	 * @returns {Node | undefined} The node or undefined if not found.
+	 * @example
+	 * ```ts
+	 * const node = manager.nodeManager.getNode("node1");
+	 * if (node) console.log(node.id); // node1
+	 * ```
 	 */
 	public getNode(id: string): Node | undefined {
 		return this.nodes.get(id);
@@ -54,6 +71,15 @@ export class NodeManager {
 	 *
 	 * Get the least used node.
 	 * @returns {Node} The least used node.
+	 * @example
+	 * ```ts
+	 * const node = manager.nodeManager.getLeastUsedNode();
+	 * if (node) {
+	 * 	console.log(node.id); // node1
+	 * 	console.log(node.penalties); // the penalties of the node
+	 * 	console.log(node.state); // the state of the node
+	 * }
+	 * ```
 	 */
 	public getLeastUsedNode(): Node {
 		const nodes: Node[] = this.nodes.filter((node) => node.state === State.Connected);
@@ -65,6 +91,16 @@ export class NodeManager {
 	 * Create a new node.
 	 * @param {NodeOptions} options The options for the node.
 	 * @returns {Node} The created node.
+	 * @example
+	 * ```ts
+	 * const node = manager.nodeManager.createNode({
+	 * 	host: "localhost",
+	 * 	port: 2333,
+	 * 	password: "password",
+	 *  secure: false,
+	 * });
+	 *
+	 * console.log(node.id); // localhost:2333
 	 */
 	public createNode(options: NodeOptions): Node {
 		options.id ??= `${options.host}:${options.port}`;
@@ -81,6 +117,11 @@ export class NodeManager {
 	 *
 	 * Reconnect the nodes.
 	 * @returns {void}
+	 * @example
+	 * ```ts
+	 * const node = manager.nodeManager.getNode("node1");
+	 * if (node) node.reconnect();
+	 * ```
 	 */
 	public reconnectNodes(): void {
 		if (!this.nodes.size) return;
@@ -93,6 +134,11 @@ export class NodeManager {
 	/**
 	 * Disconnect the nodes.
 	 * @returns {void}
+	 * @example
+	 * ```ts
+	 * const node = manager.nodeManager.getNode("node1");
+	 * if (node) node.disconnect();
+	 * ```
 	 */
 	public disconnectNodes(): void {
 		if (!this.nodes.size) return;
@@ -105,6 +151,11 @@ export class NodeManager {
 	/**
 	 * Connect the nodes.
 	 * @returns {void}
+	 * @example
+	 * ```ts
+	 * const node = manager.nodeManager.getNode("node1");
+	 * if (node) node.connect();
+	 * ```
 	 */
 	public connectNodes(): void {
 		if (!this.nodes.size) return;
@@ -117,6 +168,11 @@ export class NodeManager {
 	/**
 	 * Destroy the nodes.
 	 * @returns {void}
+	 * @example
+	 * ```ts
+	 * const node = manager.nodeManager.getNode("node1");
+	 * if (node) node.destroy();
+	 * ```
 	 */
 	public destroyNodes(): void {
 		if (!this.nodes.size) return;

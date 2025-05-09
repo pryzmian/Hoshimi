@@ -1,7 +1,7 @@
 import type { Node } from "../classes/node/Node";
 import type { Player } from "../classes/Player";
 import type { Queue } from "../classes/queue/Queue";
-import type { InferableRequester, Track } from "../classes/Track";
+import type { TrackRequester, Track } from "../classes/Track";
 import type {
 	Exception,
 	HoshimiNodeOptions,
@@ -417,9 +417,9 @@ export interface SearchResult {
 export interface SearchOptions extends SearchQuery {
 	/**
 	 * The requester of the query.
-	 * @type {InferableRequester}
+	 * @type {TrackRequester}
 	 */
-	requester: InferableRequester;
+	requester: TrackRequester;
 	/**
 	 * The node or the node id to make the query.
 	 * @type {Node | string}

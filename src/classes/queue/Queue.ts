@@ -35,6 +35,15 @@ export class Queue {
 	 *
 	 * Constructor of the queue.
 	 * @param {Player}  player Player instance.
+	 * @example
+	 * ```ts
+	 * const player = new Player();
+	 * const queue = new Queue(player);
+	 *
+	 * console.log(queue.size); // 0
+	 * queue.add(track);
+	 * console.log(queue.size); // 1
+	 * ```
 	 */
 	constructor(player: Player) {
 		this.player = player;
@@ -44,6 +53,24 @@ export class Queue {
 	 * Get the track size of the queue.
 	 * @type {number}
 	 * @returns {number} The track size of the queue.
+	 * @readonly
+	 * @example
+	 * ```ts
+	 * const queue = player.queue;
+	 *
+	 * console.log(queue.size); // 0
+	 * queue.add(track);
+	 *
+	 * console.log(queue.size); // 1
+	 * queue.add([track1, track2]);
+	 *
+	 * console.log(queue.size); // 3
+	 * queue.shift();
+	 * console.log(queue.size); // 2
+	 *
+	 * queue.clear();
+	 * console.log(queue.size); // 0
+	 * ```
 	 */
 	public get size(): number {
 		return this.tracks.length;
@@ -53,6 +80,24 @@ export class Queue {
 	 * Get the total track size of the queue (Includes the current track).
 	 * @type {number}
 	 * @returns {number} The total track size of the queue.
+	 * @readonly
+	 * @example
+	 * ```ts
+	 * const queue = player.queue;
+	 *
+	 * console.log(queue.totalSize); // 0
+	 * queue.add(track);
+	 *
+	 * console.log(queue.totalSize); // 1
+	 * queue.add([track1, track2]);
+	 *
+	 * console.log(queue.totalSize); // 3
+	 * queue.shift();
+	 * console.log(queue.totalSize); // 2
+	 *
+	 * queue.clear();
+	 * console.log(queue.totalSize); // 0
+	 * ```
 	 */
 	public get totalSize(): number {
 		return this.size + Number(!!this.current);
@@ -63,6 +108,19 @@ export class Queue {
 	 * Check if the queue is empty.
 	 * @type {boolean}
 	 * @returns {boolean} True if the queue is empty.
+	 * @readonly
+	 * @example
+	 * ```ts
+	 * const queue = player.queue;
+	 *
+	 * console.log(queue.isEmpty()); // true
+	 * queue.add(track);
+	 *
+	 * console.log(queue.isEmpty()); // false
+	 * queue.clear();
+	 *
+	 * console.log(queue.isEmpty()); // true
+	 * ```
 	 */
 	public isEmpty(): boolean {
 		return this.size === 0;
@@ -73,6 +131,16 @@ export class Queue {
 	 * Get the previous track of the queue.
 	 * @param {boolean} [remove=false] Whether to remove the track from the previous queue.
 	 * @returns {Track | null} The previous track of the queue.
+	 * @example
+	 * ```ts
+	 * const queue = player.queue;
+	 *
+	 * console.log(queue.getPrevious()); // null
+	 * queue.add(track);
+	 * queue.add(track2);
+	 *
+	 * console.log(queue.getPrevious()); // track
+	 * console.log(queue.getPrevious(true)); // track and remove it from the previous tracks
 	 */
 	public getPrevious(remove?: boolean): Track | null {
 		if (remove) return this.previous.shift() ?? null;
@@ -85,6 +153,22 @@ export class Queue {
 	 * @param {Track | Track[]} track The track or tracks to add.
 	 * @param {number} [position] The position to add the track or tracks.
 	 * @returns {this} The queue instance.
+	 * @example
+	 * ```ts
+	 * const queue = player.queue;
+	 *
+	 * console.log(queue.size); // 0
+	 * queue.add(track);
+	 *
+	 * console.log(queue.size); // 1
+	 * queue.add([track1, track2]);
+	 *
+	 * console.log(queue.size); // 3
+	 * queue.add(track3, 1);
+	 *
+	 * console.log(queue.size); // 4
+	 * console.log(queue.tracks); // [track1, track3, track2, track]
+	 * ```
 	 */
 	public add(track: Track | Track[], position?: number): this {
 		if (typeof position === "number" && position >= 0 && position < this.tracks.length) {
@@ -108,6 +192,16 @@ export class Queue {
 	 *
 	 * Get the first track of the queue.
 	 * @returns {Track | null} The first track of the queue.
+	 * @example
+	 * ```ts
+	 * const queue = player.queue;
+	 *
+	 * console.log(queue.shift()); // null
+	 * queue.add(track);
+	 *
+	 * console.log(queue.shift()); // track
+	 * queue.add(track2);
+	 * ```
 	 */
 	public shift(): Track | null {
 		return this.tracks.shift() ?? null;
@@ -118,6 +212,19 @@ export class Queue {
 	 * Add tracks to the beginning of the queue.
 	 * @param {Track[]} tracks The tracks to add.
 	 * @returns {this} The queue instance.
+	 * @example
+	 * ```ts
+	 * const queue = player.queue;
+	 *
+	 * console.log(queue.size); // 0
+	 * queue.unshift(track);
+	 *
+	 * console.log(queue.size); // 1
+	 * queue.unshift([track1, track2]);
+	 *
+	 * console.log(queue.size); // 3
+	 * console.log(queue.tracks); // [track1, track2, track]
+	 * ```
 	 */
 	public unshift(...tracks: Track[]): this {
 		this.tracks.unshift(...tracks);
@@ -134,9 +241,23 @@ export class Queue {
 	/**
 	 *
 	 * Shuffle the queue.
-	 * @returns {Promise<this>} The queue instance.
+	 * @returns {this} The queue instance.
+	 * @example
+	 * ```ts
+	 * const queue = player.queue;
+	 *
+	 * console.log(queue.size); // 0
+	 * queue.add(track);
+	 * queue.add([track1, track2]);
+	 *
+	 * console.log(queue.size); // 3
+	 * console.log(queue.tracks); // [track, track1, track2]
+	 *
+	 * queue.shuffle();
+	 * console.log(queue.tracks); // [track2, track, track1]
+	 * ```
 	 */
-	public async shuffle(): Promise<this> {
+	public shuffle(): this {
 		if (this.size <= 1) return this;
 		if (this.size === 2) [this.tracks[0], this.tracks[1]] = [this.tracks[1]!, this.tracks[0]!];
 		else {
@@ -160,6 +281,18 @@ export class Queue {
 	 *
 	 * Clear the queue.
 	 * @returns {this} The queue instance.
+	 * @example
+	 * ```ts
+	 * const queue = player.queue;
+	 *
+	 * console.log(queue.size); // 0
+	 * queue.add(track);
+	 * queue.add([track1, track2]);
+	 *
+	 * console.log(queue.size); // 3
+	 * queue.clear();
+	 * console.log(queue.size); // 0
+	 * ```
 	 */
 	public clear(): this {
 		this.tracks = [];

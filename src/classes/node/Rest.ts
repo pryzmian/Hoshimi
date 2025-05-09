@@ -109,6 +109,18 @@ export class Rest {
 	 *
 	 * Create a new REST.
 	 * @param {Node} node The node for the REST.
+	 * @example
+	 * ```ts
+	 * const node = new Node({
+	 * 	host: "localhost",
+	 * 	port: 2333,
+	 * 	password: "youshallnotpass",
+	 * 	secure: false,
+	 * });
+	 *
+	 * const rest = new Rest(node);
+	 * console.log(rest.restUrl); // http://localhost:2333/v4
+	 * ```
 	 */
 	constructor(node: Node) {
 		const manager: Hoshimi = node.nodeManager.manager;
@@ -206,11 +218,24 @@ export class Rest {
 	 * Update the player data.
 	 * @param {Partial<UpdatePlayerInfo>} data The player data to update.
 	 * @returns {LavalinkPlayer | null} The updated player data.
+	 * @example
+	 * ```ts
+	 * const player = await node.rest.updatePlayer({
+	 * 	guildId: "guildId",
+	 * 	noReplace: true,
+	 * 	playerOptions: {
+	 * 		paused: false,
+	 * 		track: { encoded: "encoded track" },
+	 * 	},
+	 * });
+	 *
+	 * console.log(player); // The updated lavalink player data
+	 * ```
 	 */
 	public async updatePlayer(data: Partial<UpdatePlayerInfo>): Promise<LavalinkPlayer | null> {
 		if (!this.sessionId) return null;
 
-		const res = await this.request<LavalinkPlayer>({
+		const player = await this.request<LavalinkPlayer>({
 			method: HttpMethods.Patch,
 			endpoint: `/sessions/${this.sessionId}/players/${data.guildId}`,
 			body: { ...data.playerOptions },
@@ -225,7 +250,7 @@ export class Rest {
 
 		validatePlayerData.call(this.node, data);
 
-		return res;
+		return player;
 	}
 
 	/**
@@ -233,6 +258,11 @@ export class Rest {
 	 * Stop the track in player for the guild.
 	 * @param {string} guildId the guild id to stop the player
 	 * @returns {Promise<LavalinkPlayer | null>} The updated player data.
+	 * @example
+	 * ```ts
+	 * const player = await node.rest.stopPlayer("guildId");
+	 * if (player) console.log(player); // The lavalink player
+	 * ```
 	 */
 	public stopPlayer(guildId: string): Promise<LavalinkPlayer | null> {
 		if (!this.sessionId) return Promise.resolve(null);
@@ -256,6 +286,12 @@ export class Rest {
 	 *
 	 * Destroy the player for the guild.
 	 * @param {string} guildId The guild id to destroy the player.
+	 * @returns {Promise<void>} The updated player data.
+	 * @example
+	 * ```ts
+	 * await node.rest.destroyPlayer("guildId");
+	 * ```
+	 * @example
 	 */
 	public async destroyPlayer(guildId: string): Promise<void> {
 		if (!this.sessionId) return;
@@ -278,6 +314,11 @@ export class Rest {
 	 * @param {boolean} resuming Enable resuming for the session.
 	 * @param {number | null} timeout The timeout for the session.
 	 * @returns {Promise<LavalinkSession | null>} The updated session data.
+	 * @example
+	 * ```ts
+	 * const session = await node.rest.updateSession(true, 10000);
+	 * if (session) console.log(session); // The lavalink session data
+	 * ```
 	 */
 	public updateSession(
 		resuming: boolean,

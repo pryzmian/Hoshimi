@@ -150,6 +150,20 @@ export class Player {
 	 * Create a new player.
 	 * @param {Hoshimi} manager The manager for the player.
 	 * @param {PlayOptions} options The options for the player.
+	 * @example
+	 * ```ts
+	 * const player = new Player(manager, {
+	 * 	guildId: "guildId",
+	 * 	voiceId: "voiceId",
+	 * 	textId: "textId",
+	 * 	selfDeaf: true,
+	 * 	selfMute: false,
+	 * 	volume: 100,
+	 * });
+	 *
+	 * console.log(player.guildId); // guildId
+	 * console.log(player.voiceId); // voiceId
+	 * console.log(player.textId); // textId
 	 */
 	constructor(manager: Hoshimi, options: PlayerOptions) {
 		this.manager = manager;
@@ -163,9 +177,9 @@ export class Player {
 		this.volume = options.volume ?? 100;
 		this.textId = options.textId;
 
-		this.queue = new Queue(this);
-
 		validatePlayerOptions(this.options);
+
+		this.queue = new Queue(this);
 	}
 
 	/**
@@ -173,6 +187,11 @@ export class Player {
 	 * The node for the player.
 	 * @type {Node}
 	 * @readonly
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * const node = player.node;
+	 * ```
 	 */
 	public get node(): Node {
 		return (
@@ -188,6 +207,12 @@ export class Player {
 	 * @param {K} key The key to set the data to.
 	 * @param {V} value The value to set the data to.
 	 * @returns {this} The player.
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * player.set("key", "value")
+	 * player.set("key2", "value2");
+	 * ```
 	 */
 	public set<K extends StorageKeys = StorageKeys, V extends StorageValues<K> = StorageValues<K>>(
 		key: K,
@@ -202,6 +227,12 @@ export class Player {
 	 * Get the data from the player.
 	 * @param {K} key The key to get the data from.
 	 * @returns {V | undefined} The data from the player.
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * player.get("key"); // "value"
+	 * player.get("key2"); // undefined
+	 * ```
 	 */
 	public get<K extends StorageKeys = StorageKeys, V extends StorageValues<K> = StorageValues<K>>(
 		key: K,
@@ -214,6 +245,12 @@ export class Player {
 	 * Delete the data from the player.
 	 * @param {K} key The key to delete the data from.
 	 * @returns {boolean} If the data was deleted.
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * player.delete("key"); // true
+	 * player.delete("key2"); // false
+	 * ```
 	 */
 	public delete<K extends StorageKeys = StorageKeys>(key: K): boolean {
 		return this.data.delete(key);
@@ -224,6 +261,12 @@ export class Player {
 	 * Check if the data exists in the player.
 	 * @param {K} key The key to get the data from.
 	 * @returns {V | undefined} The data from the player.
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * player.has("key"); // true
+	 * player.has("key2"); // false
+	 * ```
 	 */
 	public has<K extends StorageKeys = StorageKeys>(key: K): boolean {
 		return this.data.has(key);
@@ -234,6 +277,17 @@ export class Player {
 	 * Search for a track or playlist.
 	 * @param {SearchOptions} options The options for the search.
 	 * @returns {Promise<SearchResult>} The search result.
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * const result = await player.search({
+	 * 	query: "track name",
+	 * 	engine: SearchEngine.Youtube,
+	 * 	requester: {},
+	 * });
+	 *
+	 * console.log(result) // the search result
+	 * ```
 	 */
 	public search(options: SearchOptions): Promise<SearchResult> {
 		return this.manager.search({
@@ -247,6 +301,13 @@ export class Player {
 	 * Play the next track in the queue.
 	 * @param {number} [to] The amount of tracks to skip.
 	 * @returns {Promise<void>}
+	 * @throws {PlayerError} If there are no tracks to skip.
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * player.skip(2); // skip 2 tracks
+	 * player.skip(); // skip 1 track
+	 * ```
 	 */
 	public async skip(to: number = 0): Promise<void> {
 		if (!this.queue.size) {
@@ -271,14 +332,17 @@ export class Player {
 		if (!this.playing && !this.queue.current) return this.play();
 
 		await this.node.stopPlayer(this.guildId);
-
-		return;
 	}
 
 	/**
 	 *
 	 * Disconnect the player from the voice channel.
 	 * @returns {Promise<void>}
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * player.disconnect();
+	 * ```
 	 */
 	public async disconnect(): Promise<void> {
 		if (!this.voiceId) return;
@@ -301,6 +365,11 @@ export class Player {
 	 * Destroy and disconnect the player.
 	 * @param {DestroyReasons} [reason] The reason for destroying the player.
 	 * @returns {Promise<void>}
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * player.destroy(DestroyReasons.Stop);
+	 * ```
 	 */
 	public async destroy(reason: DestroyReasons = DestroyReasons.Stop): Promise<boolean> {
 		await this.disconnect();
@@ -320,6 +389,17 @@ export class Player {
 	 *
 	 * Play a track in the player.
 	 * @param {Partial<PlayOptions>} [options] The options to play the track.
+	 * @returns {Promise<void>}
+	 * @throws {PlayerError} If there are no tracks to play.
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 *
+	 * player.play({
+	 * 	track: track,
+	 * 	noReplace: true,
+	 * });
+	 * ```
 	 */
 	public async play(options: Partial<PlayOptions> = {}): Promise<void> {
 		if (options.track) this.queue.current = options.track;
@@ -348,6 +428,11 @@ export class Player {
 	/**
 	 * Connect the player to the voice channel.
 	 * @returns {Promise<void>}
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * player.connect();
+	 * ```
 	 */
 	public async connect(): Promise<void> {
 		if (!this.voiceId) return;
@@ -368,21 +453,33 @@ export class Player {
 	/**
 	 *
 	 * Stop the player from playing.
+	 * @param {boolean} [destroy=true] Whether to destroy the player or not.
 	 * @returns {Promise<void>}
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * player.stop();
+	 * ```
 	 */
-	public async stop(): Promise<void> {
+	public async stop(destroy: boolean = true): Promise<void> {
 		await this.node.stopPlayer(this.guildId);
+
+		if (destroy) await this.destroy(DestroyReasons.Stop);
 
 		this.playing = false;
 		this.paused = false;
-
-		return;
 	}
 
 	/**
 	 *
 	 * Return the player as a json object.
 	 * @returns {PlayerJson}
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * const json = player.toJSON();
+	 * console.log(json); // the player as a json object
+	 * ```
 	 */
 	public toJSON(): PlayerJson {
 		return {
