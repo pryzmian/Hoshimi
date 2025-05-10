@@ -47,18 +47,6 @@ export class NodeError extends Error {
 }
 
 /**
- * Error class for merging options.
- * @class MergeError
- * @extends {Error}
- */
-export class MergeError extends Error {
-	constructor(message: string) {
-		super(message);
-		this.name = "Hoshimi [MergeError]";
-	}
-}
-
-/**
  * Error options for the node.
  */
 interface NodeErrorOptions {
