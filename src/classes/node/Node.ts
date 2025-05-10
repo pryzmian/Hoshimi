@@ -289,7 +289,7 @@ export class Node {
 		this.nodeManager.manager.emit(
 			Events.Debug,
 			DebugLevels.Node,
-			`[Socket] -> [${this.id}]: Connecting to ${this.address}... | State: ${this.state} | Session: ${this.sessionId} | Resumed: ${this.session.resuming} | Penalties: ${this.penalties} | Reconnects: ${this.retryAmount} | Headers: ${JSON.stringify(headers)}`,
+			`[Socket] -> [${this.id}]: Connecting to ${this.address} | State: ${this.state} | Session: ${this.sessionId} | Resumed: ${this.session.resuming} | Penalties: ${this.penalties} | Reconnects: ${this.retryAmount} | Headers: ${JSON.stringify(headers)}`,
 		);
 	}
 

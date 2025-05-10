@@ -19,7 +19,7 @@ import {
  * @param {this} this The player that emitted the event.
  * @returns {Promise<void>} The promise, nothing new.
  */
-async function handleTrackEnd(this: Player): Promise<void> {
+async function onTrackEnd(this: Player): Promise<void> {
 	if (
 		this.queue.current &&
 		!this.queue.previous.find(
@@ -80,7 +80,7 @@ async function queueEnd(
 			"[Queue] -> [Autoplay] Autoplay function executed.",
 		);
 
-		if (this.queue.size > 0) await handleTrackEnd.call(this);
+		if (this.queue.size > 0) await onTrackEnd.call(this);
 		if (this.queue.current) {
 			if (payload.type === PlayerEventType.TrackEnd)
 				this.manager.emit(Events.TrackEnd, this, track, payload);
@@ -137,6 +137,10 @@ export async function trackEnd(this: Player, payload: TrackEndEvent): Promise<vo
 		return queueEnd.call(this, current, payload);
 
 	switch (payload.reason) {
+		case TrackEndReason.Stopped:
+			// soontm
+			break;
+
 		case TrackEndReason.Replaced: {
 			this.manager.emit(Events.TrackEnd, this, current, payload);
 			return;
@@ -146,7 +150,7 @@ export async function trackEnd(this: Player, payload: TrackEndEvent): Promise<vo
 		case TrackEndReason.Cleanup: {
 			this.playing = false;
 
-			await handleTrackEnd.call(this);
+			await onTrackEnd.call(this);
 
 			if (!this.queue.size || !this.queue.current)
 				return queueEnd.call(this, current, payload);
@@ -166,7 +170,7 @@ export async function trackEnd(this: Player, payload: TrackEndEvent): Promise<vo
 
 	//if (current) await this.queue.utils.save();
 
-	await handleTrackEnd.call(this);
+	await onTrackEnd.call(this);
 
 	this.queue.current = null;
 

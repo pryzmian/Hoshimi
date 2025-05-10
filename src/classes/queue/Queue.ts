@@ -141,8 +141,9 @@ export class Queue {
 	 *
 	 * console.log(queue.getPrevious()); // track
 	 * console.log(queue.getPrevious(true)); // track and remove it from the previous tracks
+	 * ```
 	 */
-	public getPrevious(remove?: boolean): Track | null {
+	public getPrevious(remove: boolean = false): Track | null {
 		if (remove) return this.previous.shift() ?? null;
 		return this.previous[0] ?? null;
 	}
@@ -158,14 +159,14 @@ export class Queue {
 	 * const queue = player.queue;
 	 *
 	 * console.log(queue.size); // 0
+	 *
 	 * queue.add(track);
-	 *
 	 * console.log(queue.size); // 1
+	 *
 	 * queue.add([track1, track2]);
-	 *
 	 * console.log(queue.size); // 3
-	 * queue.add(track3, 1);
 	 *
+	 * queue.add(track3, 1);
 	 * console.log(queue.size); // 4
 	 * console.log(queue.tracks); // [track1, track3, track2, track]
 	 * ```
@@ -297,6 +298,7 @@ export class Queue {
 	public clear(): this {
 		this.tracks = [];
 		this.previous = [];
+
 		this.current = null;
 
 		this.player.manager.emit(Events.QueueUpdate, this.player, this);

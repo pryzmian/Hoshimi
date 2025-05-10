@@ -16,7 +16,7 @@ importers:
         version: link:..
       seyfert:
         specifier: github:tiramisulabs/seyfert
-        version: https://codeload.github.com/tiramisulabs/seyfert/tar.gz/23c9c2a7105b00270ba440204da343c8823624f7
+        version: https://codeload.github.com/tiramisulabs/seyfert/tar.gz/92ab65be7bc75624d41da2e980d7152ff095e0b1
       yunaforseyfert:
         specifier: github:SagiriIkeda/yunaforseyfert
         version: https://codeload.github.com/SagiriIkeda/yunaforseyfert/tar.gz/b4e47dd94e75ad2aa849813d07348b433a8faaac
@@ -25,8 +25,8 @@ importers:
         specifier: ^1.9.4
         version: 1.9.4
       '@types/node':
-        specifier: ^22.15.16
-        version: 22.15.16
+        specifier: ^22.15.17
+        version: 22.15.17
       tsx:
         specifier: ^4.19.4
         version: 4.19.4
@@ -239,8 +239,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@types/node@22.15.16':
-    resolution: {integrity: sha512-3pr+KjwpVujqWqOKT8mNR+rd09FqhBLwg+5L/4t0cNYBzm/yEiYGCxWttjaPBsLtAo+WFNoXzGJfolM1JuRXoA==}
+  '@types/node@22.15.17':
+    resolution: {integrity: sha512-wIX2aSZL5FE+MR0JlvF87BNVrtFWf6AE6rxSE9X7OwnVvoyCQjpzSRJ+M87se/4QCkCiebQAqrJ0y6fwIyi7nw==}
 
   dotenv@16.5.0:
     resolution: {integrity: sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==}
@@ -262,8 +262,8 @@ packages:
   resolve-pkg-maps@1.0.0:
     resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
 
-  seyfert@https://codeload.github.com/tiramisulabs/seyfert/tar.gz/23c9c2a7105b00270ba440204da343c8823624f7:
-    resolution: {tarball: https://codeload.github.com/tiramisulabs/seyfert/tar.gz/23c9c2a7105b00270ba440204da343c8823624f7}
+  seyfert@https://codeload.github.com/tiramisulabs/seyfert/tar.gz/92ab65be7bc75624d41da2e980d7152ff095e0b1:
+    resolution: {tarball: https://codeload.github.com/tiramisulabs/seyfert/tar.gz/92ab65be7bc75624d41da2e980d7152ff095e0b1}
     version: 3.1.2
 
   tsx@4.19.4:
@@ -395,7 +395,7 @@ snapshots:
   '@esbuild/win32-x64@0.25.4':
     optional: true
 
-  '@types/node@22.15.16':
+  '@types/node@22.15.17':
     dependencies:
       undici-types: 6.21.0
 
@@ -438,7 +438,7 @@ snapshots:
 
   resolve-pkg-maps@1.0.0: {}
 
-  seyfert@https://codeload.github.com/tiramisulabs/seyfert/tar.gz/23c9c2a7105b00270ba440204da343c8823624f7: {}
+  seyfert@https://codeload.github.com/tiramisulabs/seyfert/tar.gz/92ab65be7bc75624d41da2e980d7152ff095e0b1: {}
 
   tsx@4.19.4:
     dependencies:
