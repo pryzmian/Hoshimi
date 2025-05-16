@@ -196,8 +196,8 @@ export class Player {
 	public get node(): Node {
 		return (
 			(typeof this.options.node === "string"
-				? this.manager.nodeManager.getNode(this.options.node)
-				: this.options.node) ?? this.manager.nodeManager.getLeastUsedNode()
+				? this.manager.nodeManager.get(this.options.node)
+				: this.options.node) ?? this.manager.nodeManager.getLeastUsed()
 		);
 	}
 

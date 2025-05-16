@@ -327,7 +327,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 		let amount = 0;
 
 		for (const options of this.options.nodes) {
-			const node = this.nodeManager.createNode(options);
+			const node = this.nodeManager.create(options);
 
 			try {
 				node.connect();
@@ -397,9 +397,9 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 			const nodeId: string =
 				typeof options.node === "string" ? options.node : options.node.id;
 
-			node = this.nodeManager.getNode(nodeId) ?? null;
+			node = this.nodeManager.get(nodeId) ?? null;
 		} else {
-			node = this.nodeManager.getLeastUsedNode();
+			node = this.nodeManager.getLeastUsed();
 		}
 
 		if (!node) throw new ManagerError("No nodes are available.");

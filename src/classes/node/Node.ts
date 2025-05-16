@@ -156,7 +156,7 @@ export class Node {
 	 * @readonly
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) {
 	 * 	console.log(node.id); // node1
 	 * 	console.log(node.address); // ws://localhost:2333/v4/websocket
@@ -175,7 +175,7 @@ export class Node {
 	 * @readonly
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) {
 	 * 	console.log(node.id); // node1
 	 * 	console.log(node.address); // ws://localhost:2333/v4/websocket
@@ -194,7 +194,7 @@ export class Node {
 	 * @readonly
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) {
 	 * 	console.log(node.id); // node1
 	 * 	console.log(node.address); // ws://localhost:2333/v4/websocket
@@ -220,7 +220,7 @@ export class Node {
 	 * @returns {Promise<LavalinkSearchResponse | null>}
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) {
 	 * 	const search = await node.search({
 	 * 		query: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
@@ -248,7 +248,7 @@ export class Node {
 	 * @throws {NodeError} If the client data is not valid
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) node.connect();
 	 * ```
 	 */
@@ -300,7 +300,7 @@ export class Node {
 	 * @returns {Promise<LavalinkPlayer | null>}
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) {
 	 * 	const player = await node.stopPlayer("guildId");
 	 * 	console.log(player); // the lavalink player
@@ -318,7 +318,7 @@ export class Node {
 	 * @returns {Promise<LavalinkPlayer | null>}
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) {
 	 * 	const player = await node.updatePlayer({
 	 * 		guildId: "guildId",
@@ -341,7 +341,7 @@ export class Node {
 	 * @param {string} guildId The guild id to destroy the player.
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) await node.destroyPlayer("guildId");
 	 * console.log("Player destroyed");
 	 * ```
@@ -357,7 +357,7 @@ export class Node {
 	 * @returns {void}
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) node.disconnect();
 	 * console.log("Node disconnected");
 	 * ```
@@ -384,7 +384,7 @@ export class Node {
 	 * @returns {void}
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) node.destroy();
 	 * console.log("Node destroyed");
 	 * ```
@@ -402,7 +402,7 @@ export class Node {
 		if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
 
 		this.nodeManager.manager.emit(Events.NodeDestroy, this, destroy);
-		this.nodeManager.deleteNode(this.id);
+		this.nodeManager.delete(this.id);
 	}
 
 	/**
@@ -413,7 +413,7 @@ export class Node {
 	 * @returns {Promise<LavalinkSession | null>}
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) {
 	 * 	const session = await node.updateSession(true, 60);
 	 * 	console.log(session); // the lavalink session
@@ -438,7 +438,7 @@ export class Node {
 	 * @throws {NodeError} If the node is not connected
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) node.reconnect();
 	 * console.log("Node reconnected");
 	 * ```

@@ -44,11 +44,11 @@ export class NodeManager {
 	 * @returns {boolean} If the node was deleted.
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
-	 * if (node) manager.nodeManager.deleteNode(node.id); // true if the node was deleted
+	 * const node = manager.nodeManager.get("node1");
+	 * if (node) manager.nodeManager.delete(node.id); // true if the node was deleted
 	 * ```
 	 */
-	public deleteNode(id: string): boolean {
+	public delete(id: string): boolean {
 		return this.nodes.delete(id);
 	}
 
@@ -59,11 +59,11 @@ export class NodeManager {
 	 * @returns {Node | undefined} The node or undefined if not found.
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) console.log(node.id); // node1
 	 * ```
 	 */
-	public getNode(id: string): Node | undefined {
+	public get(id: string): Node | undefined {
 		return this.nodes.get(id);
 	}
 
@@ -81,7 +81,7 @@ export class NodeManager {
 	 * }
 	 * ```
 	 */
-	public getLeastUsedNode(): Node {
+	public getLeastUsed(): Node {
 		const nodes: Node[] = this.nodes.filter((node) => node.state === State.Connected);
 		return nodes.reduce((a, b) => (a.penalties < b.penalties ? a : b));
 	}
@@ -93,7 +93,7 @@ export class NodeManager {
 	 * @returns {Node} The created node.
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.createNode({
+	 * const node = manager.nodeManager.create({
 	 * 	host: "localhost",
 	 * 	port: 2333,
 	 * 	password: "password",
@@ -102,7 +102,7 @@ export class NodeManager {
 	 *
 	 * console.log(node.id); // localhost:2333
 	 */
-	public createNode(options: NodeOptions): Node {
+	public create(options: NodeOptions): Node {
 		options.id ??= `${options.host}:${options.port}`;
 
 		const oldNode: Node | undefined = this.nodes.get(options.id);
@@ -119,7 +119,7 @@ export class NodeManager {
 	 * @returns {void}
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) node.reconnect();
 	 * ```
 	 */
@@ -136,7 +136,7 @@ export class NodeManager {
 	 * @returns {void}
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) node.disconnect();
 	 * ```
 	 */
@@ -153,7 +153,7 @@ export class NodeManager {
 	 * @returns {void}
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) node.connect();
 	 * ```
 	 */
@@ -170,7 +170,7 @@ export class NodeManager {
 	 * @returns {void}
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getNode("node1");
+	 * const node = manager.nodeManager.get("node1");
 	 * if (node) node.destroy();
 	 * ```
 	 */
