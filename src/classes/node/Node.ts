@@ -237,8 +237,11 @@ export class Node {
 		const identifier = validateQuery(search);
 
 		return this.rest.request<LavalinkSearchResponse>({
-			endpoint: `/loadtracks?identifier=${identifier}`,
-			params: search.params,
+			endpoint: "/loadtracks",
+			params: {
+				identifier,
+				...search.params,
+			},
 		});
 	}
 

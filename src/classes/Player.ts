@@ -274,6 +274,54 @@ export class Player {
 
 	/**
 	 *
+	 * Get the data from the player.
+	 * @returns {MapIterator<StorageValues>} The data from the player.
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * player.values<"key1" | "key2">(); // the player data values from the player
+	 * ```
+	 */
+	public values<
+		K extends StorageKeys = StorageKeys,
+		V extends StorageValues<K> = StorageValues<K>,
+	>(): MapIterator<V> {
+		return this.data.values() as MapIterator<V>;
+	}
+
+	/**
+	 *
+	 * Get the keys from the player.
+	 * @returns {MapIterator<StorageKeys>} The keys from the player.
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * player.keys<"key1" | "key2">(); // the player data keys from the player
+	 * ```
+	 */
+	public keys<K extends StorageKeys = StorageKeys>(): MapIterator<K> {
+		return this.data.keys() as MapIterator<K>;
+	}
+
+	/**
+	 *
+	 * Get the data from the player.
+	 * @returns {Map<StorageKeys, StorageValues>} The data from the player.
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * player.entries<"key1" | "key2">(); // the player data entries from the player
+	 * ```
+	 */
+	public entries<
+		K extends StorageKeys = StorageKeys,
+		V extends StorageValues<K> = StorageValues<K>,
+	>(): MapIterator<[K, V]> {
+		return this.data.entries() as MapIterator<[K, V]>;
+	}
+
+	/**
+	 *
 	 * Search for a track or playlist.
 	 * @param {SearchOptions} options The options for the search.
 	 * @returns {Promise<SearchResult>} The search result.
@@ -507,6 +555,7 @@ export interface CustomizablePlayerStorage {}
  * Type representing the customizable player storage.
  */
 type StorageKeys = keyof CustomizablePlayerStorage | (string & {});
+
 /**
  * Type representing the customizable player storage values.
  */

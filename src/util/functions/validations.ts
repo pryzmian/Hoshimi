@@ -83,16 +83,14 @@ export function validateQuery(search: SearchQuery): string {
 
 		if (isUrl) return sliced;
 
-		return `${engineKey}:${encodeURIComponent(sliced)}`;
+		return `${engineKey}:${sliced}`;
 	}
 
 	const isUrl = UrlRegex.test(query);
 	if (isUrl) return query;
 
-	if (search.engine === SearchEngines.FloweryTTS)
-		return `${search.engine}://${encodeURIComponent(query)}`;
-	if (search.engine !== SearchEngines.Local)
-		return `${search.engine}:${encodeURIComponent(query)}`;
+	if (search.engine === SearchEngines.FloweryTTS) return `${search.engine}://${query}`;
+	if (search.engine !== SearchEngines.Local) return `${search.engine}:${query}`;
 
 	return query;
 }

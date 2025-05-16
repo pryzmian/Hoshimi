@@ -172,8 +172,10 @@ export class Rest {
 			}
 		}
 
+		url.searchParams.append("trace", "true");
+
 		const abortController = new AbortController();
-		const timeout = setTimeout(() => abortController.abort(), this.restTimeout);
+		const timeout = setTimeout((): void => abortController.abort(), this.restTimeout);
 
 		const fetchOptions: FetchOptions = {
 			headers,

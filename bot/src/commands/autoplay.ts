@@ -28,7 +28,7 @@ export default class AutoplayCommand extends Command {
 
 		player.set("enabledAutoplay", !player.get("enabledAutoplay"));
 
-		const autoplay = player.get("enabledAutoplay");
+		const autoplay = !!player.get("enabledAutoplay");
 		const type = autoplay ? "enabled" : "disabled";
 
 		await ctx.editOrReply({ content: `Autoplay is now **${type}**.` });
