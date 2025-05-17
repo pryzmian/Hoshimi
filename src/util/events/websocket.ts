@@ -1,6 +1,12 @@
 import type { IncomingMessage } from "node:http";
 import type { Node } from "../../classes/node/Node";
-import { type LavalinkPayload, State, OpCodes, type NodeInfo } from "../../types/Node";
+import {
+	type LavalinkPayload,
+	State,
+	OpCodes,
+	type NodeInfo,
+	WebsocketCloseCodes,
+} from "../../types/Node";
 import { DebugLevels, Events } from "../../types/Manager";
 import { PlayerEventType } from "../../types/Player";
 import { playerUpdate, trackEnd, trackStart } from "./player";
@@ -42,7 +48,7 @@ export function onClose(this: Node, code: number, reason: string): void {
 
 	this.nodeManager.manager.emit(Events.NodeDisconnect, this);
 
-	if (code !== 1000 || reason !== "Node-Destroy") {
+	if (code !== WebsocketCloseCodes.NormalClosure || reason !== "Node-Destroy") {
 		if (this.nodeManager.nodes.has(this.id)) this.reconnect();
 	}
 }

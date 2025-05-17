@@ -198,6 +198,28 @@ export enum PluginInfoType {
 }
 
 /**
+ * The websocket close codes.
+ */
+export enum WebsocketCloseCodes {
+	/**
+	 * The websocket close code for normal closure.
+	 */
+	NormalClosure = 1000,
+	/**
+	 * The websocket close code for going away.
+	 */
+	GoingAway = 1001,
+	/**
+	 * The websocket close code for protocol error.
+	 */
+	ProtocolError = 1002,
+	/**
+	 * The websocket close code for unsupported data.
+	 */
+	UnsupportedData = 1003,
+}
+
+/**
  * The track result.
  */
 interface TrackResult {
@@ -876,9 +898,9 @@ export interface HoshimiNodeOptions {
 export interface NodeDestroyInfo {
 	/**
 	 * The code for the destroy.
-	 * @type {number | undefined}
+	 * @type {WebsocketCloseCodes | undefined}
 	 */
-	code?: number;
+	code?: WebsocketCloseCodes;
 	/**
 	 * The reason for the destroy.
 	 * @type {string | undefined}

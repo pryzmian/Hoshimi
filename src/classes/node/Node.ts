@@ -8,6 +8,7 @@ import {
 	type NodeInfo,
 	type NodeDestroyInfo,
 	type NodeDisconnectInfo,
+	WebsocketCloseCodes,
 } from "../../types/Node";
 
 import { NodeError } from "../Errors";
@@ -460,7 +461,7 @@ export class Node {
 			this.reconnectTimeout = null;
 
 			if (this.retryAmount === 0) {
-				this.destroy({ code: 1000, reason: "Node-Destroy" });
+				this.destroy({ code: WebsocketCloseCodes.NormalClosure, reason: "Node-Destroy" });
 				this.nodeManager.manager.emit(
 					Events.NodeError,
 					this,

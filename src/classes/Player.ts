@@ -467,6 +467,7 @@ export class Player {
 			playerOptions: {
 				...options,
 				track: {
+					userData: this.queue.current.userData,
 					encoded: this.queue.current.encoded,
 				},
 			},

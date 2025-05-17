@@ -24,6 +24,12 @@ export class Track {
 	readonly pluginInfo: PluginInfo;
 
 	/**
+	 * The track user data.
+	 * @type {Record<string, unknown>}
+	 */
+	readonly userData: Record<string, unknown>;
+
+	/**
 	 * The requester of the track.
 	 * @type {TrackRequester}
 	 */
@@ -45,7 +51,7 @@ export class Track {
 	 * 	// the rest of the track info
 	 * }, requester);
 	 *
-	 * console.log(track.encoded); // base64encodedtrack
+	 * console.log(track.encoded); // the track encoded in base64
 	 * ```
 	 */
 	constructor(track: LavalinkTrack, requester: TrackRequester) {
@@ -53,6 +59,7 @@ export class Track {
 		this.encoded = track.encoded;
 		this.requester = requester;
 		this.pluginInfo = track.pluginInfo;
+		this.userData = track.userData ?? {};
 	}
 
 	/**

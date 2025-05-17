@@ -22,17 +22,17 @@ import {
 async function onTrackEnd(this: Player): Promise<void> {
 	if (
 		this.queue.current &&
-		!this.queue.previous.find(
+		!this.queue.history.find(
 			(x) =>
 				x.info.identifier === this.queue.current!.info.identifier &&
 				x.info.title === this.queue.current!.info.title,
 		)
 	) {
-		this.queue.previous.unshift(this.queue.current);
-		if (this.queue.previous.length > this.manager.options.queueOptions.maxPreviousTracks!)
-			this.queue.previous.splice(
+		this.queue.history.unshift(this.queue.current);
+		if (this.queue.history.length > this.manager.options.queueOptions.maxPreviousTracks!)
+			this.queue.history.splice(
 				this.manager.options.queueOptions.maxPreviousTracks!,
-				this.queue.previous.length,
+				this.queue.history.length,
 			);
 
 		//await this.queue.utils.save();

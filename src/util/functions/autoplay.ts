@@ -35,15 +35,14 @@ export async function autoplayFn(player: Player, lastTrack: Track | null): Promi
 		tracks.filter(
 			(track) =>
 				!(
-					player.queue.previous.some(
-						(t) => t.info.identifier === track.info.identifier,
-					) || lastTrack.info.identifier === track.info.identifier
+					player.queue.history.some((t) => t.info.identifier === track.info.identifier) ||
+					lastTrack.info.identifier === track.info.identifier
 				),
 		);
 
 	switch (lastTrack.info.sourceName) {
 		case SourceNames.Spotify: {
-			const filtered = player.queue.previous
+			const filtered = player.queue.history
 				.filter(({ info }) => info.sourceName === SourceNames.Spotify)
 				.slice(0, 1);
 			if (!filtered.length) filtered.push(lastTrack);

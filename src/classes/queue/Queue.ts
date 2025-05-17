@@ -17,7 +17,7 @@ export class Queue {
 	 * Previous tracks of the queue.
 	 * @type {Track[]}
 	 */
-	public previous: Track[] = [];
+	public history: Track[] = [];
 
 	/**
 	 * Current track of the queue.
@@ -34,7 +34,7 @@ export class Queue {
 	/**
 	 *
 	 * Constructor of the queue.
-	 * @param {Player}  player Player instance.
+	 * @param {Player} player Player instance.
 	 * @example
 	 * ```ts
 	 * const player = new Player();
@@ -135,17 +135,17 @@ export class Queue {
 	 * ```ts
 	 * const queue = player.queue;
 	 *
-	 * console.log(queue.getPrevious()); // null
+	 * console.log(queue.previous()); // null
 	 * queue.add(track);
 	 * queue.add(track2);
 	 *
-	 * console.log(queue.getPrevious()); // track
-	 * console.log(queue.getPrevious(true)); // track and remove it from the previous tracks
+	 * console.log(queue.previous()); // track
+	 * console.log(queue.previous(true)); // track and remove it from the previous tracks
 	 * ```
 	 */
-	public getPrevious(remove: boolean = false): Track | null {
-		if (remove) return this.previous.shift() ?? null;
-		return this.previous[0] ?? null;
+	public previous(remove: boolean = false): Track | null {
+		if (remove) return this.history.shift() ?? null;
+		return this.history[0] ?? null;
 	}
 
 	/**
@@ -172,13 +172,10 @@ export class Queue {
 	 * ```
 	 */
 	public add(track: Track | Track[], position?: number): this {
-		if (typeof position === "number" && position >= 0 && position < this.tracks.length) {
-			this.tracks.splice(position, 0, ...(Array.isArray(track) ? track : [track]));
-			return this;
-		}
+		if (typeof position === "number" && position >= 0 && position < this.tracks.length)
+			return this.splice(position, 0, ...(Array.isArray(track) ? track : [track]));
 
-		if (Array.isArray(track)) this.tracks.push(...track);
-		else this.tracks.push(track);
+		this.tracks.push(...(Array.isArray(track) ? track : [track]));
 
 		this.player.manager.emit(
 			Events.Debug,
@@ -297,7 +294,7 @@ export class Queue {
 	 */
 	public clear(): this {
 		this.tracks = [];
-		this.previous = [];
+		this.history = [];
 
 		this.current = null;
 
@@ -322,7 +319,7 @@ export class Queue {
 		const index = this.tracks.indexOf(track);
 		if (index === -1) return this;
 
-		this.tracks.splice(index, 1);
+		this.splice(index, 1);
 		this.add(track, to - 1);
 
 		this.player.manager.emit(Events.QueueUpdate, this.player, this);
@@ -366,15 +363,15 @@ export class Queue {
 	 * @returns {QueueJson} The queue JSON object.
 	 */
 	public toJSON(): QueueJson {
-		if (this.previous.length > this.player.manager.options.queueOptions.maxPreviousTracks!)
-			this.previous.splice(
+		if (this.history.length > this.player.manager.options.queueOptions.maxPreviousTracks!)
+			this.history.splice(
 				this.player.manager.options.queueOptions.maxPreviousTracks!,
-				this.previous.length,
+				this.history.length,
 			);
 
 		return {
 			tracks: this.tracks,
-			previous: this.previous,
+			previous: this.history,
 			current: this.current,
 		};
 	}

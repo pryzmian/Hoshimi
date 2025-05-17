@@ -73,7 +73,7 @@ export class NodeManager {
 	 * @returns {Node} The least used node.
 	 * @example
 	 * ```ts
-	 * const node = manager.nodeManager.getLeastUsedNode();
+	 * const node = manager.nodeManager.getLeastUsed();
 	 * if (node) {
 	 * 	console.log(node.id); // node1
 	 * 	console.log(node.penalties); // the penalties of the node

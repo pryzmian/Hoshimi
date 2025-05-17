@@ -320,9 +320,9 @@ export interface BasePlayOptions {
 export interface LavalinkPlayOptions extends BasePlayOptions {
 	/**
 	 * Track to play.
-	 * @type {Track | undefined}
+	 * @type {Partial<LavalinkTrack> | undefined}
 	 */
-	track?: Partial<Nullable<Track>>;
+	track?: Partial<Nullable<LavalinkTrack>>;
 }
 
 /**
