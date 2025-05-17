@@ -6,6 +6,7 @@ import {
 	OpCodes,
 	type NodeInfo,
 	WebsocketCloseCodes,
+	NodeDestroyReasons,
 } from "../../types/Node";
 import { DebugLevels, Events } from "../../types/Manager";
 import { PlayerEventType } from "../../types/Player";
@@ -20,14 +21,14 @@ import { playerUpdate, trackEnd, trackStart } from "./player";
  */
 export function onOpen(this: Node, res: IncomingMessage): void {
 	const isResume = res.headers["session-resumed"] === "true";
-	const apiVersion = res.headers["lavalink-api-version"];
+	const apiVersion = res.headers["lavalink-api-version"] ?? "unknown";
 
 	this.retryAmount = this.options.retryAmount;
 
 	this.nodeManager.manager.emit(
 		Events.Debug,
 		DebugLevels.Node,
-		`[Socket] -> [${this.id}]: Connection handshake complete with ${this.address}. | API Version: ${apiVersion ?? "Unknown"} | Resumed: ${isResume}`,
+		`[Socket] -> [${this.id}]: Connection handshake complete with ${this.address}. | API Version: ${apiVersion} | Resumed: ${isResume}`,
 	);
 }
 
@@ -48,7 +49,7 @@ export function onClose(this: Node, code: number, reason: string): void {
 
 	this.nodeManager.manager.emit(Events.NodeDisconnect, this);
 
-	if (code !== WebsocketCloseCodes.NormalClosure || reason !== "Node-Destroy") {
+	if (code !== WebsocketCloseCodes.NormalClosure || reason !== NodeDestroyReasons.Destroy) {
 		if (this.nodeManager.nodes.has(this.id)) this.reconnect();
 	}
 }
@@ -113,8 +114,13 @@ export async function onMessage(this: Node, message: Buffer | string): Promise<v
 							DebugLevels.Node,
 							`[Socket] -> [${this.id}]: Session id was not provided. Breaking up the connection...`,
 						);
-						this.disconnect();
-						return;
+
+						this.nodeManager.manager.emit(Events.NodeDestroy, this, {
+							code: WebsocketCloseCodes.AbnormalClosure,
+							reason: NodeDestroyReasons.MissingSession,
+						});
+
+						return this.disconnect();
 					}
 
 					this.state = State.Connected;

@@ -158,24 +158,24 @@ export enum DestroyReasons {
 	/**
 	 * The player was stopped.
 	 */
-	Stop = "stop",
+	Stop = "Player-Stop",
 	/**
 	 * The player was destroyed by user request.
 	 */
-	Requested = "requested",
+	Requested = "Player-Requested",
 	/**
 	 * The queue was empty.
 	 */
-	Empty = "empty",
+	Empty = "Player-Empty",
 
 	/**
 	 * The player because the node was disconnected.
 	 */
-	NodeDisconnected = "nodeDisconnected",
+	NodeDisconnected = "Player-NodeDisconnected",
 	/**
 	 * The player because the node was destroyed.
 	 */
-	NodeDestroy = "nodeDestroy",
+	NodeDestroy = "Player-NodeDestroy",
 }
 
 /**

@@ -1,5 +1,8 @@
 import { defineConfig } from "tsup";
 
+/**
+ * The configuration for the tsup build tool.
+ */
 export default defineConfig({
 	dts: true,
 	format: ["esm", "cjs"],

@@ -27,7 +27,7 @@ export class Track {
 	 * The track user data.
 	 * @type {Record<string, unknown>}
 	 */
-	readonly userData: Record<string, unknown>;
+	public userData: Record<string, unknown>;
 
 	/**
 	 * The requester of the track.

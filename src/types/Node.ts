@@ -198,6 +198,20 @@ export enum PluginInfoType {
 }
 
 /**
+ * The node destroy reason.
+ */
+export enum NodeDestroyReasons {
+	/**
+	 * The node is being destroyed by the user or the library.
+	 */
+	Destroy = "Node-Destroy",
+	/**
+	 * The node is missing the session id.
+	 */
+	MissingSession = "Missing-Session",
+}
+
+/**
  * The websocket close codes.
  */
 export enum WebsocketCloseCodes {
@@ -217,6 +231,62 @@ export enum WebsocketCloseCodes {
 	 * The websocket close code for unsupported data.
 	 */
 	UnsupportedData = 1003,
+	/**
+	 * The websocket close code for no status received.
+	 */
+	NoStatusReceived = 1005,
+	/**
+	 * The websocket close code for abnormal closure.
+	 */
+	AbnormalClosure = 1006,
+	/**
+	 * The websocket close code for invalid frame payload data.
+	 */
+	InvalidFramePayloadData = 1007,
+	/**
+	 * The websocket close code for policy violation.
+	 */
+	PolicyViolation = 1008,
+	/**
+	 * The websocket close code for message too big.
+	 */
+	MessageTooBig = 1009,
+	/**
+	 * The websocket close code for mandatory extension.
+	 */
+	MandatoryExtension = 1010,
+	/**
+	 * The websocket close code for internal error.
+	 */
+	InternalError = 1011,
+	/**
+	 * The websocket close code for service restart.
+	 */
+	ServiceRestart = 1012,
+	/**
+	 * The websocket close code for try again later.
+	 */
+	TryAgainLater = 1013,
+	/**
+	 * The websocket close code for bad gateway.
+	 */
+	BadGateway = 1014,
+	/**
+	 * The websocket close code for TLS handshake failure.
+	 */
+	TLSHandshakeFailure = 1015,
+	/**
+	 * The websocket close code for unauthorized.
+	 */
+	Unauthorized = 3000,
+	/**
+	 * The websocket close code for forbidden.
+	 */
+	Forbidden = 3003,
+	/**
+	 * The websocket close code for timeout.
+	 */
+	Timeout = 3008,
 }
 
 /**
@@ -905,7 +975,7 @@ export interface NodeDestroyInfo {
 	 * The reason for the destroy.
 	 * @type {string | undefined}
 	 */
-	reason?: string;
+	reason?: NodeDestroyReasons;
 }
 
 /**

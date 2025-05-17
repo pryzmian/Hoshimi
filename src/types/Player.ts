@@ -5,6 +5,11 @@ import type { Exception, LavalinkTrack, OpCodes } from "./Node";
 import type { QueueJson } from "./Queue";
 
 /**
+ * Partial Lavalink track type.
+ */
+type PartialLavalinkTrack = Partial<Nullable<LavalinkTrack>>;
+
+/**
  * The types of loop modes.
  */
 export enum LoopMode {
@@ -320,9 +325,9 @@ export interface BasePlayOptions {
 export interface LavalinkPlayOptions extends BasePlayOptions {
 	/**
 	 * Track to play.
-	 * @type {Partial<LavalinkTrack> | undefined}
+	 * @type {PartialLavalinkTrack | undefined}
 	 */
-	track?: Partial<Nullable<LavalinkTrack>>;
+	track?: PartialLavalinkTrack;
 }
 
 /**

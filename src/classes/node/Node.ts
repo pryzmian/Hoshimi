@@ -9,6 +9,7 @@ import {
 	type NodeDestroyInfo,
 	type NodeDisconnectInfo,
 	WebsocketCloseCodes,
+	NodeDestroyReasons,
 } from "../../types/Node";
 
 import { NodeError } from "../Errors";
@@ -326,9 +327,11 @@ export class Node {
 	 * if (node) {
 	 * 	const player = await node.updatePlayer({
 	 * 		guildId: "guildId",
-	 * 		volume: 100,
-	 * 		paused: false,
-	 * 		position: 0,
+	 * 		noReplace: true,
+	 * 		playerOptions: {
+	 * 			paused: false,
+	 * 			track: { encoded: "encoded track" },
+	 * 		},
 	 * 	});
 	 *
 	 * 	console.log(player); // the lavalink player
@@ -461,7 +464,11 @@ export class Node {
 			this.reconnectTimeout = null;
 
 			if (this.retryAmount === 0) {
-				this.destroy({ code: WebsocketCloseCodes.NormalClosure, reason: "Node-Destroy" });
+				this.destroy({
+					code: WebsocketCloseCodes.NormalClosure,
+					reason: NodeDestroyReasons.Destroy,
+				});
+
 				this.nodeManager.manager.emit(
 					Events.NodeError,
 					this,
