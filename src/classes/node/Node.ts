@@ -161,9 +161,6 @@ export class Node {
 	 * const node = manager.nodeManager.get("node1");
 	 * if (node) {
 	 * 	console.log(node.id); // node1
-	 * 	console.log(node.address); // ws://localhost:2333/v4/websocket
-	 * 	console.log(node.penalties); // the penalties of the node
-	 * 	console.log(node.state); // the state of the node
 	 * }
 	 * ```
 	 */
@@ -181,8 +178,6 @@ export class Node {
 	 * if (node) {
 	 * 	console.log(node.id); // node1
 	 * 	console.log(node.address); // ws://localhost:2333/v4/websocket
-	 * 	console.log(node.penalties); // the penalties of the node
-	 * 	console.log(node.state); // the state of the node
 	 * }
 	 * }
 	 */
@@ -201,7 +196,6 @@ export class Node {
 	 * 	console.log(node.id); // node1
 	 * 	console.log(node.address); // ws://localhost:2333/v4/websocket
 	 * 	console.log(node.penalties); // the penalties of the node
-	 * 	console.log(node.state); // the state of the node
 	 * }
 	 * ```
 	 */
@@ -226,7 +220,7 @@ export class Node {
 	 * if (node) {
 	 * 	const search = await node.search({
 	 * 		query: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-	 * 		engine: SearchEngines.Youtube,,
+	 * 		engine: SearchEngines.Youtube,
 	 * 	});
 	 *
 	 * 	console.log(search); // the search result
