@@ -1,7 +1,7 @@
 import type { Node } from "../classes/node/Node";
 import type { Track } from "../classes/Track";
 import type { Nullable } from "./Manager";
-import type { Exception, LavalinkTrack, OpCodes } from "./Node";
+import type { Exception, LavalinkTrack, LyricsLine, LyricsResult, OpCodes } from "./Node";
 import type { QueueJson } from "./Queue";
 
 /**
@@ -47,6 +47,18 @@ export enum PlayerEventType {
 	 * Event type for when a track gets stuck.
 	 */
 	TrackStuck = "TrackStuckEvent",
+	/**
+	 * Event type for when lyrics are found.
+	 */
+	LyricsFound = "LyricsFoundEvent",
+	/**
+	 * Event type for when lyrics are not found.
+	 */
+	LyricsNotFound = "LyricsNotFoundEvent",
+	/**
+	 * Event type for when a lyrics line is sent.
+	 */
+	LyricsLine = "LyricsLineEvent",
 	/**
 	 * Event type for when the WebSocket connection is closed.
 	 */
@@ -193,6 +205,74 @@ export interface WebSocketClosedEvent extends PlayerEvent {
 	 * @type {string}
 	 */
 	reason: string;
+}
+
+/**
+ * The event for when lyrics are found.
+ */
+export interface LyricsFoundEvent extends PlayerEvent {
+	/**
+	 * The type of the event.
+	 * @type {PlayerEventType.LyricsFound}
+	 */
+	type: PlayerEventType.LyricsFound;
+	/**
+	 * The guild id associated with the event.
+	 * @type {string}
+	 */
+	guildId: string;
+	/**
+	 * The lyrics result of the event.
+	 * @type {LyricsResult}
+	 */
+	lyrics: LyricsResult;
+}
+
+/**
+ * The event for when lyrics are not found.
+ */
+export interface LyricsNotFoundEvent extends PlayerEvent {
+	/**
+	 * The type of the event.
+	 * @type {PlayerEventType.LyricsNotFound}
+	 */
+	type: PlayerEventType.LyricsNotFound;
+	/**
+	 * The guild id associated with the event.
+	 * @type {string}
+	 */
+	guildId: string;
+}
+
+/**
+ * The event for when a lyrics line is sent.
+ */
+export interface LyricsLineEvent extends PlayerEvent {
+	/**
+	 * The type of the event.
+	 * @type {PlayerEventType.LyricsLine}
+	 */
+	type: PlayerEventType.LyricsLine;
+	/**
+	 * The guild id associated with the event.
+	 * @type {string}
+	 */
+	guildId: string;
+	/**
+	 * The line index of the lyrics line.
+	 * @type {number}
+	 */
+	lineIndex: number;
+	/**
+	 * The lyrics line of the event.
+	 * @type {LyricsLine}
+	 */
+	line: LyricsLine;
+	/**
+	 * Returns if the line was skipped.
+	 * @type {boolean}
+	 */
+	skipped: boolean;
 }
 
 /**
@@ -668,6 +748,60 @@ export interface PlayerJson {
 	 * @type {QueueJson}
 	 */
 	queue?: QueueJson;
+}
+
+/**
+ * The lyrics methods for the player.
+ */
+export interface LyricsMethods {
+	/**
+	 *
+	 * Get the current lyrics for the current track.
+	 * @param {boolean} [skipSource=false] Whether to skip the source or not.
+	 * @returns {Promise<LyricsResult | null>} The lyrics result or null if not found.
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * const lyrics = await player.lyricsManager.current();
+	 * ```
+	 */
+	current(skipSource?: boolean): Promise<LyricsResult | null>;
+	/**
+	 *
+	 * Get the lyrics for a specific track.
+	 * @param {Track} track The track to get the lyrics for.
+	 * @param {boolean} [skipSource=false] Whether to skip the source or not.
+	 * @returns {Promise<LyricsResult | null>} The lyrics result or null if not found.
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * const track = player.queue.current;
+	 * const lyrics = await player.lyrics.get(track);
+	 * ```
+	 */
+	get(track: Track, skipSource?: boolean): Promise<LyricsResult | null>;
+	/**
+	 *
+	 * Subscribe to the lyrics for a specific guild.
+	 * @returns {Promise<void>} Let's start the sing session!
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * await player.lyrics.subscribe();
+	 * ```
+	 */
+	subscribe(): Promise<void>;
+	/**
+	 *
+	 * Unsubscribe from the lyrics for a specific guild.
+	 * @returns {Promise<void>} Let's stop the sing session!
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * await player.lyrics.unsubscribe();
+	 * ```
+	 */
+	unsubscribe(): Promise<void>;
 }
 
 /**

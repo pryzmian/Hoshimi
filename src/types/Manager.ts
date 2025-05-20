@@ -14,7 +14,18 @@ import type {
 	Ready,
 	SearchQuery,
 } from "./Node";
-import type { PlayerJson, PlayerUpdate, TrackEndEvent, TrackStartEvent } from "./Player";
+import type {
+	LyricsFoundEvent,
+	LyricsLineEvent,
+	LyricsNotFoundEvent,
+	PlayerJson,
+	PlayerUpdate,
+	TrackEndEvent,
+	TrackExceptionEvent,
+	TrackStartEvent,
+	TrackStuckEvent,
+	WebSocketClosedEvent,
+} from "./Player";
 import type { HoshimiQueueOptions } from "./Queue";
 import type { HoshimiRestOptions } from "./Rest";
 
@@ -140,6 +151,27 @@ export enum Events {
 	 * Emitted when a track ends.
 	 */
 	TrackEnd = "trackEnd",
+	/**
+	 * Emitted when a track is stuck.
+	 */
+	TrackStuck = "trackStuck",
+	/**
+	 * Emitted when a track is errored.
+	 */
+	TrackError = "trackError",
+
+	/**
+	 * Emitted when lyrics are found.
+	 */
+	LyricsFound = "lyricsFound",
+	/**
+	 * Emitted when lyrics are not found.
+	 */
+	LyricsNotFound = "lyricsNotFound",
+	/**
+	 * Emitted when a line of lyrics is updated.
+	 */
+	LyricsLine = "lyricsLine",
 
 	/**
 	 * Emitted when the queue ends.
@@ -149,6 +181,11 @@ export enum Events {
 	 * Emitted when the queue updates.
 	 */
 	QueueUpdate = "queueUpdate",
+
+	/**
+	 * Emitted when the socket is closed.
+	 */
+	WebSocketClosed = "socketClosed",
 }
 
 /**
@@ -365,6 +402,42 @@ export interface HoshimiEvents {
 	 * @param {TrackEndEvent} payload The payload of the event.
 	 */
 	trackEnd: [player: Player, track: Track | null, payload: TrackEndEvent];
+	/**
+	 * Emitted when the track is stuck.
+	 * @param {Player} player The player that emitted the event.
+	 * @param {Track | null} track The track that was stuck.
+	 * @param {TrackEndEvent} payload The payload of the event.
+	 */
+	trackStuck: [player: Player, track: Track | null, payload: TrackStuckEvent];
+	/**
+	 * Emitted when a track is errored.
+	 * @param {Player} player The player that emitted the event.
+	 * @param {Track | null} track The track that was errored.
+	 * @param {TrackEndEvent} payload The payload of the event.
+	 */
+	trackError: [player: Player, track: Track | null, payload: TrackExceptionEvent];
+
+	/**
+	 * Emitted when lyrics are found.
+	 * @param {Player} player The player that emitted the event.
+	 * @param {Track | null} track The track that was found.
+	 * @param {LyricsFoundEvent} payload The lyrics that were found.
+	 */
+	lyricsFound: [player: Player, track: Track | null, payload: LyricsFoundEvent];
+	/**
+	 * Emitted when lyrics are not found.
+	 * @param {Player} player The player that emitted the event.
+	 * @param {Track | null} track The track that was not found.
+	 * @param {LyricsFoundEvent} payload The lyrics that were not found.
+	 */
+	lyricsNotFound: [player: Player, track: Track | null, payload: LyricsNotFoundEvent];
+	/**
+	 * Emitted when a line of lyrics is updated.
+	 * @param {Player} player The player that emitted the event.
+	 * @param {Track | null} track The track that was updated.
+	 * @param {LyricsFoundEvent} payload The lyrics that were updated.
+	 */
+	lyricsLine: [player: Player, track: Track | null, payload: LyricsLineEvent];
 
 	/**
 	 * Emitted when the queue ends.
@@ -378,6 +451,13 @@ export interface HoshimiEvents {
 	 * @param {Queue} queue The queue that updated.
 	 */
 	queueUpdate: [player: Player, queue: Queue];
+
+	/**
+	 * Emitted when the socket is closed.
+	 * @param {Player} player The player that emitted the event.
+	 * @param {WebSocketClosedEvent} payload The payload of the event.
+	 */
+	socketClosed: [player: Player, payload: WebSocketClosedEvent];
 }
 
 /**
@@ -591,6 +671,11 @@ export type Inferable<T, K extends string> = T extends { [key in K]: infer R } ?
  * Create a type that infers the value of a key from an object.
  */
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+/**
+ * Create a type that can be a rest or an array.
+ */
+export type RestOrArray<T> = T[] | [T[]];
 
 /**
  * Make a type nullable.

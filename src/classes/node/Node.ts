@@ -27,6 +27,7 @@ import type { NodeManager } from "./Manager";
 import { DebugLevels, Events } from "../../types/Manager";
 import { validateQuery } from "../../util/functions/validations";
 import { WebSocket } from "ws";
+import { LyricsManager } from "./Lyrics";
 
 /**
  * Class representing a Lavalink node.
@@ -49,6 +50,12 @@ export class Node {
 	 * @type {NodeManager}
 	 */
 	readonly nodeManager: NodeManager;
+
+	/**
+	 * The lyrics manager for the node.
+	 * @type {LyricsManager}
+	 */
+	readonly lyricsManager: LyricsManager;
 
 	/**
 	 * The delay between reconnect attempts.
@@ -150,6 +157,7 @@ export class Node {
 		if (this.options.secure && this.options.port !== 443) this.options.port = 443;
 
 		this.rest = new Rest(this);
+		this.lyricsManager = new LyricsManager(this);
 	}
 
 	/**

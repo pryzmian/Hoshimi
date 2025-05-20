@@ -10,12 +10,22 @@ import {
 } from "../../types/Node";
 import { DebugLevels, Events } from "../../types/Manager";
 import { PlayerEventType } from "../../types/Player";
-import { playerUpdate, trackEnd, trackStart } from "./player";
+import {
+	lyricsFound,
+	lyricsLine,
+	lyricsNotFound,
+	playerUpdate,
+	socketClosed,
+	trackEnd,
+	trackError,
+	trackStart,
+	trackStuck,
+} from "./player";
 
 /**
  *
  * Emitted when the socket connection is opened.
- * @param {this} this The node that emitted the event.
+ * @param {Node} this The node that emitted the event.
  * @param {IncomingMessage} res The response from the socket connection.
  * @returns {void} Nothing new.
  */
@@ -35,7 +45,7 @@ export function onOpen(this: Node, res: IncomingMessage): void {
 /**
  *
  * Emitted when the socket connection is closed.
- * @param {this} this The node that emitted the event.
+ * @param {Node} this The node that emitted the event.
  * @param {number} code The close code of the connection.
  * @param {string} reason The close reason message.
  * @returns {void} The same thing as above.
@@ -57,7 +67,7 @@ export function onClose(this: Node, code: number, reason: string): void {
 /**
  *
  * Emitted when an error occurs.
- * @param {this} this The node that emitted the event.
+ * @param {Node} this The node that emitted the event.
  * @param {Error} [error] The error that occurred.
  * @returns {void} Did you know that void is a type in TypeScript?
  */
@@ -80,7 +90,7 @@ export function onError(this: Node, error?: Error): void {
 /**
  *
  * Emitted when a message is received from the socket.
- * @param {this} this The node that emitted the event.
+ * @param {Node} this The node that emitted the event.
  * @param {Buffer | string} message The message received from the socket.
  * @returns {Promise<void>} I'm running out of ideas for this.
  */
@@ -143,11 +153,40 @@ export async function onMessage(this: Node, message: Buffer | string): Promise<v
 				if (!player) return;
 
 				switch (payload.type) {
+					//
+					// Events related to tracks.
+					//
 					case PlayerEventType.TrackEnd:
 						await trackEnd.call(player, payload);
 						break;
 					case PlayerEventType.TrackStart:
 						await trackStart.call(player, payload);
+						break;
+					case PlayerEventType.TrackException:
+						await trackError.call(player, payload);
+						break;
+					case PlayerEventType.TrackStuck:
+						await trackStuck.call(player, payload);
+						break;
+
+					//
+					// Events related to lyrics.
+					//
+					case PlayerEventType.LyricsFound:
+						await lyricsFound.call(player, player.queue.current, payload);
+						break;
+					case PlayerEventType.LyricsNotFound:
+						await lyricsNotFound.call(player, player.queue.current, payload);
+						break;
+					case PlayerEventType.LyricsLine:
+						await lyricsLine.call(player, player.queue.current, payload);
+						break;
+
+					//
+					// Events related to the websocket.
+					//
+					case PlayerEventType.WebsocketClosed:
+						await socketClosed.call(player, payload);
 						break;
 				}
 

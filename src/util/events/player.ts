@@ -11,13 +11,17 @@ import {
 	PlayerEventType,
 	type PlayerUpdate,
 	TrackEndReason,
+	type LyricsFoundEvent,
+	type LyricsLineEvent,
+	type LyricsNotFoundEvent,
+	type WebSocketClosedEvent,
 } from "../../types/Player";
 
 /**
  *
  * Queue the track end event.
- * @param {this} this The player that emitted the event.
- * @returns {Promise<void>} The promise, nothing new.
+ * @param {Player} this The player that emitted the event.
+ * @returns {Promise<void>} Yeah, this is something weird but it works.
  */
 async function onTrackEnd(this: Player): Promise<void> {
 	if (
@@ -56,11 +60,11 @@ async function onTrackEnd(this: Player): Promise<void> {
 
 /**
  *
- * Emitted when the queue ends.
- * @param {this} this The player that emitted the event.
+ * The queue end event.
+ * @param {Player} this The player that emitted the event.
  * @param {Track | null} track The track that ended.
  * @param {TrackEndEvent | TrackStuckEvent | TrackExceptionEvent} payload The payload of the event.
- * @returns {Promise<void>} The promise, nothing new here either.
+ * @returns {Promise<void>} Let's start a new queue!
  */
 async function queueEnd(
 	this: Player,
@@ -104,10 +108,10 @@ async function queueEnd(
 
 /**
  *
- * Emitted when a track starts playing.
- * @param {this} this The player that emitted the event.
+ * The track start event.
+ * @param {Player} this The player that emitted the event.
  * @param {TrackStartEvent} payload The payload of the event.
- * @returns {Promise<void>} The promise, nothing new... again.
+ * @returns {Promise<void>} I mean, it's a track start event, what do you expect?
  */
 export async function trackStart(this: Player, payload: TrackStartEvent): Promise<void> {
 	this.paused = false;
@@ -126,9 +130,9 @@ export async function trackStart(this: Player, payload: TrackStartEvent): Promis
 /**
  *
  * Emitted when a track ends.
- * @param {this} this The player that emitted the event.
+ * @param {Player} this The player that emitted the event.
  * @param {TrackEndEvent} payload The payload of the event.
- * @returns {Promise<void>} The promise, nothing new... again and again.
+ * @returns {Promise<void>} The track ended... sadge.
  */
 export async function trackEnd(this: Player, payload: TrackEndEvent): Promise<void> {
 	const current = this.queue.current;
@@ -191,7 +195,58 @@ export async function trackEnd(this: Player, payload: TrackEndEvent): Promise<vo
 
 /**
  *
- * @param {this} this The node that emitted the event.
+ * The track stuck event.
+ * @param {Player} this The player that emitted the event.
+ * @param {TrackStuckEvent} payload The payload of the event.
+ * @returns {Promise<void>} The track stuck? Try to unstuck it!
+ */
+export async function trackStuck(this: Player, payload: TrackStuckEvent): Promise<void> {
+	this.manager.emit(Events.TrackStuck, this, this.queue.current, payload);
+
+	this.manager.emit(
+		Events.Debug,
+		DebugLevels.Player,
+		`[Player] -> [Stuck] The track: ${this.queue.current?.info.title ?? "Unknown"} has stuck.`,
+	);
+
+	if (!this.queue.size && this.loop === LoopMode.Off) {
+		try {
+			await this.node.updatePlayer({
+				guildId: this.guildId,
+				playerOptions: { track: { encoded: null } },
+			});
+		} catch {
+			await queueEnd.call(this, this.queue.current, payload);
+			return;
+		}
+	}
+
+	await onTrackEnd.call(this);
+
+	if (!this.queue.current) return queueEnd.call(this, this.queue.current, payload);
+}
+
+/**
+ *
+ * The track error event.
+ * @param {Player} this The player that emitted the event.
+ * @param {TrackExceptionEvent} payload The payload of the event.
+ * @returns {Promise<void>} Aww, the track has an error? That's sad.
+ */
+export async function trackError(this: Player, payload: TrackExceptionEvent): Promise<void> {
+	this.manager.emit(Events.TrackError, this, this.queue.current, payload);
+
+	this.manager.emit(
+		Events.Debug,
+		DebugLevels.Player,
+		`[Player] -> [Error] The track: ${this.queue.current?.info.title ?? "Unknown"} has error.`,
+	);
+}
+
+/**
+ *
+ * The player update event.
+ * @param {Node} this The node that emitted the event.
  * @param {PlayerUpdate} payload The payload of the event.
  * @returns {Promise<void>} Yeah, i don't know what to say here.
  */
@@ -211,5 +266,80 @@ export async function playerUpdate(this: Node, payload: PlayerUpdate): Promise<v
 		Events.Debug,
 		DebugLevels.Node,
 		`[Player] -> [Update] Player updated: ${player.guildId} | Payload: ${JSON.stringify(payload)}`,
+	);
+}
+
+/**
+ * The lyrics found event.
+ * @param {Player} this The player that emitted the event.
+ * @param {Track | null} track The track that emitted the event.
+ * @param {LyricsFoundEvent} payload The payload of the event.
+ * @returns {Promise<void>} Yay! Let's sing along!
+ */
+export async function lyricsFound(
+	this: Player,
+	track: Track | null,
+	payload: LyricsFoundEvent,
+): Promise<void> {
+	this.manager.emit(Events.LyricsFound, this, track, payload);
+	this.manager.emit(
+		Events.Debug,
+		DebugLevels.Player,
+		`[Player] -> [Lyrics] The lyrics have been found: ${this.guildId} | Payload: ${JSON.stringify(payload)}`,
+	);
+}
+
+/**
+ * The lyrics line event.
+ * @param {Player} this The player that emitted the event.
+ * @param {Track | null} track The track that emitted the event.
+ * @param {LyricsLineEvent} payload The payload of the event.
+ * @returns {Promise<void>} Let's be honest, you don't care about this.
+ */
+export async function lyricsLine(
+	this: Player,
+	track: Track | null,
+	payload: LyricsLineEvent,
+): Promise<void> {
+	this.manager.emit(Events.LyricsLine, this, track, payload);
+	this.manager.emit(
+		Events.Debug,
+		DebugLevels.Player,
+		`[Player] -> [Lyrics] The lyrics line has been found: ${this.guildId} | Payload: ${JSON.stringify(payload)}`,
+	);
+}
+
+/**
+ * The lyrics not found event.
+ * @param {Player} this The player that emitted the event.
+ * @param {Track | null} track The track that emitted the event.
+ * @param {LyricsNotFoundEvent} payload The payload of the event.
+ * @returns {Promise<void>} Awww, no lyrics? That's sad.
+ */
+export async function lyricsNotFound(
+	this: Player,
+	track: Track | null,
+	payload: LyricsNotFoundEvent,
+): Promise<void> {
+	this.manager.emit(Events.LyricsNotFound, this, track, payload);
+	this.manager.emit(
+		Events.Debug,
+		DebugLevels.Player,
+		`[Player] -> [Lyrics] The lyrics were not found: ${this.guildId} | Payload: ${JSON.stringify(payload)}`,
+	);
+}
+
+/**
+ * The websocket closed event.
+ * @param {Player} this The player that emitted the event.
+ * @param {WebSocketClosedEvent} payload The payload of the event.
+ * @returns {Promise<void>} Did you expect something new here?
+ */
+export async function socketClosed(this: Player, payload: WebSocketClosedEvent): Promise<void> {
+	this.manager.emit(Events.WebSocketClosed, this, payload);
+	this.manager.emit(
+		Events.Debug,
+		DebugLevels.Player,
+		`[Player] -> [Socket] The socket has closed: ${this.guildId} | Payload: ${JSON.stringify(payload)}`,
 	);
 }

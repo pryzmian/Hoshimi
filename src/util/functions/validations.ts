@@ -1,6 +1,6 @@
-import type { NodeOptions, SearchQuery } from "../../types/Node";
-import { SearchEngines, type HoshimiOptions } from "../../types/Manager";
-import { OptionError } from "../../classes/Errors";
+import type { NodeOptions, PluginNames, SearchQuery } from "../../types/Node";
+import { type RestOrArray, SearchEngines, type HoshimiOptions } from "../../types/Manager";
+import { NodeError, OptionError } from "../../classes/Errors";
 import type { Node } from "../../classes/node/Node";
 import type { PlayerOptions } from "../../types/Player";
 import type { UpdatePlayerInfo } from "../../types/Rest";
@@ -120,7 +120,7 @@ export function validatePlayerOptions(options: PlayerOptions): void {
 /**
  *
  * Validate the player data.
- * @param {this} this The node to validate the player data for.
+ * @param {Node} this The node to validate the player data for.
  * @param {Partial<UpdatePlayerInfo>} data The data to validate.
  * @returns {void} Nothing.
  */
@@ -144,6 +144,29 @@ export function validatePlayerData(this: Node, data: Partial<UpdatePlayerInfo>):
 		if (typeof data.playerOptions.volume === "number")
 			player.volume = data.playerOptions.volume;
 	}
+}
+
+/**
+ *
+ * Validate the plugins in the node.
+ * @param {Node} node The node to validate the plugins for.
+ * @param {RestOrArray<string>} plugins The plugins to validate.
+ */
+export function validateNodePlugins(node: Node, ...plugins: RestOrArray<PluginNames>): void {
+	const info = node.info;
+	if (!info) throw new NodeError({ id: node.id, message: "Node is not ready yet." });
+
+	if (!info.plugins.length)
+		throw new NodeError({ id: node.id, message: "No plugins found in the node." });
+
+	plugins = plugins.flat();
+
+	const missings = plugins.filter((name) => !info.plugins.some((p) => p.name === name));
+	if (missings.length)
+		throw new NodeError({
+			id: node.id,
+			message: `The node does not support the following plugins: ${missings.join(", ")}.`,
+		});
 }
 
 /**

@@ -6,9 +6,11 @@ import {
 	type SearchOptions,
 	type SearchResult,
 } from "../types/Manager";
+import type { LyricsResult } from "../types/Node";
 import {
 	type LavalinkPlayerVoice,
 	LoopMode,
+	type LyricsMethods,
 	type PlayOptions,
 	type PlayerJson,
 	type PlayerOptions,
@@ -181,6 +183,20 @@ export class Player {
 
 		this.queue = new Queue(this);
 	}
+
+	/**
+	 * The lyrics methods for the player.
+	 * @type {LyricsMethods}
+	 * @readonly
+	 */
+	readonly lyrics: LyricsMethods = {
+		subscribe: (): Promise<void> => this.node.lyricsManager.subscribe(this.guildId),
+		unsubscribe: (): Promise<void> => this.node.lyricsManager.unsubscribe(this.guildId),
+		current: (skipSource): Promise<LyricsResult | null> =>
+			this.node.lyricsManager.current(this.guildId, skipSource),
+		get: (track, skipSource): Promise<LyricsResult | null> =>
+			this.node.lyricsManager.get(track, skipSource),
+	};
 
 	/**
 	 *

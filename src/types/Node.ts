@@ -1,5 +1,8 @@
 import type { SearchEngines } from "./Manager";
 import type {
+	LyricsFoundEvent,
+	LyricsLineEvent,
+	LyricsNotFoundEvent,
 	PlayerUpdate,
 	TrackEndEvent,
 	TrackExceptionEvent,
@@ -287,6 +290,62 @@ export enum WebsocketCloseCodes {
 	 * The websocket close code for timeout.
 	 */
 	Timeout = 3008,
+}
+
+/**
+ * The plugin names.
+ */
+export enum PluginNames {
+	/**
+	 * The lavasrc plugin name.
+	 * @author topi314
+	 */
+	LavaSrc = "lavasrc-plugin",
+	/**
+	 * The java lyrics plugin name.
+	 * @author duncte123
+	 */
+	JavaLyrics = "java-lyrics-plugin",
+	/**
+	 * The lava lyrics plugin name.
+	 * @author topi314
+	 */
+	LavaLyrics = "lavalyrics-plugin",
+	/**
+	 * The lavasearch plugin name.
+	 * @author topi314
+	 */
+	LavaSearch = "lavasearch-plugin",
+	/**
+	 * The sponsorblock plugin name.
+	 * @author topi314
+	 */
+	SponsorBlock = "sponsorblock-plugin",
+	/**
+	 * The lavadspx plugin name.
+	 * @author devoxin
+	 */
+	LavaDspx = "lavadspx-plugin",
+	/**
+	 * The youtube source plugin name.
+	 * @author topi314, devoxin, and more...
+	 */
+	Youtube = "youtube-plugin",
+	/**
+	 * The sky bot plugin name.
+	 * @author duncte123
+	 */
+	Skybot = "skybot-lavalink-plugin",
+	/**
+	 * The lava xm plugin name
+	 * @author esmBot
+	 */
+	LavaXm = "lava-xm-plugin",
+	/**
+	 * The jiosaavn plugin name.
+	 * @author appujet
+	 */
+	Jiosaavn = "jiosaavn-plugin",
 }
 
 /**
@@ -775,9 +834,9 @@ export interface NodeInfoGit {
 export interface NodeInfoPlugin {
 	/**
 	 * The name of the plugin.
-	 * @type {string}
+	 * @type {PluginNames}
 	 */
-	name: string;
+	name: PluginNames;
 	/**
 	 * The version of the plugin.
 	 * @type {string}
@@ -979,6 +1038,63 @@ export interface NodeDestroyInfo {
 }
 
 /**
+ * The interface of the node lyrics result.
+ */
+export interface LyricsResult {
+	/**
+	 * The source name of the lyric result.
+	 * @type {string}
+	 */
+	sourceName: string;
+	/**
+	 * The provider name of the lyric result.
+	 * @type {string}
+	 */
+	provider: string;
+	/**
+	 * The lyrics text of the result.
+	 * @type {string | null}
+	 */
+	text: string | null;
+	/**
+	 * The lyrics lines of the result.
+	 * @type {LyricsLine[]}
+	 */
+	lines: LyricsLine[];
+	/**
+	 * The plugin information of the result.
+	 * @type {PluginInfo}
+	 */
+	plugin: PluginInfo;
+}
+
+/**
+ * The interface of the node lyrics line.
+ */
+export interface LyricsLine {
+	/**
+	 * The line start time in milliseconds of the lyric line.
+	 * @type {number}
+	 */
+	timestamp: number;
+	/**
+	 * The line duration in milliseconds of the lyric line.
+	 * @type {number | null}
+	 */
+	duration: number | null;
+	/**
+	 * The line text of the lyric line.
+	 * @type {string}
+	 */
+	line: string;
+	/**
+	 * The plugin information of the lyric line.
+	 * @type {PluginInfo}
+	 */
+	plugin: PluginInfo;
+}
+
+/**
  * The interface of the node disconnect object.
  */
 export type NodeDisconnectInfo = NodeDestroyInfo;
@@ -999,6 +1115,9 @@ export type LavalinkPayload =
 	| TrackEndEvent
 	| TrackStuckEvent
 	| TrackExceptionEvent
+	| LyricsFoundEvent
+	| LyricsNotFoundEvent
+	| LyricsLineEvent
 	| WebSocketClosedEvent;
 
 /**
