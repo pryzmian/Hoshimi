@@ -25,7 +25,7 @@ const client = new Client({
 client.manager = new Hoshimi({
 	sendPayload: (guildId, payload) =>
 		client.gateway.send(client.gateway.calculateShardId(guildId), payload),
-	defaultSearchEngine: SearchEngines.Spotify,
+	defaultSearchEngine: SearchEngines.Youtube,
 	nodes: [
 		{
 			host: "localhost",

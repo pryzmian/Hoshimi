@@ -159,9 +159,7 @@ export function validateNodePlugins(node: Node, ...plugins: RestOrArray<PluginNa
 	if (!info.plugins.length)
 		throw new NodeError({ id: node.id, message: "No plugins found in the node." });
 
-	plugins = plugins.flat();
-
-	const missings = plugins.filter((name) => !info.plugins.some((p) => p.name === name));
+	const missings = plugins.flat().filter((name) => !info.plugins.some((p) => p.name === name));
 	if (missings.length)
 		throw new NodeError({
 			id: node.id,
