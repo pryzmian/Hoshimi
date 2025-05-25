@@ -39,7 +39,7 @@ async function onTrackEnd(this: Player): Promise<void> {
 				this.queue.history.length,
 			);
 
-		//await this.queue.utils.save();
+		await this.queue.utils.save();
 
 		this.manager.emit(
 			Events.Debug,
@@ -53,7 +53,7 @@ async function onTrackEnd(this: Player): Promise<void> {
 
 	if (!this.queue.current) this.queue.current = this.queue.shift();
 
-	//await this.queue.utils.save();
+	await this.queue.utils.save();
 
 	return;
 }
@@ -99,8 +99,9 @@ async function queueEnd(
 		}
 	}
 
-	//if (track) await this.queue.utils.save();
-	//if (payload.type === PlayerEventType.TrackEnd && payload.reason !== TrackEndReason.Stopped) await this.queue.utils.save();
+	if (track) await this.queue.utils.save();
+	if (payload.type === PlayerEventType.TrackEnd && payload.reason !== TrackEndReason.Stopped)
+		await this.queue.utils.save();
 
 	this.manager.emit(Events.QueueEnd, this, this.queue);
 	this.manager.emit(Events.Debug, DebugLevels.Player, "[Player] -> [Queue] The queue has ended.");
@@ -172,7 +173,7 @@ export async function trackEnd(this: Player, payload: TrackEndEvent): Promise<vo
 		}
 	}
 
-	//if (current) await this.queue.utils.save();
+	if (current) await this.queue.utils.save();
 
 	await onTrackEnd.call(this);
 

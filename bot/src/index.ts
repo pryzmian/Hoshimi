@@ -7,6 +7,11 @@ import { HandleCommand } from "seyfert/lib/commands/handle";
 import { Yuna } from "yunaforseyfert";
 import { TimeFormat } from "./time";
 
+import { mkdir } from "node:fs/promises";
+import { resolve } from "node:path";
+
+const path = resolve(process.cwd(), "cache");
+
 type HoshimiUser = APIUser & {
 	tag: string;
 };
@@ -104,6 +109,7 @@ client.manager.on(Events.QueueEnd, async (player) => {
 });
 
 (async (): Promise<void> => {
+	await mkdir(path, { recursive: true });
 	await client.start();
 })();
 

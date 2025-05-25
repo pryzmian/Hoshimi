@@ -47,6 +47,18 @@ export class NodeError extends Error {
 }
 
 /**
+ * Error class for the storage.
+ * @class StorageError
+ * @extends {Error}
+ */
+export class StorageError extends Error {
+	constructor(message: string) {
+		super(message);
+		this.name = "Hoshimi [StorageError]";
+	}
+}
+
+/**
  * Error options for the node.
  */
 interface NodeErrorOptions {

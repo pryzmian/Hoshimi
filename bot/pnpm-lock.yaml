@@ -16,7 +16,7 @@ importers:
         version: link:..
       seyfert:
         specifier: github:tiramisulabs/seyfert
-        version: https://codeload.github.com/tiramisulabs/seyfert/tar.gz/05cdc20d7fb619d525dc61a017770798f582a0b9
+        version: https://codeload.github.com/tiramisulabs/seyfert/tar.gz/5de23ffe58c77f99fad04d8bc7c0d976f4efd83d
       yunaforseyfert:
         specifier: github:SagiriIkeda/yunaforseyfert
         version: https://codeload.github.com/SagiriIkeda/yunaforseyfert/tar.gz/6736dc997b71f310762233b96053ce24b9c122fe
@@ -262,8 +262,8 @@ packages:
   resolve-pkg-maps@1.0.0:
     resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
 
-  seyfert@https://codeload.github.com/tiramisulabs/seyfert/tar.gz/05cdc20d7fb619d525dc61a017770798f582a0b9:
-    resolution: {tarball: https://codeload.github.com/tiramisulabs/seyfert/tar.gz/05cdc20d7fb619d525dc61a017770798f582a0b9}
+  seyfert@https://codeload.github.com/tiramisulabs/seyfert/tar.gz/5de23ffe58c77f99fad04d8bc7c0d976f4efd83d:
+    resolution: {tarball: https://codeload.github.com/tiramisulabs/seyfert/tar.gz/5de23ffe58c77f99fad04d8bc7c0d976f4efd83d}
     version: 3.1.2
 
   tsx@4.19.4:
@@ -438,7 +438,7 @@ snapshots:
 
   resolve-pkg-maps@1.0.0: {}
 
-  seyfert@https://codeload.github.com/tiramisulabs/seyfert/tar.gz/05cdc20d7fb619d525dc61a017770798f582a0b9: {}
+  seyfert@https://codeload.github.com/tiramisulabs/seyfert/tar.gz/5de23ffe58c77f99fad04d8bc7c0d976f4efd83d: {}
 
   tsx@4.19.4:
     dependencies:

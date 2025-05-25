@@ -27,6 +27,7 @@ import { Track } from "./Track";
 import { autoplayFn } from "../util/functions/autoplay";
 import { HoshimiAgent } from "../util/constants";
 import { NodeManager } from "./node/Manager";
+import { MemoryAdapter } from "./queue/adapters/memory";
 
 /**
  * The packet type for the manager.
@@ -134,6 +135,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 				maxPreviousTracks: options.queueOptions?.maxPreviousTracks ?? 25,
 				autoplayFn: options.queueOptions?.autoplayFn ?? autoplayFn,
 				autoPlay: options.queueOptions?.autoPlay ?? false,
+				storage: options.queueOptions?.storage ?? new MemoryAdapter(),
 			},
 			client: {
 				id: options.client?.id ?? "",
@@ -417,7 +419,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 		this.emit(
 			Events.Debug,
 			DebugLevels.Manager,
-			`[Manager] -> [Search] Searching for: ${options.query} (${options.engine ?? this.options.defaultSearchEngine}) | Result: ${JSON.stringify(res)}`,
+			`[Manager] -> [Search] Searching for: ${options.query} (${options.engine ?? "unknown"}) | Result: ${JSON.stringify(res)}`,
 		);
 
 		switch (res.loadType) {

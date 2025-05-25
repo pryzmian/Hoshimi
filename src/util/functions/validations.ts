@@ -1,10 +1,14 @@
 import type { NodeOptions, PluginNames, SearchQuery } from "../../types/Node";
 import { type RestOrArray, SearchEngines, type HoshimiOptions } from "../../types/Manager";
-import { NodeError, OptionError } from "../../classes/Errors";
 import type { Node } from "../../classes/node/Node";
 import type { PlayerOptions } from "../../types/Player";
 import type { UpdatePlayerInfo } from "../../types/Rest";
+
+import { NodeError, OptionError } from "../../classes/Errors";
 import { UrlRegex, ValidEngines } from "../constants";
+import type { Track } from "../../classes/Track";
+
+import { StorageAdapter } from "../../classes/queue/adapters/abstract";
 
 /**
  *
@@ -25,13 +29,23 @@ export function validateManagerOptions(options: HoshimiOptions): void {
 		typeof options.queueOptions.maxPreviousTracks !== "number"
 	)
 		throw new OptionError(
-			"The manager option 'options.queue.maxPreviousTracks' must be a number.",
+			"The manager option 'options.queueOptions.maxPreviousTracks' must be a number.",
 		);
 	if (
 		typeof options.queueOptions !== "undefined" &&
 		typeof options.queueOptions.autoplayFn !== "function"
 	)
-		throw new OptionError("The manager option 'options.queue.autoplayFn' must be a function.");
+		throw new OptionError(
+			"The manager option 'options.queueOptions.autoplayFn' must be a function.",
+		);
+
+	if (
+		typeof options.queueOptions?.storage !== "undefined" &&
+		!(options.queueOptions.storage instanceof StorageAdapter)
+	)
+		throw new OptionError(
+			"The manager option 'options.queueOptions.storage' must be a valid storage manager.",
+		);
 
 	if (
 		typeof options.defaultSearchEngine !== "undefined" &&
@@ -166,6 +180,17 @@ export function validateNodePlugins(node: Node, ...plugins: RestOrArray<PluginNa
 			message: `The node does not support the following plugins: ${missings.join(", ")}.`,
 		});
 }
+
+/**
+ *
+ * Check if the track is valid.
+ * @param {Track} track The track to check.
+ */
+export const isTrack = (track: Track) => {
+	if (!track) return false;
+
+	return typeof track.encoded === "string" && typeof track.info === "object";
+};
 
 /**
  *
