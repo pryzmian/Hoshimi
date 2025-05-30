@@ -140,7 +140,8 @@ export class LyricsManager {
 		);
 
 		await this.node.rest.request({
-			endpoint: `/sessions/${this.node.sessionId}/players/${guildId}/unsubscribe`,
+			endpoint: `/sessions/${this.node.sessionId}/players/${guildId}/subscribe`,
+			method: HttpMethods.Delete,
 		});
 	}
 }
