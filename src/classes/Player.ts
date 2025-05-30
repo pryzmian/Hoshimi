@@ -190,8 +190,10 @@ export class Player {
 	 * @readonly
 	 */
 	readonly lyrics: LyricsMethods = {
-		subscribe: (): Promise<void> => this.node.lyricsManager.subscribe(this.guildId),
-		unsubscribe: (): Promise<void> => this.node.lyricsManager.unsubscribe(this.guildId),
+		subscribe: (skipSource): Promise<void> =>
+			this.node.lyricsManager.subscribe(this.guildId, skipSource),
+		unsubscribe: (skipSource): Promise<void> =>
+			this.node.lyricsManager.unsubscribe(this.guildId, skipSource),
 		current: (skipSource): Promise<LyricsResult | null> =>
 			this.node.lyricsManager.current(this.guildId, skipSource),
 		get: (track, skipSource): Promise<LyricsResult | null> =>

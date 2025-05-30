@@ -1,7 +1,14 @@
 import "dotenv/config";
 
 import { Client, type ParseClient } from "seyfert";
-import { DebugLevels, Hoshimi, Events, SourceNames, SearchEngines } from "hoshimi";
+import {
+	DebugLevels,
+	Hoshimi,
+	Events,
+	SourceNames,
+	SearchEngines,
+	type LyricsResult,
+} from "hoshimi";
 import type { APIUser } from "seyfert/lib/types";
 import { HandleCommand } from "seyfert/lib/commands/handle";
 import { Yuna } from "yunaforseyfert";
@@ -30,7 +37,7 @@ const client = new Client({
 client.manager = new Hoshimi({
 	sendPayload: (guildId, payload) =>
 		client.gateway.send(client.gateway.calculateShardId(guildId), payload),
-	defaultSearchEngine: SearchEngines.Youtube,
+	defaultSearchEngine: SearchEngines.Spotify,
 	nodes: [
 		{
 			host: "localhost",
@@ -108,6 +115,10 @@ client.manager.on(Events.QueueEnd, async (player) => {
 	await client.messages.write(textId, { content: "Queue has ended." });
 });
 
+client.manager.on(Events.LyricsLine, async (player, track, payload) => {
+	console.info({ player, track, payload });
+});
+
 (async (): Promise<void> => {
 	await mkdir(path, { recursive: true });
 	await client.start();
@@ -132,5 +143,8 @@ declare module "hoshimi" {
 
 	interface CustomizablePlayerStorage {
 		enabledAutoplay: boolean;
+		enabledLyrics: boolean;
+		lyricsId: string;
+		lyrics: LyricsResult;
 	}
 }

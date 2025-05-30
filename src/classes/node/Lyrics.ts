@@ -95,6 +95,7 @@ export class LyricsManager {
 	 *
 	 * Subscribe to the lyrics for a specific guild.
 	 * @param {string} guildId The guild id to subscribe to.
+	 * @param {boolean} skipSource Whether to skip the source or not.
 	 * @returns {Promise<void>} Let's start the sing session!
 	 * @example
 	 * ```ts
@@ -102,7 +103,7 @@ export class LyricsManager {
 	 * await node.lyricsManager.subscribe("guildId");
 	 * ```
 	 */
-	public async subscribe(guildId: string): Promise<void> {
+	public async subscribe(guildId: string, skipSource: boolean = false): Promise<void> {
 		if (!this.node.sessionId) return;
 
 		validateNodePlugins(
@@ -115,6 +116,9 @@ export class LyricsManager {
 		await this.node.rest.request({
 			endpoint: `/sessions/${this.node.sessionId}/players/${guildId}/lyrics/subscribe`,
 			method: HttpMethods.Post,
+			params: {
+				skipTrackSource: `${skipSource}`,
+			},
 		});
 	}
 
@@ -122,6 +126,7 @@ export class LyricsManager {
 	 *
 	 * Unsubscribe from the lyrics for a specific guild.
 	 * @param {string} guildId The guild id to unsubscribe from.
+	 * @param {boolean} skipSource Whether to skip the source or not.
 	 * @returns {Promise<void>} Let's stop the sing session!
 	 * @example
 	 * ```ts
@@ -129,7 +134,7 @@ export class LyricsManager {
 	 * await node.lyricsManager.unsubscribe("guildId");
 	 * ```
 	 */
-	public async unsubscribe(guildId: string): Promise<void> {
+	public async unsubscribe(guildId: string, skipSource: boolean = false): Promise<void> {
 		if (!this.node.sessionId) return;
 
 		validateNodePlugins(
@@ -142,6 +147,9 @@ export class LyricsManager {
 		await this.node.rest.request({
 			endpoint: `/sessions/${this.node.sessionId}/players/${guildId}/subscribe`,
 			method: HttpMethods.Delete,
+			params: {
+				skipTrackSource: `${skipSource}`,
+			},
 		});
 	}
 }

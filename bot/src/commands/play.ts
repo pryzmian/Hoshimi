@@ -72,10 +72,6 @@ export default class PlayCommand extends Command {
 			case LoadType.Search:
 				{
 					const track = tracks[0];
-					if (!track)
-						return ctx.editOrReply({
-							content: "No tracks were found.",
-						});
 
 					player.queue.add(track);
 

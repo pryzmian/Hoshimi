@@ -216,9 +216,10 @@ export async function trackStuck(this: Player, payload: TrackStuckEvent): Promis
 				guildId: this.guildId,
 				playerOptions: { track: { encoded: null } },
 			});
-		} catch {
-			await queueEnd.call(this, this.queue.current, payload);
+
 			return;
+		} catch {
+			return queueEnd.call(this, this.queue.current, payload);
 		}
 	}
 
