@@ -16,6 +16,7 @@ import {
 	type LyricsNotFoundEvent,
 	type WebSocketClosedEvent,
 } from "../../types/Player";
+import { resolveTrack } from "../functions/utils";
 
 /**
  *
@@ -51,7 +52,7 @@ async function onTrackEnd(this: Player): Promise<void> {
 	if (this.loop === LoopMode.Track && this.queue.current) this.queue.unshift(this.queue.current);
 	if (this.loop === LoopMode.Queue && this.queue.current) this.queue.add(this.queue.current);
 
-	if (!this.queue.current) this.queue.current = this.queue.shift();
+	if (!this.queue.current) this.queue.current = await resolveTrack(this, this.queue.shift());
 
 	await this.queue.utils.save();
 

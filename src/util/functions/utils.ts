@@ -249,7 +249,7 @@ export function isUnresolvedTrack(
  *
  * Resolve a track to a valid Track instance.
  * @param {Player} player The player to resolve the track for.
- * @param {Track | UnresolvedTrack} track The track to resolve.
+ * @param {Track | UnresolvedTrack | null} track The track to resolve.
  * @returns {Promise<Track>} The resolved track.
  * @throws {ResolveError} If the track is not a valid unresolved track.
  */
