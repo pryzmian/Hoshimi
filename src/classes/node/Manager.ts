@@ -97,7 +97,7 @@ export class NodeManager {
 	 * 	host: "localhost",
 	 * 	port: 2333,
 	 * 	password: "password",
-	 *  secure: false,
+	 * 	secure: false,
 	 * });
 	 *
 	 * console.log(node.id); // localhost:2333
@@ -120,7 +120,7 @@ export class NodeManager {
 	 * @example
 	 * ```ts
 	 * const node = manager.nodeManager.get("node1");
-	 * if (node) node.reconnect();
+	 * if (node) node.reconnectNodes();
 	 * ```
 	 */
 	public reconnectNodes(): void {
@@ -137,7 +137,7 @@ export class NodeManager {
 	 * @example
 	 * ```ts
 	 * const node = manager.nodeManager.get("node1");
-	 * if (node) node.disconnect();
+	 * if (node) node.disconnectNodes();
 	 * ```
 	 */
 	public disconnectNodes(): void {
@@ -154,7 +154,7 @@ export class NodeManager {
 	 * @example
 	 * ```ts
 	 * const node = manager.nodeManager.get("node1");
-	 * if (node) node.connect();
+	 * if (node) node.connectNodes();
 	 * ```
 	 */
 	public connectNodes(): void {
@@ -171,7 +171,7 @@ export class NodeManager {
 	 * @example
 	 * ```ts
 	 * const node = manager.nodeManager.get("node1");
-	 * if (node) node.destroy();
+	 * if (node) node.destroyNodes();
 	 * ```
 	 */
 	public destroyNodes(): void {

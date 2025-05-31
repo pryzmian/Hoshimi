@@ -795,7 +795,6 @@ export interface LyricsMethods {
 	/**
 	 *
 	 * Unsubscribe from the lyrics for a specific guild.
-	 * @param {boolean} [skipSource=false] Whether to skip the source or not.
 	 * @returns {Promise<void>} Let's stop the sing session!
 	 * @example
 	 * ```ts
@@ -803,7 +802,7 @@ export interface LyricsMethods {
 	 * await player.lyrics.unsubscribe();
 	 * ```
 	 */
-	unsubscribe(skipSource?: boolean): Promise<void>;
+	unsubscribe(): Promise<void>;
 }
 
 /**
