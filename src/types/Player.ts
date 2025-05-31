@@ -10,6 +10,42 @@ import type { QueueJson } from "./Queue";
 type PartialLavalinkTrack = Partial<Nullable<LavalinkTrack>>;
 
 /**
+ * The base options for playing a track.
+ */
+interface BasePlayOptions {
+	/**
+	 * The position to start the track.
+	 * @type {number | undefined}
+	 */
+	position?: number;
+	/**
+	 * The position to end the track.
+	 * @type {number | undefined}
+	 */
+	endTime?: number;
+	/**
+	 * The pause state of the player.
+	 * @type {boolean | undefined}
+	 */
+	paused?: boolean;
+	/**
+	 * The volume of the player.
+	 * @type {number | undefined}
+	 */
+	volume?: number;
+	/**
+	 * The filters for the player.
+	 * @type {Partial<FilterOptions> | undefined}
+	 */
+	filters?: Partial<FilterOptions>;
+	/**
+	 * The voice settings for the player.
+	 * @type {LavalinkPlayerVoice | undefined}
+	 */
+	voice?: LavalinkPlayerVoice;
+}
+
+/**
  * The types of loop modes.
  */
 export enum LoopMode {
@@ -361,42 +397,6 @@ export interface PlayerOptions {
 	 * @type {string | Node | undefined}
 	 */
 	node?: string | Node;
-}
-
-/**
- * The base options for playing a track.
- */
-export interface BasePlayOptions {
-	/**
-	 * The position to start the track.
-	 * @type {number | undefined}
-	 */
-	position?: number;
-	/**
-	 * The position to end the track.
-	 * @type {number | undefined}
-	 */
-	endTime?: number;
-	/**
-	 * The pause state of the player.
-	 * @type {boolean | undefined}
-	 */
-	paused?: boolean;
-	/**
-	 * The volume of the player.
-	 * @type {number | undefined}
-	 */
-	volume?: number;
-	/**
-	 * The filters for the player.
-	 * @type {Partial<FilterOptions> | undefined}
-	 */
-	filters?: Partial<FilterOptions>;
-	/**
-	 * The voice settings for the player.
-	 * @type {LavalinkPlayerVoice | undefined}
-	 */
-	voice?: LavalinkPlayerVoice;
 }
 
 /**

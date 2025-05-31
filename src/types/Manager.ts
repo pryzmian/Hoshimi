@@ -489,9 +489,9 @@ export interface HoshimiEvents {
 }
 
 /**
- * The search result.
+ * The manager search result.
  */
-export interface SearchResult {
+export interface QueryResult {
 	/**
 	 * The load type of the search result.
 	 * @type {LoadType}

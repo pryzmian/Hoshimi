@@ -4,7 +4,7 @@ import {
 	Events,
 	type Nullable,
 	type SearchOptions,
-	type SearchResult,
+	type QueryResult,
 } from "../types/Manager";
 import type { LyricsResult } from "../types/Node";
 import {
@@ -347,7 +347,7 @@ export class Player {
 	 *
 	 * Search for a track or playlist.
 	 * @param {SearchOptions} options The options for the search.
-	 * @returns {Promise<SearchResult>} The search result.
+	 * @returns {Promise<QueryResult>} The search result.
 	 * @example
 	 * ```ts
 	 * const player = manager.getPlayer("guildId");
@@ -360,7 +360,7 @@ export class Player {
 	 * console.log(result) // the search result
 	 * ```
 	 */
-	public search(options: SearchOptions): Promise<SearchResult> {
+	public search(options: SearchOptions): Promise<QueryResult> {
 		return this.manager.search({
 			...options,
 			node: this.node,

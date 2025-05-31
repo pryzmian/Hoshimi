@@ -5,7 +5,7 @@ import {
 	SearchEngines,
 	type HoshimiEvents,
 	type HoshimiOptions,
-	type SearchResult,
+	type QueryResult,
 	type SearchOptions,
 	type VoicePacket,
 	type VoiceServer,
@@ -388,7 +388,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
 	 *
 	 * Search for a track or playlist.
 	 * @param {SearchOptions} options The options for the search.
-	 * @returns {Promise<SearchResult>} The search result.
+	 * @returns {Promise<QueryResult>} The search result.
 	 * @example
 	 * ```ts
 	 * const result = await manager.search({
@@ -399,7 +399,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
 	 * console.log(result); // The search result
 	 * ```
 	 */
-	public async search(options: SearchOptions): Promise<SearchResult> {
+	public async search(options: SearchOptions): Promise<QueryResult> {
 		let node: Node | null = null;
 
 		if (options.node) {
