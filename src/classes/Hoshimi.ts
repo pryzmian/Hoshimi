@@ -378,7 +378,7 @@ export class Hoshimi extends TypedEmitter<RawEvents> {
 
 		this.players.set(options.guildId, player);
 		this.emit(Events.PlayerCreate, player);
-		
+
 		return player;
 	}
 
