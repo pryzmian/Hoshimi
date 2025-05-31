@@ -172,7 +172,7 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
 	public async resolve(player: Player): Promise<Track> {
 		if (!player) throw new ResolveError("Player is not defined for track resolution.");
 
-		if (isTrack(this)) return new Track(this as LavalinkTrack, this.requester);
+		if (isTrack(this)) return new Track(this, this.requester);
 
 		if (!isUnresolvedTrack(this)) throw new ResolveError("Track is not an unresolved track.");
 		if (!this.requester)

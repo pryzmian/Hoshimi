@@ -213,7 +213,9 @@ export function validateEngine(type: SearchEngines | SourceNames): SearchEngines
  * @param {Track | LavalinkTrack | UnresolvedLavalinkTrack} track The track to check.
  * @returns {boolean} If the track is a Lavalink track.
  */
-export const isTrack = (track: Track | LavalinkTrack | UnresolvedLavalinkTrack): track is Track => {
+export const isTrack = (
+	track: Track | LavalinkTrack | UnresolvedLavalinkTrack,
+): track is Track | LavalinkTrack => {
 	if (!track) return false;
 	return (
 		typeof track.encoded === "string" &&
@@ -230,7 +232,7 @@ export const isTrack = (track: Track | LavalinkTrack | UnresolvedLavalinkTrack):
  */
 export function isUnresolvedTrack(
 	track: Track | LavalinkTrack | UnresolvedLavalinkTrack,
-): track is UnresolvedTrack {
+): track is UnresolvedTrack | UnresolvedLavalinkTrack {
 	if (!track) return false;
 
 	return (
