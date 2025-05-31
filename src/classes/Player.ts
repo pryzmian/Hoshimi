@@ -18,7 +18,7 @@ import {
 import {
 	isTrack,
 	isUnresolvedTrack,
-	resolveTrack,
+	validateTrack,
 	validatePlayerOptions,
 } from "../util/functions/utils";
 import { PlayerError } from "./Errors";
@@ -477,9 +477,9 @@ export class Player {
 			throw new PlayerError("The play options must be an object.");
 
 		try {
-			if (options.track) this.queue.current = await resolveTrack(this, options.track);
+			if (options.track) this.queue.current = await validateTrack(this, options.track);
 			else if (!this.queue.current)
-				this.queue.current = await resolveTrack(this, this.queue.shift());
+				this.queue.current = await validateTrack(this, this.queue.shift());
 		} catch {}
 
 		if (!this.queue.current) throw new PlayerError("No track to play.");

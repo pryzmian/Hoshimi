@@ -110,12 +110,8 @@ export class QueueUtils {
 		if (syncCurrent && data.current && !this.queue.current && isTrack(data.current))
 			this.queue.current = data.current;
 
-		const tracks = Array.isArray(data.tracks)
-			? data.tracks.filter((track) => isTrack(track))
-			: [];
-		const history = Array.isArray(data.history)
-			? data.history.filter((track) => isTrack(track))
-			: [];
+		const tracks = data.tracks.filter((track) => isTrack(track)) || [];
+		const history = data.history.filter((track) => isTrack(track)) || [];
 
 		if (tracks.length)
 			this.queue.tracks.splice(

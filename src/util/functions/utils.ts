@@ -13,7 +13,7 @@ import type { UpdatePlayerInfo } from "../../types/Rest";
 
 import { NodeError, OptionError, ResolveError } from "../../classes/Errors";
 import { UrlRegex, ValidEngines, ValidSources } from "../constants";
-import type { Track, UnresolvedTrack } from "../../classes/Track";
+import { type Track, UnresolvedTrack } from "../../classes/Track";
 
 import { StorageAdapter } from "../../classes/queue/adapters/abstract";
 import type { Player } from "../../classes/Player";
@@ -210,6 +210,31 @@ export function validateEngine(type: SearchEngines | SourceNames): SearchEngines
 
 /**
  *
+ * Resolve a track to a valid track instance.
+ * @param {Player} player The player to resolve the track for.
+ * @param {Track | UnresolvedTrack | null} track The track to resolve.
+ * @returns {Promise<Track>} The resolved track.
+ * @throws {ResolveError} If the track is not a valid unresolved track.
+ */
+export function validateTrack(
+	player: Player,
+	track: Track | UnresolvedTrack | null,
+): Promise<Track | null> {
+	if (!track) return Promise.resolve(null);
+
+	if (isTrack(track)) return Promise.resolve(track);
+
+	if (!isUnresolvedTrack(track))
+		throw new ResolveError("The track is not a valid unresolved track.");
+
+	if (!track.resolve || typeof track.resolve !== "function")
+		return new UnresolvedTrack(track).resolve(player);
+
+	return track.resolve(player);
+}
+
+/**
+ *
  * Check if the track is a Lavalink track.
  * @param {Track | LavalinkTrack | UnresolvedLavalinkTrack} track The track to check.
  * @returns {boolean} If the track is a Lavalink track.
@@ -243,28 +268,6 @@ export function isUnresolvedTrack(
 		"resolve" in track &&
 		typeof track.resolve === "function"
 	);
-}
-
-/**
- *
- * Resolve a track to a valid Track instance.
- * @param {Player} player The player to resolve the track for.
- * @param {Track | UnresolvedTrack | null} track The track to resolve.
- * @returns {Promise<Track>} The resolved track.
- * @throws {ResolveError} If the track is not a valid unresolved track.
- */
-export function resolveTrack(
-	player: Player,
-	track: Track | UnresolvedTrack | null,
-): Promise<Track | null> {
-	if (!track) return Promise.resolve(null);
-
-	if (isTrack(track)) return Promise.resolve(track);
-
-	if (!isUnresolvedTrack(track))
-		throw new ResolveError("The track is not a valid unresolved track.");
-
-	return track.resolve(player);
 }
 
 /**
