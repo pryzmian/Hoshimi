@@ -4,7 +4,8 @@ import type { Queue } from "./Queue";
 import { StorageError } from "../Errors";
 import { QueueStore } from "./Store";
 
-import { isTrack } from "../../util/functions/validations";
+import { isTrack } from "../../util/functions/utils";
+import type { HoshimiQueueOptions } from "../../types/Queue";
 
 /**
  * Class representing the queue utils.
@@ -13,12 +14,27 @@ import { isTrack } from "../../util/functions/validations";
 export class QueueUtils {
 	/**
 	 * Player instance.
+	 * @type {Queue}
+	 * @private
+	 * @readonly
 	 */
-	private queue: Queue;
+	private readonly queue: Queue;
+
 	/**
 	 * Queue store.
+	 * @type {QueueStore}
+	 * @private
+	 * @readonly
 	 */
-	private store: QueueStore;
+	private readonly store: QueueStore;
+
+	/**
+	 * Options for the queue.
+	 * @type {HoshimiQueueOptions}
+	 * @private
+	 * @readonly
+	 */
+	private readonly options: Required<HoshimiQueueOptions>;
 
 	/**
 	 *
@@ -27,7 +43,8 @@ export class QueueUtils {
 	 */
 	constructor(queue: Queue) {
 		this.queue = queue;
-		this.store = new QueueStore(this.queue.player.manager.options.queueOptions.storage);
+		this.options = queue.player.manager.options.queueOptions;
+		this.store = new QueueStore(this.options.storage);
 	}
 
 	/**
@@ -40,11 +57,11 @@ export class QueueUtils {
 	 * ```
 	 */
 	public save(): Awaitable<void> {
-		const max = this.queue.player.manager.options.queueOptions.maxPreviousTracks;
-		const length = this.queue.player.queue.tracks.length;
-		const json = this.queue.player.queue.toJSON();
+		const max = this.options.maxPreviousTracks;
+		const length = this.queue.tracks.length;
+		const json = this.queue.toJSON();
 
-		if (length > max) this.queue.history.splice(max, length);
+		if (length > max) this.queue.history.splice(0, length - max);
 
 		this.queue.player.manager.emit(
 			Events.Debug,
@@ -90,28 +107,25 @@ export class QueueUtils {
 				`No data found to sync for guildId: ${this.queue.player.guildId}`,
 			);
 
-		if (syncCurrent && !this.queue.player.queue.current)
-			this.queue.player.queue.current = data.current;
-		if (
-			Array.isArray(data.tracks) &&
-			data.tracks.length &&
-			data.tracks.some((track) => isTrack(track))
-		)
-			this.queue.player.queue.tracks.splice(
-				override ? 0 : this.queue.player.queue.tracks.length,
-				override ? this.queue.player.queue.tracks.length : 0,
-				...data.tracks.filter((track) => isTrack(track)),
+		if (syncCurrent && data.current && !this.queue.current && isTrack(data.current))
+			this.queue.current = data.current;
+
+		const tracks = Array.isArray(data.tracks)
+			? data.tracks.filter((track) => isTrack(track))
+			: [];
+		const history = Array.isArray(data.history)
+			? data.history.filter((track) => isTrack(track))
+			: [];
+
+		if (tracks.length)
+			this.queue.tracks.splice(
+				override ? 0 : this.queue.tracks.length,
+				override ? this.queue.tracks.length : 0,
+				...tracks,
 			);
-		if (
-			Array.isArray(data.history) &&
-			data.history.length &&
-			data.history.some((track) => isTrack(track))
-		)
-			this.queue.player.queue.history.splice(
-				0,
-				override ? this.queue.player.queue.tracks.length : 0,
-				...data.history.filter((track) => isTrack(track)),
-			);
+
+		if (history.length)
+			this.queue.history.splice(0, override ? this.queue.tracks.length : 0, ...history);
 
 		this.queue.player.manager.emit(
 			Events.Debug,

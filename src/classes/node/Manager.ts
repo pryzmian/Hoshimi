@@ -5,6 +5,7 @@ import { Node } from "./Node";
 
 /**
  * Class representing a node manager.
+ * @class NodeManager
  */
 export class NodeManager {
 	/**

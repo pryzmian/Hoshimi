@@ -3,7 +3,8 @@ import { StorageAdapter } from "./abstract";
 
 /**
  * Class representing a memory storage manager.
- * @extends StorageAdapter
+ * @class MemoryAdapter
+ * @extends {StorageAdapter}
  */
 export class MemoryAdapter<T extends QueueJson = QueueJson> extends StorageAdapter<T> {
 	/**

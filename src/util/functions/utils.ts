@@ -1,12 +1,19 @@
-import type { NodeOptions, PluginNames, SearchQuery } from "../../types/Node";
+import type {
+	SourceNames,
+	LavalinkTrack,
+	NodeOptions,
+	PluginNames,
+	SearchQuery,
+	UnresolvedLavalinkTrack,
+} from "../../types/Node";
 import { type RestOrArray, SearchEngines, type HoshimiOptions } from "../../types/Manager";
 import type { Node } from "../../classes/node/Node";
 import type { PlayerOptions } from "../../types/Player";
 import type { UpdatePlayerInfo } from "../../types/Rest";
 
 import { NodeError, OptionError } from "../../classes/Errors";
-import { UrlRegex, ValidEngines } from "../constants";
-import type { Track } from "../../classes/Track";
+import { UrlRegex, ValidEngines, ValidSources } from "../constants";
+import type { Track, UnresolvedTrack } from "../../classes/Track";
 
 import { StorageAdapter } from "../../classes/queue/adapters/abstract";
 
@@ -83,8 +90,13 @@ export function validateQuery(search: SearchQuery): string {
 	if (typeof search.query !== "string")
 		throw new OptionError("The query option 'query.query' must be a valid string.");
 
-	if (typeof search.engine !== "undefined" && !ValidEngines.includes(search.engine))
+	if (typeof search.engine !== "string")
 		throw new OptionError("The query option 'query.engine' must be a valid search engine.");
+
+	search.engine = validateEngine(search.engine);
+
+	if (!ValidEngines.includes(search.engine))
+		throw new OptionError(`The query option 'query.engine' must be a valid search engine.`);
 
 	const query = search.query.trim();
 
@@ -183,14 +195,52 @@ export function validateNodePlugins(node: Node, ...plugins: RestOrArray<PluginNa
 
 /**
  *
- * Check if the track is valid.
- * @param {Track} track The track to check.
+ * Validate the engine type.
+ * @param {SearchEngines | SourceNames} type The type to validate.
+ * @returns {SearchEngines} The validated engine type.
  */
-export const isTrack = (track: Track) => {
+export function validateEngine(type: SearchEngines | SourceNames): SearchEngines {
+	const source =
+		ValidEngines.find((engine) => engine === type) ?? ValidSources.get(type as SourceNames);
+	if (!source) throw new OptionError(`The engine '${type}' is not a valid engine.`);
+
+	return source;
+}
+
+/**
+ *
+ * Check if the track is a Lavalink track.
+ * @param {Track | LavalinkTrack | UnresolvedLavalinkTrack} track The track to check.
+ * @returns {boolean} If the track is a Lavalink track.
+ */
+export const isTrack = (track: Track | LavalinkTrack | UnresolvedLavalinkTrack): track is Track => {
+	if (!track) return false;
+	return (
+		typeof track.encoded === "string" &&
+		typeof track.info === "object" &&
+		!("resolve" in track && typeof track.resolve === "function")
+	);
+};
+
+/**
+ *
+ * Check if the track is an unresolved track.
+ * @param {Track | LavalinkTrack | UnresolvedLavalinkTrack} track The track to check.
+ * @returns {boolean} If the track is an unresolved track.
+ */
+export function isUnresolvedTrack(
+	track: Track | LavalinkTrack | UnresolvedLavalinkTrack,
+): track is UnresolvedTrack {
 	if (!track) return false;
 
-	return typeof track.encoded === "string" && typeof track.info === "object";
-};
+	return (
+		typeof track.encoded === "string" &&
+		typeof track.info === "object" &&
+		typeof track.info.title === "string" &&
+		"resolve" in track &&
+		typeof track.resolve === "function"
+	);
+}
 
 /**
  *

@@ -59,6 +59,18 @@ export class StorageError extends Error {
 }
 
 /**
+ * Error class for resolving tracks.
+ * @class ResolveError
+ * @extends {Error}
+ */
+export class ResolveError extends Error {
+	constructor(message: string) {
+		super(message);
+		this.name = "Hoshimi [ResolveError]";
+	}
+}
+
+/**
  * Error options for the node.
  */
 interface NodeErrorOptions {

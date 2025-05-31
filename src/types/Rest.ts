@@ -1,3 +1,4 @@
+import type { Track, TrackRequester } from "../classes/Track";
 import type { PickNullable } from "./Manager";
 import type { LavalinkTrack } from "./Node";
 import type { FilterOptions, LavalinkPlayerVoice, LavalinkPlayOptions } from "./Player";
@@ -144,9 +145,9 @@ export interface RestOptions {
 	headers?: Record<string, string>;
 	/**
 	 * The body for the REST.
-	 * @type {Record<string, unknown>}
+	 * @type {Record<string, unknown> | string | undefined}
 	 */
-	body?: Record<string, unknown>;
+	body?: Record<string, unknown> | string;
 	/**
 	 * The query parameters for the REST.
 	 * @type {Record<string, string>}
@@ -288,6 +289,40 @@ export interface HoshimiRestOptions {
 	 * @default 10000
 	 */
 	resumeTimeout?: number;
+}
+
+/**
+ * The methods for decoding base64 encoded tracks.
+ */
+export interface DecodeMethods {
+	/**
+	 *
+	 * Decodes a single base64 encoded track.
+	 * @param {string} track The base64 encoded track.
+	 * @param {TrackRequester} requester The requester of the track.
+	 * @return {Promise<Track>} The decoded track.
+	 * @example
+	 * ```ts
+	 * const node = player.node;
+	 * const track = await node.decode.single("base64EncodedTrack");
+	 * console.log(track.info.title); // Track Title
+	 * ```
+	 */
+	single(track: string, requester: TrackRequester): Promise<Track>;
+	/**
+	 * Decodes multiple base64 encoded tracks.
+	 * @param {string[]} tracks The base64 encoded tracks.
+	 * @param {TrackRequester} requester The requester of the tracks.
+	 * @return {Promise<Track[]>} The decoded tracks.
+	 * @example
+	 * ```ts
+	 * const node = player.node;
+	 * const tracks = await node.decode.multiple(["base64EncodedTrack1", "base64EncodedTrack2"]);
+	 * console.log(tracks[0].info.title); // Track Title 1
+	 * console.log(tracks[1].info.title); // Track Title 2
+	 * ```
+	 */
+	multiple(tracks: string[], requester: TrackRequester): Promise<Track[]>;
 }
 
 /**

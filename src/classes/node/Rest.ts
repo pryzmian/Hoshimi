@@ -11,7 +11,7 @@ import {
 	HttpStatusCodes,
 } from "../../types/Rest";
 import { HoshimiAgent } from "../../util/constants";
-import { validatePlayerData } from "../../util/functions/validations";
+import { validatePlayerData } from "../../util/functions/utils";
 import type { Hoshimi } from "../Hoshimi";
 import type { Node } from "./Node";
 
@@ -24,6 +24,8 @@ import type { Node } from "./Node";
 
 /**
  * Class representing a REST error.
+ * @class RestError
+ * @extends {Error}
  */
 class RestError extends Error {
 	/**
@@ -73,6 +75,7 @@ class RestError extends Error {
 
 /**
  * Class representing the REST for the node.
+ * @class Rest
  */
 export class Rest {
 	/**
@@ -184,7 +187,8 @@ export class Rest {
 		};
 
 		if (![HttpMethods.Get, HttpMethods.Head].includes(options.method) && options.body) {
-			fetchOptions.body = JSON.stringify(options.body);
+			if (typeof options.body === "string") fetchOptions.body = options.body;
+			else fetchOptions.body = JSON.stringify(options.body);
 		}
 
 		this.node.nodeManager.manager.emit(

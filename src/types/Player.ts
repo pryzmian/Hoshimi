@@ -1,5 +1,5 @@
 import type { Node } from "../classes/node/Node";
-import type { Track } from "../classes/Track";
+import type { Track, UnresolvedTrack } from "../classes/Track";
 import type { Nullable } from "./Manager";
 import type { Exception, LavalinkTrack, LyricsLine, LyricsResult, OpCodes } from "./Node";
 import type { QueueJson } from "./Queue";
@@ -422,9 +422,9 @@ export interface PlayOptions extends BasePlayOptions {
 	noReplace?: boolean;
 	/**
 	 * Track to play.
-	 * @type {Track | undefined}
+	 * @type {Track | UnresolvedTrack | undefined}
 	 */
-	track?: Track;
+	track?: Track | UnresolvedTrack;
 }
 
 /**

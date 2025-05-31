@@ -10,27 +10,32 @@ import {
 	type NodeDisconnectInfo,
 	WebsocketCloseCodes,
 	NodeDestroyReasons,
+	type LavalinkTrack,
 } from "../../types/Node";
 
 import { NodeError } from "../Errors";
 import { Rest } from "./Rest";
 
 import { onClose, onError, onMessage, onOpen } from "../../util/events/websocket";
-import type {
-	LavalinkPlayer,
-	LavalinkSession,
-	NullableLavalinkSession,
-	UpdatePlayerInfo,
+import {
+	type DecodeMethods,
+	HttpMethods,
+	type LavalinkPlayer,
+	type LavalinkSession,
+	type NullableLavalinkSession,
+	type UpdatePlayerInfo,
 } from "../../types/Rest";
 import type { NodeManager } from "./Manager";
 
 import { DebugLevels, Events } from "../../types/Manager";
-import { validateQuery } from "../../util/functions/validations";
+import { validateQuery } from "../../util/functions/utils";
 import { WebSocket } from "ws";
 import { LyricsManager } from "./Lyrics";
+import { Track } from "../Track";
 
 /**
  * Class representing a Lavalink node.
+ * @class Node
  */
 export class Node {
 	/**
@@ -159,6 +164,32 @@ export class Node {
 		this.rest = new Rest(this);
 		this.lyricsManager = new LyricsManager(this);
 	}
+
+	/**
+	 * The decode methods for the node.
+	 * @type {DecodeMethods}
+	 * @readonly
+	 */
+	readonly decode: DecodeMethods = {
+		single: async (track, requester): Promise<Track> => {
+			const raw = await this.rest.request<LavalinkTrack>({
+				endpoint: "/decodetrack",
+				params: { encodedTrack: track },
+			});
+
+			return new Track(raw, requester);
+		},
+		multiple: async (tracks, requester): Promise<Track[]> => {
+			const raw =
+				(await this.rest.request<LavalinkTrack[]>({
+					endpoint: "/decodetracks",
+					method: HttpMethods.Post,
+					body: JSON.stringify(tracks),
+				})) ?? [];
+
+			return raw.map((track): Track => new Track(track, requester));
+		},
+	};
 
 	/**
 	 * The id of the node.

@@ -1,4 +1,4 @@
-import type { UserAgent } from "../types/Node";
+import { SourceNames, type UserAgent } from "../types/Node";
 import { SearchEngines } from "../types/Manager";
 
 import PackageJson from "../../package.json";
@@ -20,3 +20,24 @@ export const UrlRegex: RegExp = /^(https?:\/\/)?([a-zA-Z0-9\-_]+\.)+[a-zA-Z]{2,}
  * @type {SearchEngines[]}
  */
 export const ValidEngines: SearchEngines[] = Object.values(SearchEngines);
+
+/**
+ * The valid sources for Hoshimi.
+ * @type {Map<SourceNames, SearchEngines>}
+ */
+export const ValidSources: Map<SourceNames, SearchEngines> = new Map(
+	Object.entries<SearchEngines>({
+		[SourceNames.Youtube]: SearchEngines.Youtube,
+		[SourceNames.YoutubeMusic]: SearchEngines.YoutubeMusic,
+		[SourceNames.Soundcloud]: SearchEngines.SoundCloud,
+		[SourceNames.Bandcamp]: SearchEngines.BandCamp,
+		[SourceNames.Twitch]: SearchEngines.Twitch,
+		[SourceNames.Vimeo]: SearchEngines.Vimeo,
+		[SourceNames.Mixer]: SearchEngines.Mixer,
+		[SourceNames.Spotify]: SearchEngines.Spotify,
+		[SourceNames.Deezer]: SearchEngines.Deezer,
+		[SourceNames.AppleMusic]: SearchEngines.AppleMusic,
+		[SourceNames.YandexMusic]: SearchEngines.YandexMusic,
+		[SourceNames.FloweryTTS]: SearchEngines.FloweryTTS,
+	}) as [SourceNames, SearchEngines][],
+);

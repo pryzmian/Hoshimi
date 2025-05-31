@@ -1,11 +1,12 @@
 import { PluginNames, type LyricsResult } from "../../types/Node";
 import { HttpMethods } from "../../types/Rest";
-import { validateNodePlugins } from "../../util/functions/validations";
+import { validateNodePlugins } from "../../util/functions/utils";
 import type { Track } from "../Track";
 import type { Node } from "./Node";
 
 /**
  * Class representing a LyricsManager.
+ * @class LyricsManager
  */
 export class LyricsManager {
 	/**

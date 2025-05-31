@@ -1,4 +1,4 @@
-import type { SearchEngines } from "./Manager";
+import type { PickRequired, SearchEngines } from "./Manager";
 import type {
 	LyricsFoundEvent,
 	LyricsLineEvent,
@@ -468,6 +468,29 @@ export interface LavalinkTrack {
 	 * @type {TrackInfo}
 	 */
 	info: TrackInfo;
+	/**
+	 * The user data of the track.
+	 * @type {Record<string, unknown> | undefined}
+	 */
+	userData?: Record<string, unknown>;
+}
+
+export interface UnresolvedLavalinkTrack {
+	/**
+	 * The base64 encoded track.
+	 * @type {string | undefined}
+	 */
+	encoded?: string;
+	/**
+	 * The track information.
+	 * @type {UnresolvedTrackInfo}
+	 */
+	info: UnresolvedTrackInfo;
+	/**
+	 * The plugin information of the track.
+	 * @type {Partial<PluginInfo>}
+	 */
+	pluginInfo: Partial<PluginInfo>;
 	/**
 	 * The user data of the track.
 	 * @type {Record<string, unknown> | undefined}
@@ -987,9 +1010,9 @@ export interface SearchQuery {
 	query: string;
 	/**
 	 * The search engine to use.
-	 * @type {SearchEngines}
+	 * @type {SearchEngines | SourceNames | undefined}
 	 */
-	engine?: SearchEngines;
+	engine?: SearchEngines | SourceNames;
 	/**
 	 * The search params to use.
 	 * @type {Record<string, string> | undefined}
@@ -1095,17 +1118,22 @@ export interface LyricsLine {
 }
 
 /**
- * The interface of the node disconnect object.
+ * The type for the unresolved track info.
+ */
+export type UnresolvedTrackInfo = PickRequired<Partial<TrackInfo>, "title">;
+
+/**
+ * The type of the node disconnect object.
  */
 export type NodeDisconnectInfo = NodeDestroyInfo;
 
 /**
- * The user agent for the requests.
+ * The type of the user agent for the requests.
  */
 export type UserAgent = `${string}/v${string} (${string})`;
 
 /**
- * The payload for the socket.
+ * The type of the payload for the socket.
  */
 export type LavalinkPayload =
 	| Ready

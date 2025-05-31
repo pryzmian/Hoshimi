@@ -54,6 +54,34 @@ export enum SearchEngines {
 	 */
 	SoundCloud = "scsearch",
 	/**
+	 * Search on Apple Music.
+	 */
+	AppleMusic = "amsearch",
+	/**
+	 * Search on Bandcamp.
+	 */
+	BandCamp = "bcsearch",
+	/**
+	 * Search on Vimeo.
+	 */
+	Vimeo = "vmsearch",
+	/**
+	 * Search on Deezer.
+	 */
+	Deezer = "dzsearch",
+	/**
+	 * Search on Twitch.
+	 */
+	Twitch = "twsearch",
+	/**
+	 * Search on Mixer.
+	 */
+	Mixer = "mxsearch",
+	/**
+	 * Search on Yandex Music.
+	 */
+	YandexMusic = "ymsearch",
+	/**
 	 * Play voice using flowery tts.
 	 */
 	FloweryTTS = "ftts",
@@ -676,6 +704,13 @@ export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
  * Create a type that can be a rest or an array.
  */
 export type RestOrArray<T> = T[] | [T[]];
+
+/**
+ * Make a type required.
+ */
+export type PickRequired<T, K extends keyof T> = {
+	[P in K]-?: T[P];
+} & Omit<T, K>;
 
 /**
  * Make a type nullable.

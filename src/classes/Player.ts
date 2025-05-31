@@ -15,7 +15,7 @@ import {
 	type PlayerJson,
 	type PlayerOptions,
 } from "../types/Player";
-import { validatePlayerOptions } from "../util/functions/validations";
+import { isUnresolvedTrack, validatePlayerOptions } from "../util/functions/utils";
 import { PlayerError } from "./Errors";
 import type { Hoshimi } from "./Hoshimi";
 import type { Node } from "./node/Node";
@@ -23,6 +23,7 @@ import { Queue } from "./queue/Queue";
 
 /**
  * Class representing a Hoshimi player.
+ * @class Player
  */
 export class Player {
 	/**
@@ -467,8 +468,16 @@ export class Player {
 	 * ```
 	 */
 	public async play(options: Partial<PlayOptions> = {}): Promise<void> {
-		if (options.track) this.queue.current = options.track;
-		else if (!this.queue.current) this.queue.current = this.queue.shift();
+		if (typeof options !== "object")
+			throw new PlayerError("The play options must be an object.");
+
+		if (options.track) {
+			if (isUnresolvedTrack(options.track))
+				this.queue.current = await options.track.resolve(this);
+			else this.queue.current = options.track;
+		} else if (!this.queue.current) {
+			this.queue.current = this.queue.shift();
+		}
 
 		if (!this.queue.current) throw new PlayerError("No track to play.");
 

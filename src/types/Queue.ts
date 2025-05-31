@@ -29,7 +29,7 @@ export interface HoshimiQueueOptions {
 	/**
 	 * The storage manager to use for the queue.
 	 * @type {StorageAdapter}
-	 * @default MemoryAdapter
+	 * @default {MemoryAdapter}
 	 */
 	storage?: StorageAdapter;
 }

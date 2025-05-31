@@ -1,4 +1,4 @@
-import { TypedEmitter } from "../util/emitter";
+import { EventEmitter } from "node:events";
 
 import {
 	type ClientData,
@@ -21,7 +21,7 @@ import type { Node } from "./node/Node";
 
 import { Player } from "./Player";
 import { Collection } from "../util/collection";
-import { validateManagerOptions } from "../util/functions/validations";
+import { validateManagerOptions } from "../util/functions/utils";
 import { ManagerError, OptionError } from "./Errors";
 import { Track } from "./Track";
 import { autoplayFn } from "../util/functions/autoplay";
@@ -49,8 +49,10 @@ type RawEvents = {
 
 /**
  * Class representing the Hoshimi manager.
+ * @class Hoshimi
+ * @extends {EventEmitter<RawEvents>}
  */
-export class Hoshimi extends TypedEmitter<RawEvents> {
+export class Hoshimi extends EventEmitter<RawEvents> {
 	/**
 	 * The options for the manager.
 	 * @type {HoshimiOptions}
