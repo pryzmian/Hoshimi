@@ -181,7 +181,7 @@ export class Queue {
 	 * console.log(queue.tracks); // [track1, track3, track2, track]
 	 * ```
 	 */
-	public add(track: Track | Track[], position?: number): this {
+	public add(track: HoshimiTrack | HoshimiTrack[], position?: number): this {
 		if (typeof position === "number" && position >= 0 && position < this.tracks.length)
 			return this.splice(position, 0, ...(Array.isArray(track) ? track : [track]));
 
@@ -350,7 +350,11 @@ export class Queue {
 	 * @param {Track | Track[]} [tracks] The tracks to add.
 	 * @returns {this} The queue instance.
 	 */
-	public splice(start: number, deleteCount: number, tracks?: Track | Track[]): this {
+	public splice(
+		start: number,
+		deleteCount: number,
+		tracks?: HoshimiTrack | HoshimiTrack[],
+	): this {
 		if (!this.size && tracks) this.add(tracks);
 
 		if (tracks)
