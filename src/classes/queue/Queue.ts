@@ -1,7 +1,7 @@
 import { DebugLevels, Events } from "../../types/Manager";
 import type { QueueJson } from "../../types/Queue";
 import type { Player } from "../Player";
-import type { Track } from "../Track";
+import type { HoshimiTrack, Track } from "../Track";
 import { QueueUtils } from "./Utils";
 
 /**
@@ -11,9 +11,9 @@ import { QueueUtils } from "./Utils";
 export class Queue {
 	/**
 	 * Tracks of the queue.
-	 * @type {Track[]}
+	 * @type {HoshimiTrack[]}
 	 */
-	public tracks: Track[] = [];
+	public tracks: HoshimiTrack[] = [];
 
 	/**
 	 * Previous tracks of the queue.
@@ -199,7 +199,7 @@ export class Queue {
 	/**
 	 *
 	 * Get the first track of the queue.
-	 * @returns {Track | null} The first track of the queue.
+	 * @returns {HoshimiTrack | null} The first track of the queue.
 	 * @example
 	 * ```ts
 	 * const queue = player.queue;
@@ -211,7 +211,7 @@ export class Queue {
 	 * queue.add(track2);
 	 * ```
 	 */
-	public shift(): Track | null {
+	public shift(): HoshimiTrack | null {
 		return this.tracks.shift() ?? null;
 	}
 

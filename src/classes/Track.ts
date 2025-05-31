@@ -239,6 +239,11 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
 }
 
 /**
+ * Type representing a Hoshimi track, which can be either a resolved or unresolved track.
+ */
+export type HoshimiTrack = Track | UnresolvedTrack;
+
+/**
  * Interface representing an extendable track.
  */
 export interface CustomizableTrack {}

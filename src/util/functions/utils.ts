@@ -11,11 +11,12 @@ import type { Node } from "../../classes/node/Node";
 import type { PlayerOptions } from "../../types/Player";
 import type { UpdatePlayerInfo } from "../../types/Rest";
 
-import { NodeError, OptionError } from "../../classes/Errors";
+import { NodeError, OptionError, ResolveError } from "../../classes/Errors";
 import { UrlRegex, ValidEngines, ValidSources } from "../constants";
 import type { Track, UnresolvedTrack } from "../../classes/Track";
 
 import { StorageAdapter } from "../../classes/queue/adapters/abstract";
+import type { Player } from "../../classes/Player";
 
 /**
  *
@@ -242,6 +243,28 @@ export function isUnresolvedTrack(
 		"resolve" in track &&
 		typeof track.resolve === "function"
 	);
+}
+
+/**
+ *
+ * Resolve a track to a valid Track instance.
+ * @param {Player} player The player to resolve the track for.
+ * @param {Track | UnresolvedTrack} track The track to resolve.
+ * @returns {Promise<Track>} The resolved track.
+ * @throws {ResolveError} If the track is not a valid unresolved track.
+ */
+export function resolveTrack(
+	player: Player,
+	track: Track | UnresolvedTrack | null,
+): Promise<Track | null> {
+	if (!track) return Promise.resolve(null);
+
+	if (isTrack(track)) return Promise.resolve(track);
+
+	if (!isUnresolvedTrack(track))
+		throw new ResolveError("The track is not a valid unresolved track.");
+
+	return track.resolve(player);
 }
 
 /**

@@ -1,5 +1,5 @@
 import type { Player } from "../../classes/Player";
-import type { Track } from "../../classes/Track";
+import type { HoshimiTrack, Track } from "../../classes/Track";
 import { SearchEngines } from "../../types/Manager";
 import { SourceNames } from "../../types/Node";
 
@@ -17,7 +17,7 @@ const maxTracks: number = 10;
  * @param {Track | null} lastTrack The last track that was played.
  * @returns {Promise<void>} The promise for the autoplay function.
  */
-export async function autoplayFn(player: Player, lastTrack: Track | null): Promise<void> {
+export async function autoplayFn(player: Player, lastTrack: HoshimiTrack | null): Promise<void> {
 	if (!lastTrack) return;
 
 	const isEnabled =
@@ -45,7 +45,7 @@ export async function autoplayFn(player: Player, lastTrack: Track | null): Promi
 			const filtered = player.queue.history
 				.filter(({ info }) => info.sourceName === SourceNames.Spotify)
 				.slice(0, 1);
-			if (!filtered.length) filtered.push(lastTrack);
+			if (!filtered.length) filtered.push(lastTrack as Track);
 
 			const ids = filtered.map(
 				({ info }) =>

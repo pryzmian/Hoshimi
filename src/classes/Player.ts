@@ -15,12 +15,16 @@ import {
 	type PlayerJson,
 	type PlayerOptions,
 } from "../types/Player";
-import { isTrack, isUnresolvedTrack, validatePlayerOptions } from "../util/functions/utils";
+import {
+	isTrack,
+	isUnresolvedTrack,
+	resolveTrack,
+	validatePlayerOptions,
+} from "../util/functions/utils";
 import { PlayerError } from "./Errors";
 import type { Hoshimi } from "./Hoshimi";
 import type { Node } from "./node/Node";
 import { Queue } from "./queue/Queue";
-import { UnresolvedTrack } from "./Track";
 
 /**
  * Class representing a Hoshimi player.
@@ -472,20 +476,13 @@ export class Player {
 		if (typeof options !== "object")
 			throw new PlayerError("The play options must be an object.");
 
-		if (options.track) {
-			if (isUnresolvedTrack(options.track)) {
-				if ("resolve" in options.track)
-					this.queue.current = await options.track.resolve(this);
-				else this.queue.current = await new UnresolvedTrack(options.track).resolve(this);
-			} else {
-				this.queue.current = options.track;
-			}
-		} else if (!this.queue.current) {
-			this.queue.current = this.queue.shift();
-		}
+		try {
+			if (options.track) this.queue.current = await resolveTrack(this, options.track);
+			else if (!this.queue.current)
+				this.queue.current = await resolveTrack(this, this.queue.shift());
+		} catch {}
 
 		if (!this.queue.current) throw new PlayerError("No track to play.");
-
 		if (!isTrack(this.queue.current) && !isUnresolvedTrack(this.queue.current))
 			throw new PlayerError("The track must be a valid Track or UnresolvedTrack instance.");
 
