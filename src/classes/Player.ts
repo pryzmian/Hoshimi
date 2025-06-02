@@ -476,11 +476,9 @@ export class Player {
 		if (typeof options !== "object")
 			throw new PlayerError("The play options must be an object.");
 
-		try {
-			if (options.track) this.queue.current = await validateTrack(this, options.track);
-			else if (!this.queue.current)
-				this.queue.current = await validateTrack(this, this.queue.shift());
-		} catch {}
+		if (options.track) this.queue.current = await validateTrack(this, options.track);
+		else if (!this.queue.current)
+			this.queue.current = await validateTrack(this, this.queue.shift());
 
 		if (!this.queue.current) throw new PlayerError("No track to play.");
 		if (!isTrack(this.queue.current) && !isUnresolvedTrack(this.queue.current))

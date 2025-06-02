@@ -490,7 +490,7 @@ export interface UnresolvedLavalinkTrack {
 	 * The plugin information of the track.
 	 * @type {Partial<PluginInfo>}
 	 */
-	pluginInfo: Partial<PluginInfo>;
+	pluginInfo?: Partial<PluginInfo>;
 	/**
 	 * The user data of the track.
 	 * @type {Record<string, unknown> | undefined}

@@ -29,7 +29,7 @@ const client = new Client({
 		replied_user: false,
 	},
 	commands: {
-		prefix: () => ["hoshimi"],
+		prefix: () => ["hoshimi", "h."],
 		reply: () => true,
 	},
 });

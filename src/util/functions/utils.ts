@@ -228,7 +228,7 @@ export function validateTrack(
 		throw new ResolveError("The track is not a valid unresolved track.");
 
 	if (!track.resolve || typeof track.resolve !== "function")
-		return new UnresolvedTrack(track).resolve(player);
+		return new UnresolvedTrack(track, track.requester).resolve(player);
 
 	return track.resolve(player);
 }
@@ -262,11 +262,11 @@ export function isUnresolvedTrack(
 	if (!track) return false;
 
 	return (
-		typeof track.encoded === "string" &&
-		typeof track.info === "object" &&
-		typeof track.info.title === "string" &&
-		"resolve" in track &&
-		typeof track.resolve === "function"
+		typeof track.encoded === "string" ||
+		(typeof track.info === "object" &&
+			typeof track.info.title === "string" &&
+			"resolve" in track &&
+			typeof track.resolve === "function")
 	);
 }
 

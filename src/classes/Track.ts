@@ -1,4 +1,4 @@
-import type { Inferable } from "../types/Manager";
+import { DebugLevels, Events, type Inferable } from "../types/Manager";
 import {
 	SourceNames,
 	type LavalinkTrack,
@@ -124,7 +124,7 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
 	 * The plugin info of the track.
 	 * @type {Partial<PluginInfo>}
 	 */
-	readonly pluginInfo: Partial<PluginInfo>;
+	readonly pluginInfo?: Partial<PluginInfo>;
 
 	/**
 	 * The track user data.
@@ -136,7 +136,7 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
 	 * The requester of the track.
 	 * @type {TrackRequester | undefined}
 	 */
-	public requester?: TrackRequester;
+	public requester: TrackRequester;
 
 	/**
 	 * The constructor for the track.
@@ -155,7 +155,7 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
 	 * console.log(track.encoded); // the track encoded in base64
 	 * ```
 	 */
-	constructor(track: UnresolvedLavalinkTrack, requester?: TrackRequester) {
+	constructor(track: UnresolvedLavalinkTrack, requester: TrackRequester) {
 		this.info = track.info;
 		this.encoded = track.encoded;
 		this.requester = requester;
@@ -180,6 +180,12 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
 		if (!this.info.title && !this.encoded && !this.info.uri)
 			throw new ResolveError("Track is missing required properties for resolution.");
 
+		player.manager.emit(
+			Events.Debug,
+			DebugLevels.Player,
+			`[Unresolved] -> [Track] Resolving the track: ${this.info.title}`,
+		);
+
 		if (this.encoded) return player.node.decode.single(this.encoded, this.requester);
 
 		if (this.info.uri) {
@@ -187,6 +193,12 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
 				.search({ query: this.info.uri, requester: this.requester })
 				.then((result) => result.tracks[0]);
 			if (!track) throw new ResolveError("Track could not be resolved from URI.");
+
+			player.manager.emit(
+				Events.Debug,
+				DebugLevels.Player,
+				`[Unresolved] -> [Track] Resolved the track from URI: ${this.info.uri}`,
+			);
 
 			return track;
 		}
@@ -203,6 +215,12 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
 			this.info.sourceName && !excluded.includes(this.info.sourceName)
 				? validateEngine(this.info.sourceName)
 				: player.manager.options.defaultSearchEngine;
+
+		player.manager.emit(
+			Events.Debug,
+			DebugLevels.Player,
+			`[Unresolved] -> [Track] Searching for track with query: ${query} using engine: ${engine}`,
+		);
 
 		return player.search({ query, engine, requester: this.requester }).then((result) => {
 			let track: Track | null = result.tracks[0] ?? null;
@@ -232,6 +250,12 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
 				track = result.tracks.find((t) => t.info.isrc === this.info.isrc) ?? null;
 
 			if (!track) throw new ResolveError("Track could not be resolved from search query.");
+
+			player.manager.emit(
+				Events.Debug,
+				DebugLevels.Player,
+				`[Unresolved] -> [Track] Resolved the track ${track.info.title} from search query: ${query}`,
+			);
 
 			return track;
 		});
