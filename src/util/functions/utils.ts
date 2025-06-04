@@ -13,7 +13,7 @@ import type { UpdatePlayerInfo } from "../../types/Rest";
 
 import { NodeError, OptionError, ResolveError } from "../../classes/Errors";
 import { UrlRegex, ValidEngines, ValidSources } from "../constants";
-import { type Track, UnresolvedTrack } from "../../classes/Track";
+import { Track, UnresolvedTrack } from "../../classes/Track";
 
 import { StorageAdapter } from "../../classes/queue/adapters/abstract";
 import type { Player } from "../../classes/Player";
@@ -222,7 +222,7 @@ export function validateTrack(
 ): Promise<Track | null> {
 	if (!track) return Promise.resolve(null);
 
-	if (isTrack(track)) return Promise.resolve(track);
+	if (isTrack(track)) return Promise.resolve(new Track(track, track.requester));
 
 	if (!isUnresolvedTrack(track))
 		throw new ResolveError("The track is not a valid unresolved track.");
