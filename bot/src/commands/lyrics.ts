@@ -28,7 +28,7 @@ export default class LyricsCommand extends Command {
 		const lyrics = await player.lyrics.current();
 		if (!lyrics) return ctx.editOrReply({ content: "No lyrics found." });
 
-		player.set("lyrics", lyrics);
+		player.data.set("lyrics", lyrics);
 
 		const current = player.queue.current;
 		if (!current) return ctx.editOrReply({ content: "No track is currently playing." });
@@ -65,8 +65,8 @@ export default class LyricsCommand extends Command {
 			await interaction.update({ components: [] });
 			await player.lyrics.subscribe();
 
-			player.set("lyricsId", message.id);
-			player.set("enabledLyrics", true);
+			player.data.set("lyricsId", message.id);
+			player.data.set("enabledLyrics", true);
 		});
 	}
 }

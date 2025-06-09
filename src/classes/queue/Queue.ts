@@ -1,6 +1,6 @@
 import { DebugLevels, Events } from "../../types/Manager";
 import type { QueueJson } from "../../types/Queue";
-import type { Player } from "../Player";
+import type { Player } from "../player/Player";
 import type { HoshimiTrack, Track } from "../Track";
 import { QueueUtils } from "./Utils";
 

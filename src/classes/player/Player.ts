@@ -5,8 +5,8 @@ import {
 	type Nullable,
 	type SearchOptions,
 	type QueryResult,
-} from "../types/Manager";
-import type { LyricsResult } from "../types/Node";
+} from "../../types/Manager";
+import type { LyricsResult } from "../../types/Node";
 import {
 	type LavalinkPlayerVoice,
 	LoopMode,
@@ -14,17 +14,18 @@ import {
 	type PlayOptions,
 	type PlayerJson,
 	type PlayerOptions,
-} from "../types/Player";
+} from "../../types/Player";
 import {
 	isTrack,
 	isUnresolvedTrack,
 	validateTrack,
 	validatePlayerOptions,
-} from "../util/functions/utils";
-import { PlayerError } from "./Errors";
-import type { Hoshimi } from "./Hoshimi";
-import type { Node } from "./node/Node";
-import { Queue } from "./queue/Queue";
+} from "../../util/functions/utils";
+import { PlayerError } from "../Errors";
+import type { Hoshimi } from "../Hoshimi";
+import type { Node } from "../node/Node";
+import { Queue } from "../queue/Queue";
+import { PlayerStorage } from "./Storage";
 
 /**
  * Class representing a Hoshimi player.
@@ -33,11 +34,10 @@ import { Queue } from "./queue/Queue";
 export class Player {
 	/**
 	 * The data for the player.
-	 * @type {Record<string, unknown>}
+	 * @type {PlayerStorage}
 	 * @readonly
-	 * @private
 	 */
-	private readonly data: Map<StorageKeys, StorageValues> = new Map<StorageKeys, StorageValues>();
+	readonly data: PlayerStorage = new PlayerStorage();
 
 	/**
 	 * The options for the player.
@@ -222,125 +222,6 @@ export class Player {
 				? this.manager.nodeManager.get(this.options.node)
 				: this.options.node) ?? this.manager.nodeManager.getLeastUsed()
 		);
-	}
-
-	/**
-	 *
-	 * Set the data for the player.
-	 * @param {K} key The key to set the data to.
-	 * @param {V} value The value to set the data to.
-	 * @returns {this} The player.
-	 * @example
-	 * ```ts
-	 * const player = manager.getPlayer("guildId");
-	 * player.set("key", "value")
-	 * player.set("key2", "value2");
-	 * ```
-	 */
-	public set<K extends StorageKeys = StorageKeys, V extends StorageValues<K> = StorageValues<K>>(
-		key: K,
-		value: V,
-	): this {
-		this.data.set(key, value);
-		return this;
-	}
-
-	/**
-	 *
-	 * Get the data from the player.
-	 * @param {K} key The key to get the data from.
-	 * @returns {V | undefined} The data from the player.
-	 * @example
-	 * ```ts
-	 * const player = manager.getPlayer("guildId");
-	 * player.get("key"); // "value"
-	 * player.get("key2"); // undefined
-	 * ```
-	 */
-	public get<K extends StorageKeys = StorageKeys, V extends StorageValues<K> = StorageValues<K>>(
-		key: K,
-	): V | undefined {
-		return this.data.get(key) as V | undefined;
-	}
-
-	/**
-	 *
-	 * Delete the data from the player.
-	 * @param {K} key The key to delete the data from.
-	 * @returns {boolean} If the data was deleted.
-	 * @example
-	 * ```ts
-	 * const player = manager.getPlayer("guildId");
-	 * player.delete("key"); // true
-	 * player.delete("key2"); // false
-	 * ```
-	 */
-	public delete<K extends StorageKeys = StorageKeys>(key: K): boolean {
-		return this.data.delete(key);
-	}
-
-	/**
-	 *
-	 * Check if the data exists in the player.
-	 * @param {K} key The key to get the data from.
-	 * @returns {V | undefined} The data from the player.
-	 * @example
-	 * ```ts
-	 * const player = manager.getPlayer("guildId");
-	 * player.has("key"); // true
-	 * player.has("key2"); // false
-	 * ```
-	 */
-	public has<K extends StorageKeys = StorageKeys>(key: K): boolean {
-		return this.data.has(key);
-	}
-
-	/**
-	 *
-	 * Get the data from the player.
-	 * @returns {MapIterator<StorageValues>} The data from the player.
-	 * @example
-	 * ```ts
-	 * const player = manager.getPlayer("guildId");
-	 * player.values<"key1" | "key2">(); // the player data values from the player
-	 * ```
-	 */
-	public values<
-		K extends StorageKeys = StorageKeys,
-		V extends StorageValues<K> = StorageValues<K>,
-	>(): MapIterator<V> {
-		return this.data.values() as MapIterator<V>;
-	}
-
-	/**
-	 *
-	 * Get the keys from the player.
-	 * @returns {MapIterator<StorageKeys>} The keys from the player.
-	 * @example
-	 * ```ts
-	 * const player = manager.getPlayer("guildId");
-	 * player.keys<"key1" | "key2">(); // the player data keys from the player
-	 * ```
-	 */
-	public keys<K extends StorageKeys = StorageKeys>(): MapIterator<K> {
-		return this.data.keys() as MapIterator<K>;
-	}
-
-	/**
-	 *
-	 * Get the data from the player.
-	 * @returns {Map<StorageKeys, StorageValues>} The data from the player.
-	 * @example
-	 * ```ts
-	 * const player = manager.getPlayer("guildId");
-	 * player.entries<"key1" | "key2">(); // the player data entries from the player
-	 * ```
-	 */
-	public entries<
-		K extends StorageKeys = StorageKeys,
-		V extends StorageValues<K> = StorageValues<K>,
-	>(): MapIterator<[K, V]> {
-		return this.data.entries() as MapIterator<[K, V]>;
 	}
 
 	/**
@@ -580,15 +461,3 @@ export class Player {
  * Interface representing the customizable player storage.
  */
 export interface CustomizablePlayerStorage {}
-
-/**
- * Type representing the customizable player storage.
- */
-type StorageKeys = keyof CustomizablePlayerStorage | (string & {});
-
-/**
- * Type representing the customizable player storage values.
- */
-type StorageValues<V extends StorageKeys = StorageKeys> = V extends keyof CustomizablePlayerStorage
-	? CustomizablePlayerStorage[V]
-	: unknown;

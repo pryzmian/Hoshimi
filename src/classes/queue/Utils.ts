@@ -17,6 +17,7 @@ export class QueueUtils {
 	 * @type {Queue}
 	 * @private
 	 * @readonly
+	 * @internal
 	 */
 	private readonly queue: Queue;
 
@@ -25,6 +26,7 @@ export class QueueUtils {
 	 * @type {QueueStore}
 	 * @private
 	 * @readonly
+	 * @internal
 	 */
 	private readonly store: QueueStore;
 
@@ -33,6 +35,7 @@ export class QueueUtils {
 	 * @type {HoshimiQueueOptions}
 	 * @private
 	 * @readonly
+	 * @internal
 	 */
 	private readonly options: Required<HoshimiQueueOptions>;
 

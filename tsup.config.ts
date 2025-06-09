@@ -12,4 +12,6 @@ export default defineConfig({
 	clean: true,
 	skipNodeModulesBundle: true,
 	ignoreWatch: ["**/node_modules/**", "**/.git/**"],
+	name: "Hoshimi",
+	tsconfig: "./tsconfig.json",
 });

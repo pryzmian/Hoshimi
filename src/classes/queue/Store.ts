@@ -13,6 +13,7 @@ export class QueueStore {
 	 * @type {StorageAdapter}
 	 * @private
 	 * @readonly
+	 * @internal
 	 */
 	private readonly storage: StorageAdapter;
 

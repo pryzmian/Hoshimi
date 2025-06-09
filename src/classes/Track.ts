@@ -9,7 +9,7 @@ import {
 } from "../types/Node";
 import { isTrack, isUnresolvedTrack, validateEngine } from "../util/functions/utils";
 import { ResolveError } from "./Errors";
-import type { Player } from "./Player";
+import type { Player } from "./player/Player";
 
 /**
  *

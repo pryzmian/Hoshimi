@@ -26,9 +26,9 @@ export default class AutoplayCommand extends Command {
 		const player = client.manager.getPlayer(ctx.guildId);
 		if (!player) return ctx.editOrReply({ content: "No player found." });
 
-		player.set("enabledAutoplay", !player.get("enabledAutoplay"));
+		player.data.set("enabledAutoplay", !player.data.get("enabledAutoplay"));
 
-		const autoplay = !!player.get("enabledAutoplay");
+		const autoplay = !!player.data.get("enabledAutoplay");
 		const type = autoplay ? "enabled" : "disabled";
 
 		await ctx.editOrReply({ content: `Autoplay is now **${type}**.` });

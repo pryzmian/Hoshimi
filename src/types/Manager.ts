@@ -1,5 +1,5 @@
 import type { Node } from "../classes/node/Node";
-import type { Player } from "../classes/Player";
+import type { Player } from "../classes/player/Player";
 import type { Queue } from "../classes/queue/Queue";
 import type { TrackRequester, Track } from "../classes/Track";
 import type {

@@ -9,7 +9,7 @@ export * from "./classes/queue/adapters/abstract";
 // Exports related to package classes.
 export * from "./classes/Errors";
 export * from "./classes/Hoshimi";
-export * from "./classes/Player";
+export * from "./classes/player/Player";
 export * from "./classes/Track";
 
 // Exports related to types.

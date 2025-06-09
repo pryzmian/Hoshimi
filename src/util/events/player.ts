@@ -1,5 +1,5 @@
 import type { Node } from "../../classes/node/Node";
-import type { Player } from "../../classes/Player";
+import type { Player } from "../../classes/player/Player";
 import type { Track } from "../../classes/Track";
 import { DebugLevels, Events } from "../../types/Manager";
 import {

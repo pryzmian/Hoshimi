@@ -16,7 +16,7 @@ import { UrlRegex, ValidEngines, ValidSources } from "../constants";
 import { Track, UnresolvedTrack } from "../../classes/Track";
 
 import { StorageAdapter } from "../../classes/queue/adapters/abstract";
-import type { Player } from "../../classes/Player";
+import type { Player } from "../../classes/player/Player";
 
 /**
  *

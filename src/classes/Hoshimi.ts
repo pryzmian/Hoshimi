@@ -19,7 +19,7 @@ import { type LavalinkSearchResponse, LoadType, State } from "../types/Node";
 import type { PlayerOptions } from "../types/Player";
 import type { Node } from "./node/Node";
 
-import { Player } from "./Player";
+import { Player } from "./player/Player";
 import { Collection } from "../util/collection";
 import { validateManagerOptions } from "../util/functions/utils";
 import { ManagerError, OptionError } from "./Errors";

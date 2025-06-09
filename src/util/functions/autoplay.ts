@@ -1,4 +1,4 @@
-import type { Player } from "../../classes/Player";
+import type { Player } from "../../classes/player/Player";
 import type { HoshimiTrack, Track } from "../../classes/Track";
 import { SearchEngines } from "../../types/Manager";
 import { SourceNames } from "../../types/Node";
@@ -21,8 +21,7 @@ export async function autoplayFn(player: Player, lastTrack: HoshimiTrack | null)
 	if (!lastTrack) return;
 
 	const isEnabled =
-		player.get<"enabledAutoplay", boolean>("enabledAutoplay") ||
-		player.manager.options.queueOptions.autoPlay;
+		!!player.data.get("enabledAutoplay") || player.manager.options.queueOptions.autoPlay;
 	if (!isEnabled) return;
 
 	/**

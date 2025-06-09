@@ -12,6 +12,7 @@ export class MemoryAdapter<T extends QueueJson = QueueJson> extends StorageAdapt
 	 * @type {Map<string, QueueJson>}
 	 * @private
 	 * @readonly
+	 * @internal
 	 */
 	private readonly storage: Map<string, T> = new Map();
 
