@@ -1,21 +1,28 @@
 import "dotenv/config";
 
-import { Client, type ParseClient } from "seyfert";
-import {
-	DebugLevels,
-	Hoshimi,
-	Events,
-	SourceNames,
-	SearchEngines,
-	type LyricsResult,
-} from "hoshimi";
+import { Client, type ParseClient, type UsingClient } from "seyfert";
+import { Hoshimi, Events, SearchEngines, type LyricsResult } from "hoshimi";
 import type { APIUser } from "seyfert/lib/types";
 import { HandleCommand } from "seyfert/lib/commands/handle";
 import { Yuna } from "yunaforseyfert";
-import { TimeFormat } from "./time";
 
 import { mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
+
+import { trackStart } from "./lavalink/track/trackStart";
+import { trackEnd } from "./lavalink/track/trackEnd";
+
+import { queueEnd } from "./lavalink/queue/queueEnd";
+
+import { nodeReady } from "./lavalink/node/nodeReady";
+import { nodeDestroy } from "./lavalink/node/nodeDestroy,";
+import { nodeError } from "./lavalink/node/nodeError";
+import { nodeDisconnect } from "./lavalink/node/nodeDisconnect";
+import { nodeReconnecting } from "./lavalink/node/nodeReconnecting";
+
+import { lyricsLine } from "./lavalink/lyrics/lyricsLine";
+
+import { debug } from "./lavalink/debug";
 
 const path = resolve(process.cwd(), "cache");
 
@@ -32,7 +39,7 @@ const client = new Client({
 		prefix: () => ["hoshimi", "h."],
 		reply: () => true,
 	},
-});
+}) as UsingClient;
 
 client.manager = new Hoshimi({
 	sendPayload: (guildId, payload) =>
@@ -57,67 +64,20 @@ client.setServices({
 	},
 });
 
-client.manager.on(Events.NodeReady, (node) => client.logger.info(`Node ${node.id} is ready.`));
-
-client.manager.on(Events.NodeDestroy, (node, destroy) =>
-	client.logger.warn(
-		`Node ${node.id} is destroyed with the reason ${destroy.reason} (${destroy.code}).`,
-	),
-);
-
-client.manager.on(Events.NodeError, (node, error) =>
-	client.logger.error(`Node ${node.id} emitted an error: ${error}`),
-);
-
-client.manager.on(Events.NodeDisconnect, (node) =>
-	client.logger.error(`Node ${node.id} disconnected.`),
-);
-
+client.manager.on(Events.NodeReady, (node) => nodeReady(client, node));
+client.manager.on(Events.NodeDestroy, (node, destroy) => nodeDestroy(client, node, destroy));
+client.manager.on(Events.NodeError, (node, error) => nodeError(client, node, error));
+client.manager.on(Events.NodeDisconnect, (node) => nodeDisconnect(client, node));
 client.manager.on(Events.NodeReconnecting, (node, retriesLeft, delay) =>
-	client.logger.warn(
-		`Node ${node.id} is reconnecting with ${retriesLeft} retries left in ${TimeFormat.toHumanize(delay)}...`,
-	),
+	nodeReconnecting(client, node, retriesLeft, delay),
 );
-
-client.manager.on(Events.Debug, async (level, message) => {
-	const isDebug = await client.getRC().then((rc) => rc.debug);
-	if (isDebug) client.logger.debug(`[Hoshimi] ${DebugLevels[level]}: ${message}`);
-});
-
-client.manager.on(Events.TrackStart, async (player, track) => {
-	if (!track) return;
-
-	if (track.info.sourceName === SourceNames.FloweryTTS) return;
-
-	const textId = player.textId;
-	if (!textId) return;
-
-	await client.messages.write(textId, {
-		content: `Now playing: ${track.toHyperlink()} (${TimeFormat.toHumanize(track.info.length)}), By: ${track.requester.tag}`,
-	});
-});
-
-client.manager.on(Events.TrackEnd, async (player, track) => {
-	if (!track) return;
-
-	if (track.info.sourceName === SourceNames.FloweryTTS) return;
-
-	const textId = player.textId;
-	if (!textId) return;
-
-	await client.messages.write(textId, { content: `Finished playing: ${track.toHyperlink()}` });
-});
-
-client.manager.on(Events.QueueEnd, async (player) => {
-	const textId = player.textId;
-	if (!textId) return;
-
-	await client.messages.write(textId, { content: "Queue has ended." });
-});
-
-client.manager.on(Events.LyricsLine, async (player, track, payload) => {
-	console.info({ player, track, payload });
-});
+client.manager.on(Events.Debug, (level, message) => debug(client, level, message));
+client.manager.on(Events.TrackStart, (player, track) => trackStart(client, track, player));
+client.manager.on(Events.TrackEnd, (player, track) => trackEnd(client, track, player));
+client.manager.on(Events.QueueEnd, (player) => queueEnd(client, player));
+client.manager.on(Events.LyricsLine, (player, track, payload) =>
+	lyricsLine(client, player, track, payload),
+);
 
 (async (): Promise<void> => {
 	await mkdir(path, { recursive: true });
