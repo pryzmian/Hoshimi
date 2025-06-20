@@ -45,6 +45,10 @@ client.manager = new Hoshimi({
 	sendPayload: (guildId, payload) =>
 		client.gateway.send(client.gateway.calculateShardId(guildId), payload),
 	defaultSearchEngine: SearchEngines.Spotify,
+	nodeOptions: {
+		resumable: true,
+		resumeByLibrary: true,
+	},
 	nodes: [
 		{
 			host: "localhost",

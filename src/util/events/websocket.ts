@@ -145,6 +145,19 @@ export async function onMessage(this: Node, message: Buffer | string): Promise<v
 						`[Socket] <- [${this.id}]: Received ready event. | Session id: ${payload.sessionId} | Resumed: ${payload.resumed}`,
 					);
 					this.nodeManager.manager.emit(Events.NodeReady, this, payload);
+
+					const isResumable = this.nodeManager.manager.options.nodeOptions.resumable;
+					if (isResumable) {
+						const timeout = this.nodeManager.manager.options.nodeOptions.resumeTimeout;
+
+						this.nodeManager.manager.emit(
+							Events.Debug,
+							DebugLevels.Node,
+							`[Socket] -> [${this.id}]: Resuming session... | Timeout: ${timeout}ms`,
+						);
+
+						await this.updateSession(isResumable, timeout);
+					}
 				}
 				break;
 
