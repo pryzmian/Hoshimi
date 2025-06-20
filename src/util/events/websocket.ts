@@ -137,6 +137,14 @@ export async function onMessage(this: Node, message: Buffer | string): Promise<v
 					this.sessionId = payload.sessionId;
 					this.session.resuming = payload.resumed;
 
+					if (payload.resumed) {
+						this.nodeManager.manager.emit(
+							Events.Debug,
+							DebugLevels.Node,
+							`[Socket] <- [${this.id}]: Resumed session. | Session id: ${payload.sessionId}`,
+						);
+					}
+
 					this.info = await this.rest.request<NodeInfo>({ endpoint: "/info" });
 
 					this.nodeManager.manager.emit(
