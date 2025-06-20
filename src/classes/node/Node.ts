@@ -315,6 +315,12 @@ export class Node {
 		if (this.options.sessionId) {
 			headers["Session-Id"] = this.options.sessionId;
 			this.sessionId = this.options.sessionId;
+
+			this.nodeManager.manager.emit(
+				Events.Debug,
+				DebugLevels.Node,
+				`[Socket] -> [${this.id}]: The session id is present. | Session: ${this.sessionId} | Resuming: ${this.session.resuming}`,
+			);
 		}
 
 		this.ws = new WebSocket(this.address, { headers: { ...headers } });
