@@ -16,7 +16,12 @@ import {
 import { NodeError } from "../Errors";
 import { Rest } from "./Rest";
 
-import { onClose, onError, onMessage, onOpen } from "../../util/events/websocket";
+import {
+	onClose,
+	onError,
+	onMessage,
+	onOpen,
+} from "../../util/events/websocket";
 import {
 	type DecodeMethods,
 	HttpMethods,
@@ -159,7 +164,8 @@ export class Node {
 		this.retryDelay = this.options.retryDelay;
 		this.nodeManager = nodeManager;
 
-		if (this.options.secure && this.options.port !== 443) this.options.port = 443;
+		if (this.options.secure && this.options.port !== 443)
+			this.options.port = 443;
 
 		this.rest = new Rest(this);
 		this.lyricsManager = new LyricsManager(this);
@@ -243,7 +249,9 @@ export class Node {
 
 		const { players, cpu, frameStats } = this.stats;
 		const cpuPenalty = Math.round(1.05 ** (100 * cpu.systemLoad) * 10 - 10);
-		const framePenalty = frameStats ? frameStats.deficit + frameStats.nulled * 2 : 0;
+		const framePenalty = frameStats
+			? frameStats.deficit + frameStats.nulled * 2
+			: 0;
 
 		return players + cpuPenalty + framePenalty;
 	}
@@ -377,7 +385,9 @@ export class Node {
 	 * }
 	 * ```
 	 */
-	public updatePlayer(data: Partial<UpdatePlayerInfo>): Promise<LavalinkPlayer | null> {
+	public updatePlayer(
+		data: Partial<UpdatePlayerInfo>,
+	): Promise<LavalinkPlayer | null> {
 		return this.rest.updatePlayer(data);
 	}
 

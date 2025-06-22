@@ -60,6 +60,8 @@ export default class TtsCommand extends Command {
 		if (!player.connected) await player.connect();
 
 		await player.play({ track: tracks[0] });
-		await ctx.editOrReply({ content: `${ctx.author.toString()}: ${options.text}` });
+		await ctx.editOrReply({
+			content: `${ctx.author.toString()}: ${options.text}`,
+		});
 	}
 }

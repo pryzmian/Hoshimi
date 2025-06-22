@@ -32,7 +32,11 @@ import { MemoryAdapter } from "./queue/adapters/memory";
 /**
  * The packet type for the manager.
  */
-type GatewayPackets = VoicePacket | VoiceServer | VoiceState | ChannelDeletePacket;
+type GatewayPackets =
+	| VoicePacket
+	| VoiceServer
+	| VoiceState
+	| ChannelDeletePacket;
 
 /**
  * The required options for the manager.
@@ -120,7 +124,8 @@ export class Hoshimi extends EventEmitter<RawEvents> {
 	constructor(options: HoshimiOptions) {
 		super();
 
-		if (!options) throw new ManagerError("You must provide the options for the manager.");
+		if (!options)
+			throw new ManagerError("You must provide the options for the manager.");
 
 		this.options = {
 			...options,
@@ -169,7 +174,9 @@ export class Hoshimi extends EventEmitter<RawEvents> {
 	 * ```
 	 */
 	public isUseable(): boolean {
-		const nodes = this.nodeManager.nodes.filter((node) => node.state === State.Connected);
+		const nodes = this.nodeManager.nodes.filter(
+			(node) => node.state === State.Connected,
+		);
 		return this.ready && nodes.length > 0;
 	}
 
@@ -278,7 +285,11 @@ export class Hoshimi extends EventEmitter<RawEvents> {
 					if ("token" in data) player.voice.token = data.token;
 					if ("endpoint" in data) player.voice.endpoint = data.endpoint;
 
-					if (player.voice.sessionId && player.voice.token && player.voice.endpoint) {
+					if (
+						player.voice.sessionId &&
+						player.voice.token &&
+						player.voice.endpoint
+					) {
 						await player.node.updatePlayer({
 							guildId: data.guild_id,
 							playerOptions: {
@@ -330,9 +341,12 @@ export class Hoshimi extends EventEmitter<RawEvents> {
 			...info,
 		};
 
-		if (!this.options.client.id) throw new ManagerError("You must provide the client id.");
+		if (!this.options.client.id)
+			throw new ManagerError("You must provide the client id.");
 		if (typeof this.options.client.id !== "string")
-			throw new OptionError("The client info 'info.client.id': must be a string.");
+			throw new OptionError(
+				"The client info 'info.client.id': must be a string.",
+			);
 
 		let amount = 0;
 

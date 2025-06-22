@@ -1,4 +1,4 @@
-import { Player, SourceNames, Track } from "hoshimi";
+import { type Player, SourceNames, type Track } from "hoshimi";
 import type { UsingClient } from "seyfert";
 
 /**
@@ -15,5 +15,7 @@ export async function trackEnd(client: UsingClient, track: Track | null, player:
 	const textId = player.textId;
 	if (!textId) return;
 
-	await client.messages.write(textId, { content: `Finished playing: ${track.toHyperlink()}` });
+	await client.messages.write(textId, {
+		content: `Finished playing: ${track.toHyperlink()}`,
+	});
 }

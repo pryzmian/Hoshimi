@@ -7,7 +7,11 @@ import {
 	type UnresolvedLavalinkTrack,
 	type UnresolvedTrackInfo,
 } from "../types/Node";
-import { isTrack, isUnresolvedTrack, validateEngine } from "../util/functions/utils";
+import {
+	isTrack,
+	isUnresolvedTrack,
+	validateEngine,
+} from "../util/functions/utils";
 import { ResolveError } from "./Errors";
 import type { Player } from "./player/Player";
 
@@ -17,7 +21,8 @@ import type { Player } from "./player/Player";
  * @param {string} input The string to escape for use in a regular expression.
  * @returns {string} The escaped string.
  */
-const escapeRegExp = (input: string): string => input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const escapeRegExp = (input: string): string =>
+	input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /**
  * Class representing a Hoshimi track.
@@ -75,7 +80,8 @@ export class Track implements LavalinkTrack {
 	 * ```
 	 */
 	constructor(track: LavalinkTrack | null, requester?: TrackRequester) {
-		if (!track) throw new ResolveError("Track is not defined for construction.");
+		if (!track)
+			throw new ResolveError("Track is not defined for construction.");
 
 		this.info = track.info;
 		this.encoded = track.encoded;
@@ -170,15 +176,19 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
 	 * @throws {ResolveError} If the track cannot be resolved.
 	 */
 	public async resolve(player: Player): Promise<Track> {
-		if (!player) throw new ResolveError("Player is not defined for track resolution.");
+		if (!player)
+			throw new ResolveError("Player is not defined for track resolution.");
 
 		if (isTrack(this)) return new Track(this, this.requester);
 
-		if (!isUnresolvedTrack(this)) throw new ResolveError("Track is not an unresolved track.");
+		if (!isUnresolvedTrack(this))
+			throw new ResolveError("Track is not an unresolved track.");
 		if (!this.requester)
 			throw new ResolveError("Requester is not defined for track resolution.");
 		if (!this.info.title && !this.encoded && !this.info.uri)
-			throw new ResolveError("Track is missing required properties for resolution.");
+			throw new ResolveError(
+				"Track is missing required properties for resolution.",
+			);
 
 		player.manager.emit(
 			Events.Debug,
@@ -186,13 +196,15 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
 			`[Unresolved] -> [Track] Resolving the track: ${this.info.title}`,
 		);
 
-		if (this.encoded) return player.node.decode.single(this.encoded, this.requester);
+		if (this.encoded)
+			return player.node.decode.single(this.encoded, this.requester);
 
 		if (this.info.uri) {
 			const track = await player
 				.search({ query: this.info.uri, requester: this.requester })
 				.then((result) => result.tracks[0]);
-			if (!track) throw new ResolveError("Track could not be resolved from URI.");
+			if (!track)
+				throw new ResolveError("Track could not be resolved from URI.");
 
 			player.manager.emit(
 				Events.Debug,
@@ -222,43 +234,54 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
 			`[Unresolved] -> [Track] Searching for track with query: ${query} using engine: ${engine}`,
 		);
 
-		return player.search({ query, engine, requester: this.requester }).then((result) => {
-			let track: Track | null = result.tracks[0] ?? null;
+		return player
+			.search({ query, engine, requester: this.requester })
+			.then((result) => {
+				let track: Track | null = result.tracks[0] ?? null;
 
-			if (this.info.author && !track)
-				track =
-					result.tracks.find(
-						(t) =>
-							[this.info.author ?? "", `${this.info.author} - Topic`].some((name) =>
-								new RegExp(`^${escapeRegExp(name)}$`, "i").test(t.info.author),
-							) ||
-							new RegExp(`^${escapeRegExp(this.info.title)}$`, "i").test(
-								t.info.title,
-							),
-					) ?? null;
+				if (this.info.author && !track)
+					track =
+						result.tracks.find(
+							(t) =>
+								[this.info.author ?? "", `${this.info.author} - Topic`].some(
+									(name) =>
+										new RegExp(`^${escapeRegExp(name)}$`, "i").test(
+											t.info.author,
+										),
+								) ||
+								new RegExp(`^${escapeRegExp(this.info.title)}$`, "i").test(
+									t.info.title,
+								),
+						) ?? null;
 
-			if (this.info.length && !track)
-				track =
-					result.tracks.find((t) => {
-						const length = this.info.length;
-						if (!length) return false;
+				if (this.info.length && !track)
+					track =
+						result.tracks.find((t) => {
+							const length = this.info.length;
+							if (!length) return false;
 
-						return t.info.length >= length - 1500 && t.info.length <= length + 1500;
-					}) ?? null;
+							return (
+								t.info.length >= length - 1500 && t.info.length <= length + 1500
+							);
+						}) ?? null;
 
-			if (this.info.isrc && !track)
-				track = result.tracks.find((t) => t.info.isrc === this.info.isrc) ?? null;
+				if (this.info.isrc && !track)
+					track =
+						result.tracks.find((t) => t.info.isrc === this.info.isrc) ?? null;
 
-			if (!track) throw new ResolveError("Track could not be resolved from search query.");
+				if (!track)
+					throw new ResolveError(
+						"Track could not be resolved from search query.",
+					);
 
-			player.manager.emit(
-				Events.Debug,
-				DebugLevels.Player,
-				`[Unresolved] -> [Track] Resolved the track ${track.info.title} from search query: ${query}`,
-			);
+				player.manager.emit(
+					Events.Debug,
+					DebugLevels.Player,
+					`[Unresolved] -> [Track] Resolved the track ${track.info.title} from search query: ${query}`,
+				);
 
-			return track;
-		});
+				return track;
+			});
 	}
 }
 

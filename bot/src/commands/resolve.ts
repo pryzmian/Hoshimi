@@ -56,7 +56,9 @@ export default class ResolveCommand extends Command {
 				});
 			}
 
-			return ctx.editOrReply({ content: Formatter.codeBlock(stringified, "json") });
+			return ctx.editOrReply({
+				content: Formatter.codeBlock(stringified, "json"),
+			});
 		}
 
 		const search = await node.search({ query: ctx.options.query });
@@ -80,7 +82,9 @@ export default class ResolveCommand extends Command {
 					});
 				}
 
-				return ctx.editOrReply({ content: Formatter.codeBlock(stringified, "json") });
+				return ctx.editOrReply({
+					content: Formatter.codeBlock(stringified, "json"),
+				});
 			}
 
 			case LoadType.Playlist: {
@@ -98,7 +102,9 @@ export default class ResolveCommand extends Command {
 					});
 				}
 
-				return ctx.editOrReply({ content: Formatter.codeBlock(stringified, "json") });
+				return ctx.editOrReply({
+					content: Formatter.codeBlock(stringified, "json"),
+				});
 			}
 		}
 	}

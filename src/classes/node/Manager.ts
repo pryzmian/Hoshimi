@@ -83,7 +83,9 @@ export class NodeManager {
 	 * ```
 	 */
 	public getLeastUsed(): Node {
-		const nodes: Node[] = this.nodes.filter((node) => node.state === State.Connected);
+		const nodes: Node[] = this.nodes.filter(
+			(node) => node.state === State.Connected,
+		);
 		return nodes.reduce((a, b) => (a.penalties < b.penalties ? a : b));
 	}
 
@@ -127,7 +129,9 @@ export class NodeManager {
 	public reconnectNodes(): void {
 		if (!this.nodes.size) return;
 
-		for (const node of this.nodes.filter((node) => node.state !== State.Connected)) {
+		for (const node of this.nodes.filter(
+			(node) => node.state !== State.Connected,
+		)) {
 			node.reconnect();
 		}
 	}
@@ -144,7 +148,9 @@ export class NodeManager {
 	public disconnectNodes(): void {
 		if (!this.nodes.size) return;
 
-		for (const node of this.nodes.filter((node) => node.state !== State.Disconnected)) {
+		for (const node of this.nodes.filter(
+			(node) => node.state !== State.Disconnected,
+		)) {
 			node.disconnect();
 		}
 	}
@@ -161,7 +167,9 @@ export class NodeManager {
 	public connectNodes(): void {
 		if (!this.nodes.size) return;
 
-		for (const node of this.nodes.filter((node) => node.state !== State.Connected)) {
+		for (const node of this.nodes.filter(
+			(node) => node.state !== State.Connected,
+		)) {
 			node.connect();
 		}
 	}

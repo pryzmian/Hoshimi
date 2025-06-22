@@ -6,7 +6,9 @@ import { StorageAdapter } from "./abstract";
  * @class MemoryAdapter
  * @extends {StorageAdapter}
  */
-export class MemoryAdapter<T extends QueueJson = QueueJson> extends StorageAdapter<T> {
+export class MemoryAdapter<
+	T extends QueueJson = QueueJson,
+> extends StorageAdapter<T> {
 	/**
 	 * Memory storage.
 	 * @type {Map<string, QueueJson>}

@@ -38,6 +38,8 @@ export default class JoinCommand extends Command {
 
 		if (!player.connected) await player.connect();
 
-		await ctx.editOrReply({ content: `Joined <#${state.channelId}> successfully!` });
+		await ctx.editOrReply({
+			content: `Joined <#${state.channelId}> successfully!`,
+		});
 	}
 }

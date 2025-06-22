@@ -447,6 +447,11 @@ export interface Exception {
 	 * @type {string}
 	 */
 	cause: string;
+	/**
+	 * The cause stack trace of the exception.
+	 * @type {string}
+	 */
+	causeStackTrace: string;
 }
 
 /**

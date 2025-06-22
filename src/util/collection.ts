@@ -93,7 +93,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * const firstEvenValue = collection.find(value => value % 2 === 0);
 	 * console.log(firstEvenValue); // Output: 2
 	 */
-	public find(fn: (value: V, key: K, collection: this) => boolean): V | undefined {
+	public find(
+		fn: (value: V, key: K, collection: this) => boolean,
+	): V | undefined {
 		if (typeof fn !== "function")
 			throw new TypeError("The filter function must be a function.");
 

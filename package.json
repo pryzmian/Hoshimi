@@ -20,8 +20,8 @@
 	},
 	"scripts": {
 		"build": "pnpm typecheck && tsup",
-		"lint": "biome lint .",
 		"typecheck": "tsc --noEmit",
+		"lint": "biome lint .",
 		"format": "biome format --write .",
 		"prepare": "husky && pnpm build",
 		"tool:prepublish": "pnpm build && tsx ./scripts/prepublish.mts && cd .npm && npm pack",
@@ -41,7 +41,7 @@
 	"author": "Ganyu Studios",
 	"license": "MIT",
 	"devDependencies": {
-		"@biomejs/biome": "^2.0.0",
+		"@biomejs/biome": "^2.0.4",
 		"@types/node": "^24.0.3",
 		"@types/ws": "^8.18.1",
 		"husky": "^9.1.7",

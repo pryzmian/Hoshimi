@@ -1,7 +1,13 @@
 import type { Node } from "../classes/node/Node";
 import type { Track, UnresolvedTrack } from "../classes/Track";
 import type { Nullable } from "./Manager";
-import type { Exception, LavalinkTrack, LyricsLine, LyricsResult, OpCodes } from "./Node";
+import type {
+	Exception,
+	LavalinkTrack,
+	LyricsLine,
+	LyricsResult,
+	OpCodes,
+} from "./Node";
 import type { QueueJson } from "./Queue";
 
 /**

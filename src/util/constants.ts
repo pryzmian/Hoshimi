@@ -13,7 +13,8 @@ export const HoshimiAgent: UserAgent = `hoshimi/v${PackageJson.version} (${Packa
  * The url regex for Hoshimi.
  * @type {RegExp}
  */
-export const UrlRegex: RegExp = /^(https?:\/\/)?([a-zA-Z0-9\-_]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
+export const UrlRegex: RegExp =
+	/^(https?:\/\/)?([a-zA-Z0-9\-_]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
 
 /**
  * The valid search engines for Hoshimi.

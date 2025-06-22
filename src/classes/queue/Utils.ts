@@ -110,7 +110,12 @@ export class QueueUtils {
 				`No data found to sync for guildId: ${this.queue.player.guildId}`,
 			);
 
-		if (syncCurrent && data.current && !this.queue.current && isTrack(data.current))
+		if (
+			syncCurrent &&
+			data.current &&
+			!this.queue.current &&
+			isTrack(data.current)
+		)
 			this.queue.current = data.current;
 
 		const tracks = data.tracks.filter((track) => isTrack(track)) || [];
@@ -124,7 +129,11 @@ export class QueueUtils {
 			);
 
 		if (history.length)
-			this.queue.history.splice(0, override ? this.queue.tracks.length : 0, ...history);
+			this.queue.history.splice(
+				0,
+				override ? this.queue.tracks.length : 0,
+				...history,
+			);
 
 		this.queue.player.manager.emit(
 			Events.Debug,

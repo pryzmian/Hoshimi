@@ -27,7 +27,7 @@ import type {
 	WebSocketClosedEvent,
 } from "./Player";
 import type { HoshimiQueueOptions } from "./Queue";
-import type { HoshimiRestOptions } from "./Rest";
+import type { HoshimiRestOptions, LavalinkPlayer } from "./Rest";
 
 /**
  * The search engines to use.
@@ -157,6 +157,10 @@ export enum Events {
 	 * Emitted when the node is destroyed.
 	 */
 	NodeDestroy = "nodeDestroy",
+	/**
+	 * Emitted when the node is resumed.
+	 */
+	NodeResumed = "nodeResumed",
 
 	/**
 	 * Emitted when the player is created.
@@ -397,6 +401,13 @@ export interface HoshimiEvents {
 	 * @param {NodeDestroyInfo} options The options for the destroy.
 	 */
 	nodeDestroy: [node: Node, destroy: NodeDestroyInfo];
+	/**
+	 * Emitted when the node is resumed.
+	 * @param {Node} node The node that was resumed.
+	 * @param {LavalinkPlayer[]} players The players that were resumed.
+	 * @param {Ready} payload The payload of the event.
+	 */
+	nodeResumed: [node: Node, players: LavalinkPlayer[], payload: Ready];
 
 	/**
 	 * Emitted when the player is created.
@@ -408,7 +419,11 @@ export interface HoshimiEvents {
 	 * @param {Player} newPlayer The new player.
 	 * @param {PlayerJson} oldPlayer The old player.
 	 */
-	playerUpdate: [newPlayer: Player, oldPlayer: PlayerJson, payload: PlayerUpdate];
+	playerUpdate: [
+		newPlayer: Player,
+		oldPlayer: PlayerJson,
+		payload: PlayerUpdate,
+	];
 	/**
 	 * Emitted when the player is destroyed.
 	 * @param {Player} player The player that was destroyed.
@@ -443,7 +458,11 @@ export interface HoshimiEvents {
 	 * @param {Track | null} track The track that was errored.
 	 * @param {TrackEndEvent} payload The payload of the event.
 	 */
-	trackError: [player: Player, track: Track | null, payload: TrackExceptionEvent];
+	trackError: [
+		player: Player,
+		track: Track | null,
+		payload: TrackExceptionEvent,
+	];
 
 	/**
 	 * Emitted when lyrics are found.
@@ -458,7 +477,11 @@ export interface HoshimiEvents {
 	 * @param {Track | null} track The track that was not found.
 	 * @param {LyricsFoundEvent} payload The lyrics that were not found.
 	 */
-	lyricsNotFound: [player: Player, track: Track | null, payload: LyricsNotFoundEvent];
+	lyricsNotFound: [
+		player: Player,
+		track: Track | null,
+		payload: LyricsNotFoundEvent,
+	];
 	/**
 	 * Emitted when a line of lyrics is updated.
 	 * @param {Player} player The player that emitted the event.
@@ -693,7 +716,9 @@ export type Awaitable<T> = Promise<T> | T;
 /**
  * Create a type that infers the value of a key from an object.
  */
-export type Inferable<T, K extends string> = T extends { [key in K]: infer R } ? R : unknown;
+export type Inferable<T, K extends string> = T extends { [key in K]: infer R }
+	? R
+	: unknown;
 
 /**
  * Create a type that infers the value of a key from an object.

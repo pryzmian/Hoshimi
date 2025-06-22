@@ -1,7 +1,11 @@
 import type { Track, TrackRequester } from "../classes/Track";
 import type { PickNullable } from "./Manager";
 import type { LavalinkTrack } from "./Node";
-import type { FilterOptions, LavalinkPlayerVoice, LavalinkPlayOptions } from "./Player";
+import type {
+	FilterOptions,
+	LavalinkPlayerVoice,
+	LavalinkPlayOptions,
+} from "./Player";
 
 /**
  * The methods for http requests
@@ -239,6 +243,37 @@ export interface LavalinkPlayer {
 	 * @type {FilterOptions}
 	 */
 	filters: FilterOptions;
+	/**
+	 * The state of the player.
+	 * @type {LavalinkPlayerState}
+	 */
+	state: LavalinkPlayerState;
+}
+
+/**
+ * The state of the player.
+ */
+export interface LavalinkPlayerState {
+	/**
+	 * The time since the connection was established.
+	 * @type {number}
+	 */
+	time: number;
+	/**
+	 * The position of the current track in milliseconds.
+	 * @type {number}
+	 */
+	position: number;
+	/**
+	 * Whether the player is connected to the voice channel.
+	 * @type {boolean}
+	 */
+	connected: boolean;
+	/**
+	 * The ping to the voice server in milliseconds.
+	 * @type {number}
+	 */
+	ping: number;
 }
 
 /**

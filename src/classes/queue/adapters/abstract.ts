@@ -89,7 +89,7 @@ export abstract class StorageAdapter<T extends QueueJson = QueueJson> {
 	 * console.log(parsed); // { key: "value" }
 	 * ```
 	 */
-	abstract parse(value: unknown): T;
+	abstract parse(value: unknown): Awaitable<T>;
 
 	/**
 	 *
@@ -102,5 +102,5 @@ export abstract class StorageAdapter<T extends QueueJson = QueueJson> {
 	 * console.log(stringified); // "{'key':'value'}"
 	 * ```
 	 */
-	abstract stringify(value: unknown): T;
+	abstract stringify(value: unknown): Awaitable<T>;
 }

@@ -198,7 +198,8 @@ export class Player {
 	readonly lyrics: LyricsMethods = {
 		subscribe: (skipSource): Promise<void> =>
 			this.node.lyricsManager.subscribe(this.guildId, skipSource),
-		unsubscribe: (): Promise<void> => this.node.lyricsManager.unsubscribe(this.guildId),
+		unsubscribe: (): Promise<void> =>
+			this.node.lyricsManager.unsubscribe(this.guildId),
 		current: (skipSource): Promise<LyricsResult | null> =>
 			this.node.lyricsManager.current(this.guildId, skipSource),
 		get: (track, skipSource): Promise<LyricsResult | null> =>
@@ -323,7 +324,9 @@ export class Player {
 	 * player.destroy(DestroyReasons.Stop);
 	 * ```
 	 */
-	public async destroy(reason: DestroyReasons = DestroyReasons.Stop): Promise<boolean> {
+	public async destroy(
+		reason: DestroyReasons = DestroyReasons.Stop,
+	): Promise<boolean> {
 		await this.disconnect();
 		await this.node.destroyPlayer(this.guildId);
 
@@ -357,13 +360,16 @@ export class Player {
 		if (typeof options !== "object")
 			throw new PlayerError("The play options must be an object.");
 
-		if (options.track) this.queue.current = await validateTrack(this, options.track);
+		if (options.track)
+			this.queue.current = await validateTrack(this, options.track);
 		else if (!this.queue.current)
 			this.queue.current = await validateTrack(this, this.queue.shift());
 
 		if (!this.queue.current) throw new PlayerError("No track to play.");
 		if (!isTrack(this.queue.current) && !isUnresolvedTrack(this.queue.current))
-			throw new PlayerError("The track must be a valid Track or UnresolvedTrack instance.");
+			throw new PlayerError(
+				"The track must be a valid Track or UnresolvedTrack instance.",
+			);
 
 		this.manager.emit(
 			Events.Debug,

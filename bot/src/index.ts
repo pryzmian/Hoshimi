@@ -23,6 +23,7 @@ import { nodeReconnecting } from "./lavalink/node/nodeReconnecting";
 import { lyricsLine } from "./lavalink/lyrics/lyricsLine";
 
 import { debug } from "./lavalink/debug";
+import { nodeResumed } from "./lavalink/node/nodeResumed";
 
 const path = resolve(process.cwd(), "cache");
 
@@ -46,8 +47,8 @@ client.manager = new Hoshimi({
 		client.gateway.send(client.gateway.calculateShardId(guildId), payload),
 	defaultSearchEngine: SearchEngines.Spotify,
 	nodeOptions: {
-		resumable: true,
-		resumeByLibrary: true,
+		resumable: false,
+		resumeByLibrary: false,
 	},
 	nodes: [
 		{
@@ -75,13 +76,20 @@ client.manager.on(Events.NodeDisconnect, (node) => nodeDisconnect(client, node))
 client.manager.on(Events.NodeReconnecting, (node, retriesLeft, delay) =>
 	nodeReconnecting(client, node, retriesLeft, delay),
 );
-client.manager.on(Events.Debug, (level, message) => debug(client, level, message));
+client.manager.on(Events.NodeResumed, (node, players, payload) =>
+	nodeResumed(client, node, players, payload),
+);
+
 client.manager.on(Events.TrackStart, (player, track) => trackStart(client, track, player));
 client.manager.on(Events.TrackEnd, (player, track) => trackEnd(client, track, player));
+
 client.manager.on(Events.QueueEnd, (player) => queueEnd(client, player));
+
 client.manager.on(Events.LyricsLine, (player, track, payload) =>
 	lyricsLine(client, player, track, payload),
 );
+
+client.manager.on(Events.Debug, (level, message) => debug(client, level, message));
 
 (async (): Promise<void> => {
 	await mkdir(path, { recursive: true });
