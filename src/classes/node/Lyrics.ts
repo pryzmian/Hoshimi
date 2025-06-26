@@ -73,10 +73,7 @@ export class LyricsManager {
 	 * const lyrics = await node.lyricsManager.get(track);
 	 * ```
 	 */
-	public async get(
-		track: Track,
-		skipSource: boolean = false,
-	): Promise<LyricsResult | null> {
+	public async get(track: Track, skipSource: boolean = false): Promise<LyricsResult | null> {
 		if (!this.node.sessionId) return null;
 
 		validateNodePlugins(
@@ -107,10 +104,7 @@ export class LyricsManager {
 	 * await node.lyricsManager.subscribe("guildId");
 	 * ```
 	 */
-	public async subscribe(
-		guildId: string,
-		skipSource: boolean = false,
-	): Promise<void> {
+	public async subscribe(guildId: string, skipSource: boolean = false): Promise<void> {
 		if (!this.node.sessionId) return;
 
 		validateNodePlugins(

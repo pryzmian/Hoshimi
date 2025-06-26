@@ -34,10 +34,7 @@ async function onTrackEnd(this: Player): Promise<void> {
 		)
 	) {
 		this.queue.history.unshift(this.queue.current);
-		if (
-			this.queue.history.length >
-			this.manager.options.queueOptions.maxPreviousTracks!
-		)
+		if (this.queue.history.length > this.manager.options.queueOptions.maxPreviousTracks!)
 			this.queue.history.splice(
 				this.manager.options.queueOptions.maxPreviousTracks!,
 				this.queue.history.length,
@@ -52,13 +49,10 @@ async function onTrackEnd(this: Player): Promise<void> {
 		);
 	}
 
-	if (this.loop === LoopMode.Track && this.queue.current)
-		this.queue.unshift(this.queue.current);
-	if (this.loop === LoopMode.Queue && this.queue.current)
-		this.queue.add(this.queue.current);
+	if (this.loop === LoopMode.Track && this.queue.current) this.queue.unshift(this.queue.current);
+	if (this.loop === LoopMode.Queue && this.queue.current) this.queue.add(this.queue.current);
 
-	if (!this.queue.current)
-		this.queue.current = await validateTrack(this, this.queue.shift());
+	if (!this.queue.current) this.queue.current = await validateTrack(this, this.queue.shift());
 
 	await this.queue.utils.save();
 
@@ -107,18 +101,11 @@ async function queueEnd(
 	}
 
 	if (track) await this.queue.utils.save();
-	if (
-		payload.type === PlayerEventType.TrackEnd &&
-		payload.reason !== TrackEndReason.Stopped
-	)
+	if (payload.type === PlayerEventType.TrackEnd && payload.reason !== TrackEndReason.Stopped)
 		await this.queue.utils.save();
 
 	this.manager.emit(Events.QueueEnd, this, this.queue);
-	this.manager.emit(
-		Events.Debug,
-		DebugLevels.Player,
-		"[Player] -> [Queue] The queue has ended.",
-	);
+	this.manager.emit(Events.Debug, DebugLevels.Player, "[Player] -> [Queue] The queue has ended.");
 }
 
 /**
@@ -128,10 +115,7 @@ async function queueEnd(
  * @param {TrackStartEvent} payload The payload of the event.
  * @returns {Promise<void>} I mean, it's a track start event, what do you expect?
  */
-export async function trackStart(
-	this: Player,
-	payload: TrackStartEvent,
-): Promise<void> {
+export async function trackStart(this: Player, payload: TrackStartEvent): Promise<void> {
 	this.paused = false;
 	this.playing = true;
 
@@ -152,10 +136,7 @@ export async function trackStart(
  * @param {TrackEndEvent} payload The payload of the event.
  * @returns {Promise<void>} The track ended... sadge.
  */
-export async function trackEnd(
-	this: Player,
-	payload: TrackEndEvent,
-): Promise<void> {
+export async function trackEnd(this: Player, payload: TrackEndEvent): Promise<void> {
 	const current = this.queue.current;
 
 	if (!this.queue.size && this.loop === LoopMode.Off)
@@ -221,10 +202,7 @@ export async function trackEnd(
  * @param {TrackStuckEvent} payload The payload of the event.
  * @returns {Promise<void>} The track stuck? Try to unstuck it!
  */
-export async function trackStuck(
-	this: Player,
-	payload: TrackStuckEvent,
-): Promise<void> {
+export async function trackStuck(this: Player, payload: TrackStuckEvent): Promise<void> {
 	this.manager.emit(Events.TrackStuck, this, this.queue.current, payload);
 
 	this.manager.emit(
@@ -248,8 +226,7 @@ export async function trackStuck(
 
 	await onTrackEnd.call(this);
 
-	if (!this.queue.current)
-		return queueEnd.call(this, this.queue.current, payload);
+	if (!this.queue.current) return queueEnd.call(this, this.queue.current, payload);
 }
 
 /**
@@ -259,10 +236,7 @@ export async function trackStuck(
  * @param {TrackExceptionEvent} payload The payload of the event.
  * @returns {Promise<void>} Aww, the track has an error? That's sad.
  */
-export async function trackError(
-	this: Player,
-	payload: TrackExceptionEvent,
-): Promise<void> {
+export async function trackError(this: Player, payload: TrackExceptionEvent): Promise<void> {
 	this.manager.emit(Events.TrackError, this, this.queue.current, payload);
 
 	this.manager.emit(
@@ -279,10 +253,7 @@ export async function trackError(
  * @param {PlayerUpdate} payload The payload of the event.
  * @returns {Promise<void>} Yeah, i don't know what to say here.
  */
-export async function playerUpdate(
-	this: Node,
-	payload: PlayerUpdate,
-): Promise<void> {
+export async function playerUpdate(this: Node, payload: PlayerUpdate): Promise<void> {
 	const player = this.nodeManager.manager.getPlayer(payload.guildId);
 	if (!player) return;
 
@@ -293,12 +264,7 @@ export async function playerUpdate(
 	player.createdTimestamp = payload.state.time;
 	player.position = payload.state.position;
 
-	this.nodeManager.manager.emit(
-		Events.PlayerUpdate,
-		player,
-		oldPlayer,
-		payload,
-	);
+	this.nodeManager.manager.emit(Events.PlayerUpdate, player, oldPlayer, payload);
 	this.nodeManager.manager.emit(
 		Events.Debug,
 		DebugLevels.Node,
@@ -372,10 +338,7 @@ export async function lyricsNotFound(
  * @param {WebSocketClosedEvent} payload The payload of the event.
  * @returns {Promise<void>} Did you expect something new here?
  */
-export async function socketClosed(
-	this: Player,
-	payload: WebSocketClosedEvent,
-): Promise<void> {
+export async function socketClosed(this: Player, payload: WebSocketClosedEvent): Promise<void> {
 	this.manager.emit(Events.WebSocketClosed, this, payload);
 	this.manager.emit(
 		Events.Debug,

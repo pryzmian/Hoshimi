@@ -182,16 +182,8 @@ export class Queue {
 	 * ```
 	 */
 	public add(track: HoshimiTrack | HoshimiTrack[], position?: number): this {
-		if (
-			typeof position === "number" &&
-			position >= 0 &&
-			position < this.tracks.length
-		)
-			return this.splice(
-				position,
-				0,
-				...(Array.isArray(track) ? track : [track]),
-			);
+		if (typeof position === "number" && position >= 0 && position < this.tracks.length)
+			return this.splice(position, 0, ...(Array.isArray(track) ? track : [track]));
 
 		this.tracks.push(...(Array.isArray(track) ? track : [track]));
 
@@ -275,8 +267,7 @@ export class Queue {
 	 */
 	public shuffle(): this {
 		if (this.size <= 1) return this;
-		if (this.size === 2)
-			[this.tracks[0], this.tracks[1]] = [this.tracks[1]!, this.tracks[0]!];
+		if (this.size === 2) [this.tracks[0], this.tracks[1]] = [this.tracks[1]!, this.tracks[0]!];
 		else {
 			for (let i = this.tracks.length - 1; i > 0; i--) {
 				const j = Math.floor(Math.random() * (i + 1));
@@ -367,11 +358,7 @@ export class Queue {
 		if (!this.size && tracks) this.add(tracks);
 
 		if (tracks)
-			this.tracks.splice(
-				start,
-				deleteCount,
-				...(Array.isArray(tracks) ? tracks : [tracks]),
-			);
+			this.tracks.splice(start, deleteCount, ...(Array.isArray(tracks) ? tracks : [tracks]));
 		else this.tracks.splice(start, deleteCount);
 
 		this.player.manager.emit(Events.QueueUpdate, this.player, this);
@@ -390,10 +377,7 @@ export class Queue {
 	 * @returns {QueueJson} The queue JSON object.
 	 */
 	public toJSON(): QueueJson {
-		if (
-			this.history.length >
-			this.player.manager.options.queueOptions.maxPreviousTracks!
-		)
+		if (this.history.length > this.player.manager.options.queueOptions.maxPreviousTracks!)
 			this.history.splice(
 				this.player.manager.options.queueOptions.maxPreviousTracks!,
 				this.history.length,

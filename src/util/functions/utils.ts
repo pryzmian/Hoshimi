@@ -6,11 +6,7 @@ import type {
 	SearchQuery,
 	UnresolvedLavalinkTrack,
 } from "../../types/Node";
-import {
-	type RestOrArray,
-	SearchEngines,
-	type HoshimiOptions,
-} from "../../types/Manager";
+import { type RestOrArray, SearchEngines, type HoshimiOptions } from "../../types/Manager";
 import type { Node } from "../../classes/node/Node";
 import type { PlayerOptions } from "../../types/Player";
 import type { UpdatePlayerInfo } from "../../types/Rest";
@@ -29,18 +25,12 @@ import type { Player } from "../../classes/player/Player";
  * @returns {void} Nothing, yeah, nothing.
  */
 export function validateManagerOptions(options: HoshimiOptions): void {
-	if (
-		!Array.isArray(options.nodes) ||
-		!options.nodes.every(isNode) ||
-		!options.nodes.length
-	)
+	if (!Array.isArray(options.nodes) || !options.nodes.every(isNode) || !options.nodes.length)
 		throw new OptionError(
 			"The manager option 'options.nodes' must be a valid array of nodes and atleast one valid node.",
 		);
 	if (typeof options.sendPayload !== "function")
-		throw new OptionError(
-			"The manager option 'options.sendPayload' must be a vaid function.",
-		);
+		throw new OptionError("The manager option 'options.sendPayload' must be a vaid function.");
 
 	if (
 		typeof options.queueOptions !== "undefined" &&
@@ -72,21 +62,14 @@ export function validateManagerOptions(options: HoshimiOptions): void {
 		throw new OptionError(
 			"The manager option 'options.defaultSearchEngine' Must be a valid search engine.",
 		);
-	if (
-		typeof options.client !== "undefined" &&
-		typeof options.client !== "object"
-	)
-		throw new OptionError(
-			"The manager option 'options.client' Must be a valid object.",
-		);
+	if (typeof options.client !== "undefined" && typeof options.client !== "object")
+		throw new OptionError("The manager option 'options.client' Must be a valid object.");
 	if (
 		typeof options.client !== "undefined" &&
 		typeof options.client.id !== "undefined" &&
 		typeof options.client.id !== "string"
 	)
-		throw new OptionError(
-			"The manager option 'options.client.id' Must be a valid string.",
-		);
+		throw new OptionError("The manager option 'options.client.id' Must be a valid string.");
 	if (
 		typeof options.client !== "undefined" &&
 		typeof options.client.id !== "undefined" &&
@@ -104,24 +87,17 @@ export function validateManagerOptions(options: HoshimiOptions): void {
  * @returns {string} The validated query.
  */
 export function validateQuery(search: SearchQuery): string {
-	if (typeof search !== "object")
-		throw new OptionError("The 'query' must be a valid object.");
+	if (typeof search !== "object") throw new OptionError("The 'query' must be a valid object.");
 	if (typeof search.query !== "string")
-		throw new OptionError(
-			"The query option 'query.query' must be a valid string.",
-		);
+		throw new OptionError("The query option 'query.query' must be a valid string.");
 
 	if (typeof search.engine !== "string")
-		throw new OptionError(
-			"The query option 'query.engine' must be a valid search engine.",
-		);
+		throw new OptionError("The query option 'query.engine' must be a valid search engine.");
 
 	search.engine = validateEngine(search.engine);
 
 	if (!ValidEngines.includes(search.engine))
-		throw new OptionError(
-			`The query option 'query.engine' must be a valid search engine.`,
-		);
+		throw new OptionError(`The query option 'query.engine' must be a valid search engine.`);
 
 	const query = search.query.trim();
 
@@ -140,8 +116,7 @@ export function validateQuery(search: SearchQuery): string {
 	const isUrl = UrlRegex.test(query);
 	if (isUrl) return query;
 
-	if (search.engine === SearchEngines.FloweryTTS)
-		return `${search.engine}://${query}`;
+	if (search.engine === SearchEngines.FloweryTTS) return `${search.engine}://${query}`;
 	if (search.engine !== SearchEngines.Local) return `${search.engine}:${query}`;
 
 	return query;
@@ -155,42 +130,18 @@ export function validateQuery(search: SearchQuery): string {
  */
 export function validatePlayerOptions(options: PlayerOptions): void {
 	if (typeof options.guildId !== "string")
-		throw new OptionError(
-			"The player option 'options.guildId' must be a string.",
-		);
+		throw new OptionError("The player option 'options.guildId' must be a string.");
 	if (typeof options.voiceId !== "string")
-		throw new OptionError(
-			"The player option 'options.voiceId' Must be a string.",
-		);
-	if (
-		typeof options.textId !== "undefined" &&
-		typeof options.textId !== "string"
-	)
-		throw new OptionError(
-			"The player option 'options.textId' Must be a string.",
-		);
+		throw new OptionError("The player option 'options.voiceId' Must be a string.");
+	if (typeof options.textId !== "undefined" && typeof options.textId !== "string")
+		throw new OptionError("The player option 'options.textId' Must be a string.");
 
-	if (
-		typeof options.selfDeaf !== "undefined" &&
-		typeof options.selfDeaf !== "boolean"
-	)
-		throw new OptionError(
-			"The player option 'options.selfDeaf' Must be a boolean.",
-		);
-	if (
-		typeof options.selfMute !== "undefined" &&
-		typeof options.selfMute !== "boolean"
-	)
-		throw new OptionError(
-			"The player option 'options.selfMute' Mute must be a boolean.",
-		);
-	if (
-		typeof options.volume !== "undefined" &&
-		typeof options.volume !== "number"
-	)
-		throw new OptionError(
-			"The player option 'options.volume' Must be a number.",
-		);
+	if (typeof options.selfDeaf !== "undefined" && typeof options.selfDeaf !== "boolean")
+		throw new OptionError("The player option 'options.selfDeaf' Must be a boolean.");
+	if (typeof options.selfMute !== "undefined" && typeof options.selfMute !== "boolean")
+		throw new OptionError("The player option 'options.selfMute' Mute must be a boolean.");
+	if (typeof options.volume !== "undefined" && typeof options.volume !== "number")
+		throw new OptionError("The player option 'options.volume' Must be a number.");
 }
 
 /**
@@ -200,10 +151,7 @@ export function validatePlayerOptions(options: PlayerOptions): void {
  * @param {Partial<UpdatePlayerInfo>} data The data to validate.
  * @returns {void} Nothing.
  */
-export function validatePlayerData(
-	this: Node,
-	data: Partial<UpdatePlayerInfo>,
-): void {
+export function validatePlayerData(this: Node, data: Partial<UpdatePlayerInfo>): void {
 	if (
 		typeof data === "object" &&
 		typeof data.playerOptions === "object" &&
@@ -213,8 +161,7 @@ export function validatePlayerData(
 		const player = this.nodeManager.manager.getPlayer(data.guildId);
 		if (!player) return;
 
-		if (typeof data.playerOptions.voice === "object")
-			player.voice = data.playerOptions.voice;
+		if (typeof data.playerOptions.voice === "object") player.voice = data.playerOptions.voice;
 
 		if (typeof data.playerOptions.paused === "boolean") {
 			player.paused = data.playerOptions.paused;
@@ -232,13 +179,9 @@ export function validatePlayerData(
  * @param {Node} node The node to validate the plugins for.
  * @param {RestOrArray<string>} plugins The plugins to validate.
  */
-export function validateNodePlugins(
-	node: Node,
-	...plugins: RestOrArray<PluginNames>
-): void {
+export function validateNodePlugins(node: Node, ...plugins: RestOrArray<PluginNames>): void {
 	const info = node.info;
-	if (!info)
-		throw new NodeError({ id: node.id, message: "Node is not ready yet." });
+	if (!info) throw new NodeError({ id: node.id, message: "Node is not ready yet." });
 
 	if (!info.plugins.length)
 		throw new NodeError({
@@ -246,9 +189,7 @@ export function validateNodePlugins(
 			message: "No plugins found in the node.",
 		});
 
-	const missings = plugins
-		.flat()
-		.filter((name) => !info.plugins.some((p) => p.name === name));
+	const missings = plugins.flat().filter((name) => !info.plugins.some((p) => p.name === name));
 	if (missings.length)
 		throw new NodeError({
 			id: node.id,
@@ -262,14 +203,10 @@ export function validateNodePlugins(
  * @param {SearchEngines | SourceNames} type The type to validate.
  * @returns {SearchEngines} The validated engine type.
  */
-export function validateEngine(
-	type: SearchEngines | SourceNames,
-): SearchEngines {
+export function validateEngine(type: SearchEngines | SourceNames): SearchEngines {
 	const source =
-		ValidEngines.find((engine) => engine === type) ??
-		ValidSources.get(type as SourceNames);
-	if (!source)
-		throw new OptionError(`The engine '${type}' is not a valid engine.`);
+		ValidEngines.find((engine) => engine === type) ?? ValidSources.get(type as SourceNames);
+	if (!source) throw new OptionError(`The engine '${type}' is not a valid engine.`);
 
 	return source;
 }
@@ -348,13 +285,9 @@ function isNode(options: NodeOptions): boolean {
 		typeof options.port === "number" &&
 		typeof options.password === "string" &&
 		(typeof options.id === "string" || typeof options.id === "undefined") &&
-		(typeof options.secure === "boolean" ||
-			typeof options.secure === "undefined") &&
-		(typeof options.sessionId === "string" ||
-			typeof options.sessionId === "undefined") &&
-		(typeof options.retryAmount === "number" ||
-			typeof options.retryAmount === "undefined") &&
-		(typeof options.retryDelay === "number" ||
-			typeof options.retryDelay === "undefined")
+		(typeof options.secure === "boolean" || typeof options.secure === "undefined") &&
+		(typeof options.sessionId === "string" || typeof options.sessionId === "undefined") &&
+		(typeof options.retryAmount === "number" || typeof options.retryAmount === "undefined") &&
+		(typeof options.retryDelay === "number" || typeof options.retryDelay === "undefined")
 	);
 }

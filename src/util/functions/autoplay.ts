@@ -17,15 +17,11 @@ const maxTracks: number = 10;
  * @param {Track | null} lastTrack The last track that was played.
  * @returns {Promise<void>} The promise for the autoplay function.
  */
-export async function autoplayFn(
-	player: Player,
-	lastTrack: HoshimiTrack | null,
-): Promise<void> {
+export async function autoplayFn(player: Player, lastTrack: HoshimiTrack | null): Promise<void> {
 	if (!lastTrack) return;
 
 	const isEnabled =
-		!!player.data.get("enabledAutoplay") ||
-		player.manager.options.queueOptions.autoPlay;
+		!!player.data.get("enabledAutoplay") || player.manager.options.queueOptions.autoPlay;
 	if (!isEnabled) return;
 
 	/**
@@ -38,9 +34,8 @@ export async function autoplayFn(
 		tracks.filter(
 			(track) =>
 				!(
-					player.queue.history.some(
-						(t) => t.info.identifier === track.info.identifier,
-					) || lastTrack.info.identifier === track.info.identifier
+					player.queue.history.some((t) => t.info.identifier === track.info.identifier) ||
+					lastTrack.info.identifier === track.info.identifier
 				),
 		);
 

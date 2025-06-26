@@ -60,10 +60,7 @@ export function onClose(this: Node, code: number, reason: string): void {
 
 	this.nodeManager.manager.emit(Events.NodeDisconnect, this);
 
-	if (
-		code !== WebsocketCloseCodes.NormalClosure ||
-		reason !== NodeDestroyReasons.Destroy
-	) {
+	if (code !== WebsocketCloseCodes.NormalClosure || reason !== NodeDestroyReasons.Destroy) {
 		if (this.nodeManager.nodes.has(this.id)) this.reconnect();
 	}
 }
@@ -98,10 +95,7 @@ export function onError(this: Node, error?: Error): void {
  * @param {Buffer | string} message The message received from the socket.
  * @returns {Promise<void>} I'm running out of ideas for this.
  */
-export async function onMessage(
-	this: Node,
-	message: Buffer | string,
-): Promise<void> {
+export async function onMessage(this: Node, message: Buffer | string): Promise<void> {
 	if (Array.isArray(message)) message = Buffer.concat(message);
 	else if (message instanceof ArrayBuffer) message = Buffer.from(message);
 
@@ -149,15 +143,9 @@ export async function onMessage(
 							(await this.rest.request<LavalinkPlayer[]>({
 								endpoint: `/sessions/${payload.sessionId}/players`,
 							})) ?? [];
-						const timeout =
-							this.nodeManager.manager.options.nodeOptions.resumeTimeout;
+						const timeout = this.nodeManager.manager.options.nodeOptions.resumeTimeout;
 
-						this.nodeManager.manager.emit(
-							Events.NodeResumed,
-							this,
-							players,
-							payload,
-						);
+						this.nodeManager.manager.emit(Events.NodeResumed, this, players, payload);
 						this.nodeManager.manager.emit(
 							Events.Debug,
 							DebugLevels.Node,
@@ -174,11 +162,9 @@ export async function onMessage(
 					);
 					this.nodeManager.manager.emit(Events.NodeReady, this, payload);
 
-					const isResumable =
-						this.nodeManager.manager.options.nodeOptions.resumable;
+					const isResumable = this.nodeManager.manager.options.nodeOptions.resumable;
 					if (isResumable) {
-						const timeout =
-							this.nodeManager.manager.options.nodeOptions.resumeTimeout;
+						const timeout = this.nodeManager.manager.options.nodeOptions.resumeTimeout;
 
 						this.nodeManager.manager.emit(
 							Events.Debug,

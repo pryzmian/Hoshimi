@@ -419,11 +419,7 @@ export interface HoshimiEvents {
 	 * @param {Player} newPlayer The new player.
 	 * @param {PlayerJson} oldPlayer The old player.
 	 */
-	playerUpdate: [
-		newPlayer: Player,
-		oldPlayer: PlayerJson,
-		payload: PlayerUpdate,
-	];
+	playerUpdate: [newPlayer: Player, oldPlayer: PlayerJson, payload: PlayerUpdate];
 	/**
 	 * Emitted when the player is destroyed.
 	 * @param {Player} player The player that was destroyed.
@@ -458,11 +454,7 @@ export interface HoshimiEvents {
 	 * @param {Track | null} track The track that was errored.
 	 * @param {TrackEndEvent} payload The payload of the event.
 	 */
-	trackError: [
-		player: Player,
-		track: Track | null,
-		payload: TrackExceptionEvent,
-	];
+	trackError: [player: Player, track: Track | null, payload: TrackExceptionEvent];
 
 	/**
 	 * Emitted when lyrics are found.
@@ -477,11 +469,7 @@ export interface HoshimiEvents {
 	 * @param {Track | null} track The track that was not found.
 	 * @param {LyricsFoundEvent} payload The lyrics that were not found.
 	 */
-	lyricsNotFound: [
-		player: Player,
-		track: Track | null,
-		payload: LyricsNotFoundEvent,
-	];
+	lyricsNotFound: [player: Player, track: Track | null, payload: LyricsNotFoundEvent];
 	/**
 	 * Emitted when a line of lyrics is updated.
 	 * @param {Player} player The player that emitted the event.
@@ -716,9 +704,7 @@ export type Awaitable<T> = Promise<T> | T;
 /**
  * Create a type that infers the value of a key from an object.
  */
-export type Inferable<T, K extends string> = T extends { [key in K]: infer R }
-	? R
-	: unknown;
+export type Inferable<T, K extends string> = T extends { [key in K]: infer R } ? R : unknown;
 
 /**
  * Create a type that infers the value of a key from an object.

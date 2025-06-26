@@ -17,11 +17,7 @@ const newPackageJson = {
 	...newPackageJsonRaw,
 };
 
-await writeFile(
-	".npm/package.json",
-	JSON.stringify(newPackageJson, null, 4),
-	"utf-8",
-);
+await writeFile(".npm/package.json", JSON.stringify(newPackageJson, null, 4), "utf-8");
 
 const moveFiles = [".npmignore", "README.md", "dist"];
 

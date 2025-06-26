@@ -1,11 +1,7 @@
 import type { Track, TrackRequester } from "../classes/Track";
 import type { PickNullable } from "./Manager";
 import type { LavalinkTrack } from "./Node";
-import type {
-	FilterOptions,
-	LavalinkPlayerVoice,
-	LavalinkPlayOptions,
-} from "./Player";
+import type { FilterOptions, LavalinkPlayerVoice, LavalinkPlayOptions } from "./Player";
 
 /**
  * The methods for http requests

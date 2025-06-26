@@ -1,4 +1,4 @@
-import { CustomizablePlayerStorage } from "./Player";
+import type { CustomizablePlayerStorage } from "./Player";
 
 /**
  * Type representing the customizable player storage.
@@ -8,10 +8,9 @@ type StorageKeys = keyof CustomizablePlayerStorage | (string & {});
 /**
  * Type representing the customizable player storage values.
  */
-type StorageValues<V extends StorageKeys = StorageKeys> =
-	V extends keyof CustomizablePlayerStorage
-		? CustomizablePlayerStorage[V]
-		: unknown;
+type StorageValues<V extends StorageKeys = StorageKeys> = V extends keyof CustomizablePlayerStorage
+	? CustomizablePlayerStorage[V]
+	: unknown;
 
 /**
  * Class representing a player storage.
@@ -36,9 +35,7 @@ export class PlayerStorage<
 	 * @param {K} key The key to get the value for.
 	 * @returns {V | undefined} The value for the key, or undefined if it doesn't exist.
 	 */
-	public get<K extends StorageKeys, V extends StorageValues<K>>(
-		key: K,
-	): V | undefined {
+	public get<K extends StorageKeys, V extends StorageValues<K>>(key: K): V | undefined {
 		return this.internal.get(key as never) as V | undefined;
 	}
 
@@ -47,10 +44,7 @@ export class PlayerStorage<
 	 * @param {K} key The key to set the value for.
 	 * @param {V} value The value to set for the key.
 	 */
-	public set<K extends StorageKeys, V extends StorageValues<K>>(
-		key: K,
-		value: V,
-	): void {
+	public set<K extends StorageKeys, V extends StorageValues<K>>(key: K, value: V): void {
 		this.internal.set(key as never, value as never);
 	}
 
@@ -84,10 +78,7 @@ export class PlayerStorage<
 	 * Get all values in the storage.
 	 * @returns {V[]} The values in the storage.
 	 */
-	public values<
-		K extends StorageKeys[],
-		V extends StorageValues<K[number]>,
-	>(): V[] {
+	public values<K extends StorageKeys[], V extends StorageValues<K[number]>>(): V[] {
 		return [...this.internal.values()] as never as V[];
 	}
 
@@ -95,10 +86,7 @@ export class PlayerStorage<
 	 * Get all entries in the storage.
 	 * @returns {[K, V][]} The entries in the storage.
 	 */
-	public entries<
-		K extends StorageKeys[],
-		V extends StorageValues<K[number]>,
-	>(): [K, V][] {
+	public entries<K extends StorageKeys[], V extends StorageValues<K[number]>>(): [K, V][] {
 		return [...this.internal.entries()] as never as [K, V][];
 	}
 
@@ -107,14 +95,12 @@ export class PlayerStorage<
 	 * Get all key-value pairs in the storage.
 	 * @returns {Record<K[number], V>} An object containing all key-value pairs in the storage, excluding internal keys.
 	 */
-	public all<
-		K extends StorageKeys[],
-		V extends StorageValues<K[number]>,
-	>(): Record<K[number], V> {
+	public all<K extends StorageKeys[], V extends StorageValues<K[number]>>(): Record<
+		K[number],
+		V
+	> {
 		return Object.fromEntries(
-			[...this.internal.entries()].filter(
-				([key]) => !key.startsWith("internal_"),
-			),
+			[...this.internal.entries()].filter(([key]) => !key.startsWith("internal_")),
 		) as never as Record<K[number], V>;
 	}
 

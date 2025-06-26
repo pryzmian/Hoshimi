@@ -58,14 +58,7 @@ class RestError extends Error {
 	 *
 	 * Create a new REST error.
 	 */
-	constructor({
-		timestamp,
-		status,
-		error,
-		trace,
-		message,
-		path,
-	}: LavalinkRestError) {
+	constructor({ timestamp, status, error, trace, message, path }: LavalinkRestError) {
 		super(
 			`Rest request failed with response code: ${status}${message ? ` | message: ${message}` : ""}`,
 		);
@@ -137,9 +130,7 @@ export class Rest {
 
 		this.url = `${node.options.secure ? "https" : "http"}://${node.options.host}:${node.options.port}/${this.version}`;
 		this.restTimeout =
-			node.options.restTimeout ??
-			manager.options.restOptions.resumeTimeout ??
-			10000;
+			node.options.restTimeout ?? manager.options.restOptions.resumeTimeout ?? 10000;
 		this.userAgent = manager.options.nodeOptions.userAgent ?? HoshimiAgent;
 		this.node = node;
 	}
@@ -187,10 +178,7 @@ export class Rest {
 		url.searchParams.append("trace", "true");
 
 		const abortController = new AbortController();
-		const timeout = setTimeout(
-			(): void => abortController.abort(),
-			this.restTimeout,
-		);
+		const timeout = setTimeout((): void => abortController.abort(), this.restTimeout);
 
 		const fetchOptions: FetchOptions = {
 			headers,
@@ -198,10 +186,7 @@ export class Rest {
 			signal: abortController.signal,
 		};
 
-		if (
-			![HttpMethods.Get, HttpMethods.Head].includes(options.method) &&
-			options.body
-		) {
+		if (![HttpMethods.Get, HttpMethods.Head].includes(options.method) && options.body) {
 			if (typeof options.body === "string") fetchOptions.body = options.body;
 			else fetchOptions.body = JSON.stringify(options.body);
 		}
@@ -216,9 +201,7 @@ export class Rest {
 			clearTimeout(timeout),
 		);
 		if (!response.ok) {
-			const restError = (await response
-				.json()
-				.catch(() => null)) as LavalinkRestError | null;
+			const restError = (await response.json().catch(() => null)) as LavalinkRestError | null;
 
 			throw new RestError(
 				restError ?? {
@@ -255,9 +238,7 @@ export class Rest {
 	 * console.log(player); // The updated lavalink player data
 	 * ```
 	 */
-	public async updatePlayer(
-		data: Partial<UpdatePlayerInfo>,
-	): Promise<LavalinkPlayer | null> {
+	public async updatePlayer(data: Partial<UpdatePlayerInfo>): Promise<LavalinkPlayer | null> {
 		if (!this.sessionId) return null;
 
 		const player = await this.request<LavalinkPlayer>({
