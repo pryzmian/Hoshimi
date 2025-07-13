@@ -467,13 +467,9 @@ export class Player {
 		if (typeof volume !== "number" || Number.isNaN(volume) || volume < 0 || volume > 100)
 			throw new PlayerError("Volume must be a number between 0 and 100.");
 
-		this.volume = volume;
-
 		await this.node.updatePlayer({
 			guildId: this.guildId,
-			playerOptions: {
-				volume: this.volume,
-			},
+			playerOptions: { volume },
 		});
 	}
 
