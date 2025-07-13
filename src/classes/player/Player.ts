@@ -431,6 +431,59 @@ export class Player {
 
 	/**
 	 *
+	 * Pause or resume the player.
+	 * @returns {Promise<void>}
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * player.setPaused();
+	 * ```
+	 */
+	public async setPaused(state: boolean = !this.paused): Promise<void> {
+		this.paused = state;
+		this.playing = !state;
+
+		this.manager.emit(
+			Events.Debug,
+			DebugLevels.Player,
+			`[Player] -> [Pause] Player is now ${this.paused ? "paused" : "resumed"} for guild: ${this.guildId}`,
+		);
+
+		await this.node.updatePlayer({
+			guildId: this.guildId,
+			playerOptions: {
+				paused: this.paused,
+			},
+		});
+	}
+
+	/**
+	 *
+	 * Set the volume of the player.
+	 * @param {number} volume The volume to set.
+	 * @returns {Promise<void>}
+	 * @example
+	 * ```ts
+	 * const player = manager.getPlayer("guildId");
+	 * player.setVolume(50); // set the volume to 50%
+	 * ```
+	 */
+	public async setVolume(volume: number): Promise<void> {
+		if (typeof volume !== "number" || Number.isNaN(volume) || volume < 0 || volume > 100)
+			throw new PlayerError("Volume must be a number between 0 and 100.");
+
+		this.volume = volume;
+
+		await this.node.updatePlayer({
+			guildId: this.guildId,
+			playerOptions: {
+				volume: this.volume,
+			},
+		});
+	}
+
+	/**
+	 *
 	 * Return the player as a json object.
 	 * @returns {PlayerJson}
 	 * @example
