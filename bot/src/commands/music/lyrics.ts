@@ -10,7 +10,7 @@ import {
 } from "seyfert";
 import { EmbedColors } from "seyfert/lib/common";
 import { ButtonStyle } from "seyfert/lib/types";
-import { ms } from "../time";
+import { ms } from "../../time";
 
 @Declare({
 	name: "lyrics",

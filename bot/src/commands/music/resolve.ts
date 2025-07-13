@@ -7,7 +7,7 @@ import {
 	Options,
 	type GuildCommandContext,
 } from "seyfert";
-import { isBase64, omitKeys } from "../utils";
+import { isBase64, omitKeys } from "../../utils";
 import { LoadType } from "hoshimi";
 
 const options = {

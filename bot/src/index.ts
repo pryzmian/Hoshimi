@@ -1,35 +1,16 @@
 import "dotenv/config";
 
 import { Client, type ParseClient, type UsingClient } from "seyfert";
-import { Hoshimi, Events, SearchEngines, type LyricsResult } from "hoshimi";
-import type { APIUser } from "seyfert/lib/types";
+import { Hoshimi, SearchEngines, type LyricsResult } from "hoshimi";
 import { HandleCommand } from "seyfert/lib/commands/handle";
 import { Yuna } from "yunaforseyfert";
+import { LavalinkHandler } from "./manager/handler";
+import type { HoshimiUser } from "./manager/types";
 
 import { mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import { trackStart } from "./lavalink/track/trackStart";
-import { trackEnd } from "./lavalink/track/trackEnd";
-
-import { queueEnd } from "./lavalink/queue/queueEnd";
-
-import { nodeReady } from "./lavalink/node/nodeReady";
-import { nodeDestroy } from "./lavalink/node/nodeDestroy,";
-import { nodeError } from "./lavalink/node/nodeError";
-import { nodeDisconnect } from "./lavalink/node/nodeDisconnect";
-import { nodeReconnecting } from "./lavalink/node/nodeReconnecting";
-
-import { lyricsLine } from "./lavalink/lyrics/lyricsLine";
-
-import { debug } from "./lavalink/debug";
-import { nodeResumed } from "./lavalink/node/nodeResumed";
-
 const path = resolve(process.cwd(), "cache");
-
-type HoshimiUser = APIUser & {
-	tag: string;
-};
 
 const client = new Client({
 	allowedMentions: {
@@ -69,30 +50,11 @@ client.setServices({
 	},
 });
 
-client.manager.on(Events.NodeReady, (node) => nodeReady(client, node));
-client.manager.on(Events.NodeDestroy, (node, destroy) => nodeDestroy(client, node, destroy));
-client.manager.on(Events.NodeError, (node, error) => nodeError(client, node, error));
-client.manager.on(Events.NodeDisconnect, (node) => nodeDisconnect(client, node));
-client.manager.on(Events.NodeReconnecting, (node, retriesLeft, delay) =>
-	nodeReconnecting(client, node, retriesLeft, delay),
-);
-client.manager.on(Events.NodeResumed, (node, players, payload) =>
-	nodeResumed(client, node, players, payload),
-);
-
-client.manager.on(Events.TrackStart, (player, track) => trackStart(client, track, player));
-client.manager.on(Events.TrackEnd, (player, track) => trackEnd(client, track, player));
-
-client.manager.on(Events.QueueEnd, (player) => queueEnd(client, player));
-
-client.manager.on(Events.LyricsLine, (player, track, payload) =>
-	lyricsLine(client, player, track, payload),
-);
-
-client.manager.on(Events.Debug, (level, message) => debug(client, level, message));
+const handler = new LavalinkHandler(client);
 
 (async (): Promise<void> => {
 	await mkdir(path, { recursive: true });
+	await handler.load();
 	await client.start();
 })();
 
@@ -105,6 +67,10 @@ declare module "seyfert" {
 
 	interface Client {
 		manager: Hoshimi;
+	}
+
+	interface ExtendedRCLocations {
+		lavalink: string;
 	}
 }
 

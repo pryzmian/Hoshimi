@@ -1,21 +1,18 @@
-import { type Player, SourceNames, type Track } from "hoshimi";
-import type { UsingClient } from "seyfert";
+import { SourceNames, Events } from "hoshimi";
+import { createLavalinkEvent } from "../../manager/events";
 
-/**
- * Handles the end of a track in a Lavalink player.
- * @param client The Seyfert client instance.
- * @param track The track that has ended, or null if no track was playing.
- * @param player The player instance that emitted the event.
- */
-export async function trackEnd(client: UsingClient, track: Track | null, player: Player) {
-	if (!track) return;
+export default createLavalinkEvent({
+	name: Events.TrackEnd,
+	async run(client, player, track, _payload) {
+		if (!track) return;
 
-	if (track.info.sourceName === SourceNames.FloweryTTS) return;
+		if (track.info.sourceName === SourceNames.FloweryTTS) return;
 
-	const textId = player.textId;
-	if (!textId) return;
+		const textId = player.textId;
+		if (!textId) return;
 
-	await client.messages.write(textId, {
-		content: `Finished playing: ${track.toHyperlink()}`,
-	});
-}
+		await client.messages.write(textId, {
+			content: `Finished playing: ${track.toHyperlink()}`,
+		});
+	},
+});

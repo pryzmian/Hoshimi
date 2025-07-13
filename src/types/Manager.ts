@@ -233,18 +233,21 @@ export enum DestroyReasons {
 	 */
 	Requested = "Player-Requested",
 	/**
-	 * The queue was empty.
+	 * The player was destroyed because the queue was empty.
 	 */
 	Empty = "Player-Empty",
-
 	/**
-	 * The player because the node was disconnected.
+	 * The player was destroyed because the node was disconnected.
 	 */
 	NodeDisconnected = "Player-NodeDisconnected",
 	/**
-	 * The player because the node was destroyed.
+	 * The player was destroyed because the node was destroyed.
 	 */
 	NodeDestroy = "Player-NodeDestroy",
+	/**
+	 * The player was destroyed because the voice channel was deleted.
+	 */
+	VoiceChannelDeleted = "Player-VoiceChannelDeleted",
 }
 
 /**

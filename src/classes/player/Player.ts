@@ -439,7 +439,7 @@ export class Player {
 	 * player.setPaused();
 	 * ```
 	 */
-	public async setPaused(paused: boolean = !this.paused): Promise<void> {
+	public async setPaused(paused: boolean = !this.paused): Promise<boolean> {
 		this.manager.emit(
 			Events.Debug,
 			DebugLevels.Player,
@@ -450,6 +450,8 @@ export class Player {
 			guildId: this.guildId,
 			playerOptions: { paused },
 		});
+
+		return paused;
 	}
 
 	/**

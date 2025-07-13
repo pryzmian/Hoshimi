@@ -14,9 +14,10 @@ import {
 	DebugLevels,
 	Events,
 	type DeepRequired,
+	DestroyReasons,
 } from "../types/Manager";
 import { type LavalinkSearchResponse, LoadType, State } from "../types/Node";
-import type { PlayerOptions } from "../types/Player";
+import type { LavalinkPlayerVoice, PlayerOptions } from "../types/Player";
 import type { Node } from "./node/Node";
 
 import { Player } from "./player/Player";
@@ -240,6 +241,38 @@ export class Hoshimi extends EventEmitter<RawEvents> {
 		}
 
 		switch (packet.t) {
+			case "CHANNEL_DELETE": {
+				const data = packet.d;
+
+				const player = this.getPlayer(data.guild_id);
+				if (!player) {
+					this.emit(
+						Events.Debug,
+						DebugLevels.Player,
+						"[Player] -> [Voice] The player is not found.",
+					);
+					return;
+				}
+
+				if (data.id === player.voiceId) {
+					this.emit(
+						Events.Debug,
+						DebugLevels.Player,
+						`[Player] -> [Voice] The channel ${data.id} was deleted, disconnecting the player.`,
+					);
+
+					await player.destroy(DestroyReasons.VoiceChannelDeleted);
+				} else {
+					this.emit(
+						Events.Debug,
+						DebugLevels.Player,
+						`[Player] -> [Voice] The channel ${data.id} was deleted, but it is not the player's channel.`,
+					);
+				}
+
+				break;
+			}
+
 			case "VOICE_SERVER_UPDATE":
 			case "VOICE_STATE_UPDATE":
 				{
@@ -282,11 +315,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
 						await player.node.updatePlayer({
 							guildId: data.guild_id,
 							playerOptions: {
-								voice: {
-									endpoint: player.voice.endpoint,
-									sessionId: player.voice.sessionId,
-									token: player.voice.token,
-								},
+								voice: player.voice as LavalinkPlayerVoice,
 							},
 						});
 

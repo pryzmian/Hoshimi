@@ -1,5 +1,5 @@
+import type { ChannelDeletePacket, VoicePacket, VoiceServer, VoiceState } from "hoshimi";
 import { createEvent } from "seyfert";
-import type { VoicePacket, VoiceServer, VoiceState, ChannelDeletePacket } from "hoshimi";
 
 type AnyPacket = VoicePacket | VoiceServer | VoiceState | ChannelDeletePacket;
 

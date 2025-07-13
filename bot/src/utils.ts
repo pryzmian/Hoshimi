@@ -35,3 +35,13 @@ export const isBase64 = (str: string): boolean => base64.test(str);
  * @returns {string} The inspected object as a string.
  */
 export const getInspect = (obj: any, depth: number = 0): string => inspect(obj, { depth });
+
+/**
+ *
+ * Slice text to a specified length, adding ellipsis if it exceeds the length.
+ * @param {string} text The text to slice.
+ * @param {number} length The length to slice.
+ * @returns {string} The sliced text.
+ */
+export const sliceText = (text: string, length: number = 240): string =>
+	text.length > length ? `${text.slice(0, length - 3)}...` : text;

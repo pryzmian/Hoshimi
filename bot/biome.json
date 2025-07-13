@@ -5,6 +5,9 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true,
+			"security": {
+				"noGlobalEval": "off"
+			},
 			"style": {
 				"noNonNullAssertion": "off",
 				"noInferrableTypes": "off",

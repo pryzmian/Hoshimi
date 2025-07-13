@@ -1,11 +1,9 @@
-import type { Node } from "hoshimi";
-import type { UsingClient } from "seyfert";
+import { Events } from "hoshimi";
+import { createLavalinkEvent } from "../../manager/events";
 
-/**
- * Handles the readiness of a Lavalink node.
- * @param client The Seyfert client instance.
- * @param node The Lavalink node that is ready.
- */
-export function nodeReady(client: UsingClient, node: Node): void {
-	client.logger.info(`Node ${node.id} is ready.`);
-}
+export default createLavalinkEvent({
+	name: Events.NodeReady,
+	run(client, node) {
+		client.logger.info(`Node ${node.id} is ready.`);
+	},
+});

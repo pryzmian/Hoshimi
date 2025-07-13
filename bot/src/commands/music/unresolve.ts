@@ -8,7 +8,7 @@ import {
 	createStringOption,
 	Options,
 } from "seyfert";
-import { omitKeys } from "../utils";
+import { omitKeys } from "../../utils";
 
 const options = {
 	title: createStringOption({
