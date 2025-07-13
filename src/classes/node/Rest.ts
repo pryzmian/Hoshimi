@@ -238,15 +238,8 @@ export class Rest {
 	 * console.log(player); // The updated lavalink player data
 	 * ```
 	 */
-	public async updatePlayer(data: Partial<UpdatePlayerInfo>): Promise<LavalinkPlayer | null> {
-		if (!this.sessionId) return null;
-
-		const player = await this.request<LavalinkPlayer>({
-			method: HttpMethods.Patch,
-			endpoint: `/sessions/${this.sessionId}/players/${data.guildId}`,
-			body: { ...data.playerOptions },
-			params: { noReplace: `${data.noReplace ?? false}` },
-		});
+	public updatePlayer(data: Partial<UpdatePlayerInfo>): Promise<LavalinkPlayer | null> {
+		if (!this.sessionId) return Promise.resolve(null);
 
 		this.node.nodeManager.manager.emit(
 			Events.Debug,
@@ -256,7 +249,12 @@ export class Rest {
 
 		validatePlayerData.call(this.node, data);
 
-		return player;
+		return this.request<LavalinkPlayer>({
+			method: HttpMethods.Patch,
+			endpoint: `/sessions/${this.sessionId}/players/${data.guildId}`,
+			body: { ...data.playerOptions },
+			params: { noReplace: `${data.noReplace ?? false}` },
+		});
 	}
 
 	/**
