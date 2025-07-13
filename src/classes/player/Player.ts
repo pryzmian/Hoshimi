@@ -439,21 +439,16 @@ export class Player {
 	 * player.setPaused();
 	 * ```
 	 */
-	public async setPaused(state: boolean = !this.paused): Promise<void> {
-		this.paused = state;
-		this.playing = !state;
-
+	public async setPaused(paused: boolean = !this.paused): Promise<void> {
 		this.manager.emit(
 			Events.Debug,
 			DebugLevels.Player,
-			`[Player] -> [Pause] Player is now ${this.paused ? "paused" : "resumed"} for guild: ${this.guildId}`,
+			`[Player] -> [Pause] Player is now ${paused ? "paused" : "resumed"} for guild: ${this.guildId}`,
 		);
 
 		await this.node.updatePlayer({
 			guildId: this.guildId,
-			playerOptions: {
-				paused: this.paused,
-			},
+			playerOptions: { paused },
 		});
 	}
 
