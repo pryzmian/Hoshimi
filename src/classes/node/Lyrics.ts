@@ -145,7 +145,7 @@ export class LyricsManager {
 		);
 
 		await this.node.rest.request({
-			endpoint: `/sessions/${this.node.sessionId}/players/${guildId}/subscribe`,
+			endpoint: `/sessions/${this.node.sessionId}/players/${guildId}/lyrics/subscribe`,
 			method: HttpMethods.Delete,
 		});
 	}

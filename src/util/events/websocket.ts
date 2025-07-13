@@ -160,7 +160,12 @@ export async function onMessage(this: Node, message: Buffer | string): Promise<v
 						DebugLevels.Node,
 						`[Socket] <- [${this.id}]: Received ready event. | Session id: ${payload.sessionId} | Resumed: ${payload.resumed}`,
 					);
-					this.nodeManager.manager.emit(Events.NodeReady, this, payload);
+					this.nodeManager.manager.emit(
+						Events.NodeReady,
+						this,
+						this.retryAmount,
+						payload,
+					);
 
 					const isResumable = this.nodeManager.manager.options.nodeOptions.resumable;
 					if (isResumable) {

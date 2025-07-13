@@ -37,7 +37,6 @@ export default class ResolveCommand extends Command {
 		const node = client.manager.nodeManager.getLeastUsed();
 
 		// the most funnier code i've ever written in this thing.
-
 		if (isBase64(ctx.options.query)) {
 			const decode = await node.decode.single(ctx.options.query, {
 				...omitKeys(ctx.author, ["client"]),

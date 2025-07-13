@@ -161,6 +161,10 @@ export enum Events {
 	 * Emitted when the node is resumed.
 	 */
 	NodeResumed = "nodeResumed",
+	/**
+	 * Emitted when the node is created.
+	 */
+	NodeCreate = "nodeCreate",
 
 	/**
 	 * Emitted when the player is created.
@@ -383,9 +387,10 @@ export interface HoshimiEvents {
 	/**
 	 * Emitted when the node is ready.
 	 * @param {Node} node The node that emitted the event.
+	 * @param {number} retries The number of retries after the node was ready.
 	 * @param {Ready} payload The payload of the event.
 	 */
-	nodeReady: [node: Node, payload: Ready];
+	nodeReady: [node: Node, retries: number, payload: Ready];
 	/**
 	 * Emitted when the node is disconnected.
 	 * @param {Node} node The node that was disconnected.
@@ -411,6 +416,11 @@ export interface HoshimiEvents {
 	 * @param {Ready} payload The payload of the event.
 	 */
 	nodeResumed: [node: Node, players: LavalinkPlayer[], payload: Ready];
+	/**
+	 * Emitted when the node is created.
+	 * @param {Node} node The node that was created.
+	 */
+	nodeCreate: [node: Node];
 
 	/**
 	 * Emitted when the player is created.

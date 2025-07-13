@@ -14,5 +14,13 @@ export default createLavalinkEvent({
 		await client.messages.write(textId, {
 			content: `Finished playing: ${track.toHyperlink()}`,
 		});
+
+		const lyricsId = player.data.get("lyricsId");
+		if (lyricsId) {
+			await client.messages.delete(lyricsId, textId).catch(() => null);
+
+			player.data.delete("lyricsId");
+			player.data.delete("lyrics");
+		}
 	},
 });

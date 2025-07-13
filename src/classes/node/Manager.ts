@@ -1,3 +1,4 @@
+import { Events } from "../../types/Manager";
 import { type NodeOptions, State } from "../../types/Node";
 import { Collection } from "../../util/collection";
 import type { Hoshimi } from "../Hoshimi";
@@ -110,7 +111,10 @@ export class NodeManager {
 		if (oldNode) return oldNode;
 
 		const node = new Node(this, options);
+
 		this.nodes.set(node.id, node);
+		this.manager.emit(Events.NodeCreate, node);
+
 		return node;
 	}
 
