@@ -1,73 +1,62 @@
 import { UnresolvedTrack } from "hoshimi";
-import {
-	Command,
-	Declare,
-	type Message,
-	type WebhookMessage,
-	type GuildCommandContext,
-	createStringOption,
-	Options,
-} from "seyfert";
+import { Command, Declare, type Message, type WebhookMessage, type GuildCommandContext, createStringOption, Options } from "seyfert";
 import { omitKeys } from "../../utils";
 
 const options = {
-	title: createStringOption({
-		description: "The track title to resolve the track.",
-		required: true,
-	}),
-	uri: createStringOption({
-		description: "The URL of the track to resolve.",
-	}),
-	author: createStringOption({
-		description: "The author of the track to resolve.",
-	}),
+    title: createStringOption({
+        description: "The track title to resolve the track.",
+        required: true,
+    }),
+    uri: createStringOption({
+        description: "The URL of the track to resolve.",
+    }),
+    author: createStringOption({
+        description: "The author of the track to resolve.",
+    }),
 };
 
 @Declare({
-	name: "unresolve",
-	description: "Resolves a track using partial data.",
-	contexts: ["Guild"],
-	integrationTypes: ["GuildInstall"],
+    name: "unresolve",
+    description: "Resolves a track using partial data.",
+    contexts: ["Guild"],
+    integrationTypes: ["GuildInstall"],
 })
 @Options(options)
 export default class UnresolveCommand extends Command {
-	public override async run(
-		ctx: GuildCommandContext<typeof options>,
-	): Promise<Message | WebhookMessage | void> {
-		const { client } = ctx;
+    public override async run(ctx: GuildCommandContext<typeof options>): Promise<Message | WebhookMessage | void> {
+        const { client } = ctx;
 
-		const state = await ctx.member.voice();
-		if (!state.channelId)
-			return ctx.editOrReply({
-				content: "You need to be in a voice channel to use this command.",
-			});
+        const state = await ctx.member.voice();
+        if (!state.channelId)
+            return ctx.editOrReply({
+                content: "You need to be in a voice channel to use this command.",
+            });
 
-		const me = await ctx.me();
-		const bot = await me.voice();
+        const me = await ctx.me();
+        const bot = await me.voice();
 
-		if (bot && bot.channelId !== state.channelId)
-			return ctx.editOrReply({ content: "I'm already in a voice channel." });
+        if (bot && bot.channelId !== state.channelId) return ctx.editOrReply({ content: "I'm already in a voice channel." });
 
-		const player = client.manager.getPlayer(ctx.guildId);
-		if (!player) return ctx.editOrReply({ content: "No player found." });
+        const player = client.manager.getPlayer(ctx.guildId);
+        if (!player) return ctx.editOrReply({ content: "No player found." });
 
-		const { title, uri, author } = ctx.options;
+        const { title, uri, author } = ctx.options;
 
-		const unresolved = new UnresolvedTrack(
-			{ info: { title, uri, author } },
-			{
-				...omitKeys(ctx.author, ["client"]),
-				global_name: ctx.author.username,
-				tag: ctx.author.tag,
-			},
-		);
+        const unresolved = new UnresolvedTrack(
+            { info: { title, uri, author } },
+            {
+                ...omitKeys(ctx.author, ["client"]),
+                global_name: ctx.author.username,
+                tag: ctx.author.tag,
+            },
+        );
 
-		player.queue.add(unresolved);
+        player.queue.add(unresolved);
 
-		if (!player.playing) await player.play();
+        if (!player.playing) await player.play();
 
-		return ctx.editOrReply({
-			content: `The unresolved track **${unresolved.info.title}** has been added to the queue.`,
-		});
-	}
+        return ctx.editOrReply({
+            content: `The unresolved track **${unresolved.info.title}** has been added to the queue.`,
+        });
+    }
 }

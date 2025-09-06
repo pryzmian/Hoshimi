@@ -7,35 +7,32 @@ import type { APIUser } from "seyfert/lib/types";
  * The interface of the Hoshimi user.
  */
 export type HoshimiUser = APIUser & {
-	tag: string;
+    tag: string;
 };
 
 /**
  * The interface of the lavalink event.
  */
 export interface LavalinkEvent<K extends keyof HoshimiEvents> {
-	/**
-	 * The event name.
-	 * @type {K}
-	 */
-	name: K;
-	/**
-	 * The event run callback.
-	 * @type {LavalinkEventRun<K>}
-	 */
-	run: LavalinkEventRun<K>;
-	/**
-	 * The event once property.
-	 * @type {boolean}
-	 * @default false
-	 */
-	once?: boolean;
+    /**
+     * The event name.
+     * @type {K}
+     */
+    name: K;
+    /**
+     * The event run callback.
+     * @type {LavalinkEventRun<K>}
+     */
+    run: LavalinkEventRun<K>;
+    /**
+     * The event once property.
+     * @type {boolean}
+     * @default false
+     */
+    once?: boolean;
 }
 
 /**
  * The interface of the lavalink event run function.
  */
-export type LavalinkEventRun<K extends keyof HoshimiEvents> = (
-	client: UsingClient,
-	...args: HoshimiEvents[K]
-) => Awaitable<any>;
+export type LavalinkEventRun<K extends keyof HoshimiEvents> = (client: UsingClient, ...args: HoshimiEvents[K]) => Awaitable<any>;

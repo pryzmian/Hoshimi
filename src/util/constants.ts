@@ -26,18 +26,18 @@ export const ValidEngines: SearchEngines[] = Object.values(SearchEngines);
  * @type {Map<SourceNames, SearchEngines>}
  */
 export const ValidSources: Map<SourceNames, SearchEngines> = new Map(
-	Object.entries<SearchEngines>({
-		[SourceNames.Youtube]: SearchEngines.Youtube,
-		[SourceNames.YoutubeMusic]: SearchEngines.YoutubeMusic,
-		[SourceNames.Soundcloud]: SearchEngines.SoundCloud,
-		[SourceNames.Bandcamp]: SearchEngines.BandCamp,
-		[SourceNames.Twitch]: SearchEngines.Twitch,
-		[SourceNames.Vimeo]: SearchEngines.Vimeo,
-		[SourceNames.Mixer]: SearchEngines.Mixer,
-		[SourceNames.Spotify]: SearchEngines.Spotify,
-		[SourceNames.Deezer]: SearchEngines.Deezer,
-		[SourceNames.AppleMusic]: SearchEngines.AppleMusic,
-		[SourceNames.YandexMusic]: SearchEngines.YandexMusic,
-		[SourceNames.FloweryTTS]: SearchEngines.FloweryTTS,
-	}) as [SourceNames, SearchEngines][],
+    Object.entries<SearchEngines>({
+        [SourceNames.Youtube]: SearchEngines.Youtube,
+        [SourceNames.YoutubeMusic]: SearchEngines.YoutubeMusic,
+        [SourceNames.Soundcloud]: SearchEngines.SoundCloud,
+        [SourceNames.Bandcamp]: SearchEngines.BandCamp,
+        [SourceNames.Twitch]: SearchEngines.Twitch,
+        [SourceNames.Vimeo]: SearchEngines.Vimeo,
+        [SourceNames.Mixer]: SearchEngines.Mixer,
+        [SourceNames.Spotify]: SearchEngines.Spotify,
+        [SourceNames.Deezer]: SearchEngines.Deezer,
+        [SourceNames.AppleMusic]: SearchEngines.AppleMusic,
+        [SourceNames.YandexMusic]: SearchEngines.YandexMusic,
+        [SourceNames.FloweryTTS]: SearchEngines.FloweryTTS,
+    }) as [SourceNames, SearchEngines][],
 );

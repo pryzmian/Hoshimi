@@ -12,19 +12,19 @@ const debug: boolean = process.argv.includes("--debug");
  * The Seyfert configuration for the bot.
  */
 export default config.bot({
-	debug,
-	token: process.env.TOKEN ?? "The knave",
-	intents: [
-		GatewayIntentBits.Guilds,
-		GatewayIntentBits.MessageContent,
-		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.GuildVoiceStates,
-		GatewayIntentBits.GuildMembers,
-	],
-	locations: {
-		base: "src",
-		events: "events",
-		commands: "commands",
-		lavalink: "lavalink",
-	},
+    debug,
+    token: process.env.TOKEN ?? "The knave",
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMembers,
+    ],
+    locations: {
+        base: "src",
+        events: "events",
+        commands: "commands",
+        lavalink: "lavalink",
+    },
 });

@@ -1,42 +1,41 @@
 import { Command, createIntegerOption, Declare, Options, type GuildCommandContext } from "seyfert";
 
 const options = {
-	to: createIntegerOption({
-		description: "Amount of tracks to skip.",
-		min_value: 1,
-	}),
+    to: createIntegerOption({
+        description: "Amount of tracks to skip.",
+        min_value: 1,
+    }),
 };
 
 @Declare({
-	name: "skip",
-	description: "Skip track(s).",
-	aliases: ["s"],
-	integrationTypes: ["GuildInstall"],
-	contexts: ["Guild"],
+    name: "skip",
+    description: "Skip track(s).",
+    aliases: ["s"],
+    integrationTypes: ["GuildInstall"],
+    contexts: ["Guild"],
 })
 @Options(options)
 export default class SkipCommand extends Command {
-	override async run(ctx: GuildCommandContext<typeof options>) {
-		const { client, options } = ctx;
+    override async run(ctx: GuildCommandContext<typeof options>) {
+        const { client, options } = ctx;
 
-		const state = await ctx.member.voice();
-		if (!state.channelId)
-			return ctx.editOrReply({
-				content: "You need to be in a voice channel to use this command.",
-			});
+        const state = await ctx.member.voice();
+        if (!state.channelId)
+            return ctx.editOrReply({
+                content: "You need to be in a voice channel to use this command.",
+            });
 
-		const me = await ctx.me();
-		const bot = await me.voice();
+        const me = await ctx.me();
+        const bot = await me.voice();
 
-		if (bot && bot.channelId !== state.channelId)
-			return ctx.editOrReply({ content: "I'm already in a voice channel." });
+        if (bot && bot.channelId !== state.channelId) return ctx.editOrReply({ content: "I'm already in a voice channel." });
 
-		const player = client.manager.getPlayer(ctx.guildId);
-		if (!player) return ctx.editOrReply({ content: "No player found." });
+        const player = client.manager.getPlayer(ctx.guildId);
+        if (!player) return ctx.editOrReply({ content: "No player found." });
 
-		await player.skip(options.to);
-		await ctx.editOrReply({
-			content: `Skipped ${options.to ?? 1} track(s).`,
-		});
-	}
+        await player.skip(options.to);
+        await ctx.editOrReply({
+            content: `Skipped ${options.to ?? 1} track(s).`,
+        });
+    }
 }

@@ -1,7 +1,7 @@
 import "dotenv/config";
 
 import { Client, type ParseClient, type UsingClient } from "seyfert";
-import { Hoshimi, SearchEngines, type LyricsResult } from "hoshimi";
+import { Hoshimi, Player, SearchEngines, Structures, type LyricsResult } from "hoshimi";
 import { HandleCommand } from "seyfert/lib/commands/handle";
 import { Yuna } from "yunaforseyfert";
 import { LavalinkHandler } from "./manager/handler";
@@ -13,76 +13,87 @@ import { resolve } from "node:path";
 const path = resolve(process.cwd(), "cache");
 
 const client = new Client({
-	allowedMentions: {
-		parse: ["roles", "users"],
-		replied_user: false,
-	},
-	commands: {
-		prefix: () => ["hoshimi", "h."],
-		reply: () => true,
-	},
+    allowedMentions: {
+        parse: ["roles", "users"],
+        replied_user: false,
+    },
+    commands: {
+        prefix: () => ["hoshimi", "h."],
+        reply: () => true,
+    },
 }) as UsingClient;
 
 client.manager = new Hoshimi({
-	sendPayload: (guildId, payload) =>
-		client.gateway.send(client.gateway.calculateShardId(guildId), payload),
-	defaultSearchEngine: SearchEngines.Spotify,
-	nodeOptions: {
-		resumable: false,
-		resumeByLibrary: false,
-	},
-	nodes: [
-		{
-			host: "localhost",
-			port: 2333,
-			password: "ganyuontopuwu",
-		},
-	],
+    sendPayload: (guildId, payload) => client.gateway.send(client.gateway.calculateShardId(guildId), payload),
+    defaultSearchEngine: SearchEngines.Spotify,
+    nodeOptions: {
+        resumable: false,
+        resumeByLibrary: false,
+    },
+    nodes: [
+        {
+            host: "localhost",
+            port: 2333,
+            password: "ganyuontopuwu",
+        },
+    ],
 });
 
 client.setServices({
-	handleCommand: class extends HandleCommand {
-		override argsParser = Yuna.parser({
-			syntax: {
-				namedOptions: ["-", "--"],
-			},
-		});
-	},
+    handleCommand: class extends HandleCommand {
+        override argsParser = Yuna.parser({
+            syntax: {
+                namedOptions: ["-", "--"],
+            },
+        });
+    },
 });
+
+// Extend the player with whatever you want
+class HoshimiPlayer extends Player {
+    textChannelId: string | null = null;
+}
+
+// Override the player structure.
+Structures.Player = (...args) => new HoshimiPlayer(...args);
 
 const handler = new LavalinkHandler(client);
 
 (async (): Promise<void> => {
-	await mkdir(path, { recursive: true });
-	await handler.load();
-	await client.start();
+    await mkdir(path, { recursive: true });
+    await handler.load();
+    await client.start();
 })();
 
 declare module "seyfert" {
-	interface UsingClient extends ParseClient<Client<true>> {}
+    interface UsingClient extends ParseClient<Client<true>> {}
 
-	interface InternalOptions {
-		withPrefix: true;
-	}
+    interface InternalOptions {
+        withPrefix: true;
+    }
 
-	interface Client {
-		manager: Hoshimi;
-	}
+    interface Client {
+        manager: Hoshimi;
+    }
 
-	interface ExtendedRCLocations {
-		lavalink: string;
-	}
+    interface ExtendedRCLocations {
+        lavalink: string;
+    }
 }
 
 declare module "hoshimi" {
-	interface CustomizableTrack {
-		requester: HoshimiUser;
-	}
+    interface CustomizableTrack {
+        requester: HoshimiUser;
+    }
 
-	interface CustomizablePlayerStorage {
-		enabledAutoplay: boolean;
-		enabledLyrics: boolean;
-		lyricsId: string;
-		lyrics: LyricsResult;
-	}
+    interface CustomizablePlayerStorage {
+        enabledAutoplay: boolean;
+        enabledLyrics: boolean;
+        lyricsId: string;
+        lyrics: LyricsResult;
+    }
+
+    interface CustomizableStructures {
+        Player: HoshimiPlayer;
+    }
 }

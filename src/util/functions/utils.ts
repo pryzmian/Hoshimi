@@ -1,11 +1,4 @@
-import type {
-	SourceNames,
-	LavalinkTrack,
-	NodeOptions,
-	PluginNames,
-	SearchQuery,
-	UnresolvedLavalinkTrack,
-} from "../../types/Node";
+import type { SourceNames, LavalinkTrack, NodeOptions, PluginNames, SearchQuery, UnresolvedLavalinkTrack } from "../../types/Node";
 import { type RestOrArray, SearchEngines, type HoshimiOptions } from "../../types/Manager";
 import type { Node } from "../../classes/node/Node";
 import type { PlayerOptions } from "../../types/Player";
@@ -16,7 +9,7 @@ import { UrlRegex, ValidEngines, ValidSources } from "../constants";
 import { Track, UnresolvedTrack } from "../../classes/Track";
 
 import { StorageAdapter } from "../../classes/queue/adapters/abstract";
-import type { Player } from "../../classes/player/Player";
+import type { PlayerStructure } from "../../types/Structures";
 
 /**
  *
@@ -25,59 +18,27 @@ import type { Player } from "../../classes/player/Player";
  * @returns {void} Nothing, yeah, nothing.
  */
 export function validateManagerOptions(options: HoshimiOptions): void {
-	if (!Array.isArray(options.nodes) || !options.nodes.every(isNode) || !options.nodes.length)
-		throw new OptionError(
-			"The manager option 'options.nodes' must be a valid array of nodes and atleast one valid node.",
-		);
-	if (typeof options.sendPayload !== "function")
-		throw new OptionError("The manager option 'options.sendPayload' must be a vaid function.");
+    if (!Array.isArray(options.nodes) || !options.nodes.every(isNode) || !options.nodes.length)
+        throw new OptionError("The manager option 'options.nodes' must be a valid array of nodes and atleast one valid node.");
+    if (typeof options.sendPayload !== "function")
+        throw new OptionError("The manager option 'options.sendPayload' must be a vaid function.");
 
-	if (
-		typeof options.queueOptions !== "undefined" &&
-		typeof options.queueOptions.maxPreviousTracks !== "number"
-	)
-		throw new OptionError(
-			"The manager option 'options.queueOptions.maxPreviousTracks' must be a number.",
-		);
-	if (
-		typeof options.queueOptions !== "undefined" &&
-		typeof options.queueOptions.autoplayFn !== "function"
-	)
-		throw new OptionError(
-			"The manager option 'options.queueOptions.autoplayFn' must be a function.",
-		);
+    if (typeof options.queueOptions !== "undefined" && typeof options.queueOptions.maxPreviousTracks !== "number")
+        throw new OptionError("The manager option 'options.queueOptions.maxPreviousTracks' must be a number.");
+    if (typeof options.queueOptions !== "undefined" && typeof options.queueOptions.autoplayFn !== "function")
+        throw new OptionError("The manager option 'options.queueOptions.autoplayFn' must be a function.");
 
-	if (
-		typeof options.queueOptions?.storage !== "undefined" &&
-		!(options.queueOptions.storage instanceof StorageAdapter)
-	)
-		throw new OptionError(
-			"The manager option 'options.queueOptions.storage' must be a valid storage manager.",
-		);
+    if (typeof options.queueOptions?.storage !== "undefined" && !(options.queueOptions.storage instanceof StorageAdapter))
+        throw new OptionError("The manager option 'options.queueOptions.storage' must be a valid storage manager.");
 
-	if (
-		typeof options.defaultSearchEngine !== "undefined" &&
-		!ValidEngines.includes(options.defaultSearchEngine)
-	)
-		throw new OptionError(
-			"The manager option 'options.defaultSearchEngine' Must be a valid search engine.",
-		);
-	if (typeof options.client !== "undefined" && typeof options.client !== "object")
-		throw new OptionError("The manager option 'options.client' Must be a valid object.");
-	if (
-		typeof options.client !== "undefined" &&
-		typeof options.client.id !== "undefined" &&
-		typeof options.client.id !== "string"
-	)
-		throw new OptionError("The manager option 'options.client.id' Must be a valid string.");
-	if (
-		typeof options.client !== "undefined" &&
-		typeof options.client.id !== "undefined" &&
-		typeof options.client.username !== "string"
-	)
-		throw new OptionError(
-			"The manager option 'options.client.username' must be a valid string.",
-		);
+    if (typeof options.defaultSearchEngine !== "undefined" && !ValidEngines.includes(options.defaultSearchEngine))
+        throw new OptionError("The manager option 'options.defaultSearchEngine' Must be a valid search engine.");
+    if (typeof options.client !== "undefined" && typeof options.client !== "object")
+        throw new OptionError("The manager option 'options.client' Must be a valid object.");
+    if (typeof options.client !== "undefined" && typeof options.client.id !== "undefined" && typeof options.client.id !== "string")
+        throw new OptionError("The manager option 'options.client.id' Must be a valid string.");
+    if (typeof options.client !== "undefined" && typeof options.client.id !== "undefined" && typeof options.client.username !== "string")
+        throw new OptionError("The manager option 'options.client.username' must be a valid string.");
 }
 
 /**
@@ -87,39 +48,34 @@ export function validateManagerOptions(options: HoshimiOptions): void {
  * @returns {string} The validated query.
  */
 export function validateQuery(search: SearchQuery): string {
-	if (typeof search !== "object") throw new OptionError("The 'query' must be a valid object.");
-	if (typeof search.query !== "string")
-		throw new OptionError("The query option 'query.query' must be a valid string.");
+    if (typeof search !== "object") throw new OptionError("The 'query' must be a valid object.");
+    if (typeof search.query !== "string") throw new OptionError("The query option 'query.query' must be a valid string.");
 
-	if (typeof search.engine !== "string")
-		throw new OptionError("The query option 'query.engine' must be a valid search engine.");
+    if (typeof search.engine !== "string") throw new OptionError("The query option 'query.engine' must be a valid search engine.");
 
-	search.engine = validateEngine(search.engine);
+    search.engine = validateEngine(search.engine);
 
-	if (!ValidEngines.includes(search.engine))
-		throw new OptionError(`The query option 'query.engine' must be a valid search engine.`);
+    if (!ValidEngines.includes(search.engine)) throw new OptionError(`The query option 'query.engine' must be a valid search engine.`);
 
-	const query = search.query.trim();
+    const query = search.query.trim();
 
-	const engineKey = Object.values(SearchEngines).find((key) =>
-		query.toLowerCase().startsWith(key),
-	);
-	if (engineKey && query.toLowerCase().startsWith(`${engineKey}:`)) {
-		const sliced = query.slice(engineKey.length + 1).trim();
-		const isUrl = UrlRegex.test(sliced);
+    const engineKey = Object.values(SearchEngines).find((key) => query.toLowerCase().startsWith(key));
+    if (engineKey && query.toLowerCase().startsWith(`${engineKey}:`)) {
+        const sliced = query.slice(engineKey.length + 1).trim();
+        const isUrl = UrlRegex.test(sliced);
 
-		if (isUrl) return sliced;
+        if (isUrl) return sliced;
 
-		return `${engineKey}:${sliced}`;
-	}
+        return `${engineKey}:${sliced}`;
+    }
 
-	const isUrl = UrlRegex.test(query);
-	if (isUrl) return query;
+    const isUrl = UrlRegex.test(query);
+    if (isUrl) return query;
 
-	if (search.engine === SearchEngines.FloweryTTS) return `${search.engine}://${query}`;
-	if (search.engine !== SearchEngines.Local) return `${search.engine}:${query}`;
+    if (search.engine === SearchEngines.FloweryTTS) return `${search.engine}://${query}`;
+    if (search.engine !== SearchEngines.Local) return `${search.engine}:${query}`;
 
-	return query;
+    return query;
 }
 
 /**
@@ -129,19 +85,17 @@ export function validateQuery(search: SearchQuery): string {
  * @returns {void} Nothing, yeah, nothing, again.
  */
 export function validatePlayerOptions(options: PlayerOptions): void {
-	if (typeof options.guildId !== "string")
-		throw new OptionError("The player option 'options.guildId' must be a string.");
-	if (typeof options.voiceId !== "string")
-		throw new OptionError("The player option 'options.voiceId' Must be a string.");
-	if (typeof options.textId !== "undefined" && typeof options.textId !== "string")
-		throw new OptionError("The player option 'options.textId' Must be a string.");
+    if (typeof options.guildId !== "string") throw new OptionError("The player option 'options.guildId' must be a string.");
+    if (typeof options.voiceId !== "string") throw new OptionError("The player option 'options.voiceId' Must be a string.");
+    if (typeof options.textId !== "undefined" && typeof options.textId !== "string")
+        throw new OptionError("The player option 'options.textId' Must be a string.");
 
-	if (typeof options.selfDeaf !== "undefined" && typeof options.selfDeaf !== "boolean")
-		throw new OptionError("The player option 'options.selfDeaf' Must be a boolean.");
-	if (typeof options.selfMute !== "undefined" && typeof options.selfMute !== "boolean")
-		throw new OptionError("The player option 'options.selfMute' Mute must be a boolean.");
-	if (typeof options.volume !== "undefined" && typeof options.volume !== "number")
-		throw new OptionError("The player option 'options.volume' Must be a number.");
+    if (typeof options.selfDeaf !== "undefined" && typeof options.selfDeaf !== "boolean")
+        throw new OptionError("The player option 'options.selfDeaf' Must be a boolean.");
+    if (typeof options.selfMute !== "undefined" && typeof options.selfMute !== "boolean")
+        throw new OptionError("The player option 'options.selfMute' Mute must be a boolean.");
+    if (typeof options.volume !== "undefined" && typeof options.volume !== "number")
+        throw new OptionError("The player option 'options.volume' Must be a number.");
 }
 
 /**
@@ -152,25 +106,24 @@ export function validatePlayerOptions(options: PlayerOptions): void {
  * @returns {void} Nothing.
  */
 export function validatePlayerData(this: Node, data: Partial<UpdatePlayerInfo>): void {
-	if (
-		typeof data === "object" &&
-		typeof data.playerOptions === "object" &&
-		typeof data.guildId === "string" &&
-		Object.keys(data.playerOptions).length > 0
-	) {
-		const player = this.nodeManager.manager.getPlayer(data.guildId);
-		if (!player) return;
+    if (
+        typeof data === "object" &&
+        typeof data.playerOptions === "object" &&
+        typeof data.guildId === "string" &&
+        Object.keys(data.playerOptions).length > 0
+    ) {
+        const player = this.nodeManager.manager.getPlayer(data.guildId);
+        if (!player) return;
 
-		if (typeof data.playerOptions.voice === "object") player.voice = data.playerOptions.voice;
+        if (typeof data.playerOptions.voice === "object") player.voice = data.playerOptions.voice;
 
-		if (typeof data.playerOptions.paused === "boolean") {
-			player.paused = data.playerOptions.paused;
-			player.playing = !data.playerOptions.paused;
-		}
+        if (typeof data.playerOptions.paused === "boolean") {
+            player.paused = data.playerOptions.paused;
+            player.playing = !data.playerOptions.paused;
+        }
 
-		if (typeof data.playerOptions.volume === "number")
-			player.volume = data.playerOptions.volume;
-	}
+        if (typeof data.playerOptions.volume === "number") player.volume = data.playerOptions.volume;
+    }
 }
 
 /**
@@ -180,21 +133,21 @@ export function validatePlayerData(this: Node, data: Partial<UpdatePlayerInfo>):
  * @param {RestOrArray<string>} plugins The plugins to validate.
  */
 export function validateNodePlugins(node: Node, ...plugins: RestOrArray<PluginNames>): void {
-	const info = node.info;
-	if (!info) throw new NodeError({ id: node.id, message: "Node is not ready yet." });
+    const info = node.info;
+    if (!info) throw new NodeError({ id: node.id, message: "Node is not ready yet." });
 
-	if (!info.plugins.length)
-		throw new NodeError({
-			id: node.id,
-			message: "No plugins found in the node.",
-		});
+    if (!info.plugins.length)
+        throw new NodeError({
+            id: node.id,
+            message: "No plugins found in the node.",
+        });
 
-	const missings = plugins.flat().filter((name) => !info.plugins.some((p) => p.name === name));
-	if (missings.length)
-		throw new NodeError({
-			id: node.id,
-			message: `The node does not support the following plugins: ${missings.join(", ")}.`,
-		});
+    const missings = plugins.flat().filter((name) => !info.plugins.some((p) => p.name === name));
+    if (missings.length)
+        throw new NodeError({
+            id: node.id,
+            message: `The node does not support the following plugins: ${missings.join(", ")}.`,
+        });
 }
 
 /**
@@ -204,11 +157,10 @@ export function validateNodePlugins(node: Node, ...plugins: RestOrArray<PluginNa
  * @returns {SearchEngines} The validated engine type.
  */
 export function validateEngine(type: SearchEngines | SourceNames): SearchEngines {
-	const source =
-		ValidEngines.find((engine) => engine === type) ?? ValidSources.get(type as SourceNames);
-	if (!source) throw new OptionError(`The engine '${type}' is not a valid engine.`);
+    const source = ValidEngines.find((engine) => engine === type) ?? ValidSources.get(type as SourceNames);
+    if (!source) throw new OptionError(`The engine '${type}' is not a valid engine.`);
 
-	return source;
+    return source;
 }
 
 /**
@@ -219,21 +171,16 @@ export function validateEngine(type: SearchEngines | SourceNames): SearchEngines
  * @returns {Promise<Track>} The resolved track.
  * @throws {ResolveError} If the track is not a valid unresolved track.
  */
-export function validateTrack(
-	player: Player,
-	track: Track | UnresolvedTrack | null,
-): Promise<Track | null> {
-	if (!track) return Promise.resolve(null);
+export function validateTrack(player: PlayerStructure, track: Track | UnresolvedTrack | null): Promise<Track | null> {
+    if (!track) return Promise.resolve(null);
 
-	if (isTrack(track)) return Promise.resolve(new Track(track, track.requester));
+    if (isTrack(track)) return Promise.resolve(new Track(track, track.requester));
 
-	if (!isUnresolvedTrack(track))
-		throw new ResolveError("The track is not a valid unresolved track.");
+    if (!isUnresolvedTrack(track)) throw new ResolveError("The track is not a valid unresolved track.");
 
-	if (!track.resolve || typeof track.resolve !== "function")
-		return new UnresolvedTrack(track, track.requester).resolve(player);
+    if (!track.resolve || typeof track.resolve !== "function") return new UnresolvedTrack(track, track.requester).resolve(player);
 
-	return track.resolve(player);
+    return track.resolve(player);
 }
 
 /**
@@ -242,15 +189,11 @@ export function validateTrack(
  * @param {Track | LavalinkTrack | UnresolvedLavalinkTrack} track The track to check.
  * @returns {boolean} If the track is a Lavalink track.
  */
-export const isTrack = (
-	track: Track | LavalinkTrack | UnresolvedLavalinkTrack,
-): track is Track | LavalinkTrack => {
-	if (!track) return false;
-	return (
-		typeof track.encoded === "string" &&
-		typeof track.info === "object" &&
-		!("resolve" in track && typeof track.resolve === "function")
-	);
+export const isTrack = (track: Track | LavalinkTrack | UnresolvedLavalinkTrack): track is Track | LavalinkTrack => {
+    if (!track) return false;
+    return (
+        typeof track.encoded === "string" && typeof track.info === "object" && !("resolve" in track && typeof track.resolve === "function")
+    );
 };
 
 /**
@@ -260,17 +203,17 @@ export const isTrack = (
  * @returns {boolean} If the track is an unresolved track.
  */
 export function isUnresolvedTrack(
-	track: Track | LavalinkTrack | UnresolvedLavalinkTrack,
+    track: Track | LavalinkTrack | UnresolvedLavalinkTrack,
 ): track is UnresolvedTrack | UnresolvedLavalinkTrack {
-	if (!track) return false;
+    if (!track) return false;
 
-	return (
-		typeof track.encoded === "string" ||
-		(typeof track.info === "object" &&
-			typeof track.info.title === "string" &&
-			"resolve" in track &&
-			typeof track.resolve === "function")
-	);
+    return (
+        typeof track.encoded === "string" ||
+        (typeof track.info === "object" &&
+            typeof track.info.title === "string" &&
+            "resolve" in track &&
+            typeof track.resolve === "function")
+    );
 }
 
 /**
@@ -280,14 +223,14 @@ export function isUnresolvedTrack(
  * @returns {boolean} If the node options are correct.
  */
 function isNode(options: NodeOptions): boolean {
-	return (
-		typeof options.host === "string" &&
-		typeof options.port === "number" &&
-		typeof options.password === "string" &&
-		(typeof options.id === "string" || typeof options.id === "undefined") &&
-		(typeof options.secure === "boolean" || typeof options.secure === "undefined") &&
-		(typeof options.sessionId === "string" || typeof options.sessionId === "undefined") &&
-		(typeof options.retryAmount === "number" || typeof options.retryAmount === "undefined") &&
-		(typeof options.retryDelay === "number" || typeof options.retryDelay === "undefined")
-	);
+    return (
+        typeof options.host === "string" &&
+        typeof options.port === "number" &&
+        typeof options.password === "string" &&
+        (typeof options.id === "string" || typeof options.id === "undefined") &&
+        (typeof options.secure === "boolean" || typeof options.secure === "undefined") &&
+        (typeof options.sessionId === "string" || typeof options.sessionId === "undefined") &&
+        (typeof options.retryAmount === "number" || typeof options.retryAmount === "undefined") &&
+        (typeof options.retryDelay === "number" || typeof options.retryDelay === "undefined")
+    );
 }

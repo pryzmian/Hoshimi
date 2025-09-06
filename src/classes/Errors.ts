@@ -4,10 +4,10 @@
  * @extends {Error}
  */
 export class ManagerError extends Error {
-	constructor(message: string) {
-		super(message);
-		this.name = "Hoshimi [ManagerError]";
-	}
+    constructor(message: string) {
+        super(message);
+        this.name = "Hoshimi [ManagerError]";
+    }
 }
 
 /**
@@ -16,10 +16,10 @@ export class ManagerError extends Error {
  * @extends {Error}
  */
 export class OptionError extends Error {
-	constructor(message: string) {
-		super(message);
-		this.name = "Hoshimi [OptionError]";
-	}
+    constructor(message: string) {
+        super(message);
+        this.name = "Hoshimi [OptionError]";
+    }
 }
 
 /**
@@ -28,10 +28,10 @@ export class OptionError extends Error {
  * @extends {Error}
  */
 export class PlayerError extends Error {
-	constructor(message: string) {
-		super(message);
-		this.name = "Hoshimi [PlayerError]";
-	}
+    constructor(message: string) {
+        super(message);
+        this.name = "Hoshimi [PlayerError]";
+    }
 }
 
 /**
@@ -40,10 +40,10 @@ export class PlayerError extends Error {
  * @extends {Error}
  */
 export class NodeError extends Error {
-	constructor({ message, id }: NodeErrorOptions) {
-		super(message);
-		this.name = `Hoshimi [NodeError | ${id}]`;
-	}
+    constructor({ message, id }: NodeErrorOptions) {
+        super(message);
+        this.name = `Hoshimi [NodeError | ${id}]`;
+    }
 }
 
 /**
@@ -52,10 +52,10 @@ export class NodeError extends Error {
  * @extends {Error}
  */
 export class StorageError extends Error {
-	constructor(message: string) {
-		super(message);
-		this.name = "Hoshimi [StorageError]";
-	}
+    constructor(message: string) {
+        super(message);
+        this.name = "Hoshimi [StorageError]";
+    }
 }
 
 /**
@@ -64,24 +64,24 @@ export class StorageError extends Error {
  * @extends {Error}
  */
 export class ResolveError extends Error {
-	constructor(message: string) {
-		super(message);
-		this.name = "Hoshimi [ResolveError]";
-	}
+    constructor(message: string) {
+        super(message);
+        this.name = "Hoshimi [ResolveError]";
+    }
 }
 
 /**
  * Error options for the node.
  */
 interface NodeErrorOptions {
-	/**
-	 * The message of the error.
-	 * @type {string}
-	 */
-	message: string;
-	/**
-	 * The id of the node.
-	 * @type {string}
-	 */
-	id: string;
+    /**
+     * The message of the error.
+     * @type {string}
+     */
+    message: string;
+    /**
+     * The id of the node.
+     * @type {string}
+     */
+    id: string;
 }

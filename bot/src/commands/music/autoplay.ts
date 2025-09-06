@@ -1,36 +1,35 @@
 import { Command, Declare, type GuildCommandContext } from "seyfert";
 
 @Declare({
-	name: "autoplay",
-	description: "Enable or disable autoplay.",
-	aliases: ["ap", "aplay"],
-	integrationTypes: ["GuildInstall"],
-	contexts: ["Guild"],
+    name: "autoplay",
+    description: "Enable or disable autoplay.",
+    aliases: ["ap", "aplay"],
+    integrationTypes: ["GuildInstall"],
+    contexts: ["Guild"],
 })
 export default class AutoplayCommand extends Command {
-	override async run(ctx: GuildCommandContext) {
-		const { client } = ctx;
+    override async run(ctx: GuildCommandContext) {
+        const { client } = ctx;
 
-		const state = await ctx.member.voice();
-		if (!state.channelId)
-			return ctx.editOrReply({
-				content: "You need to be in a voice channel to use this command.",
-			});
+        const state = await ctx.member.voice();
+        if (!state.channelId)
+            return ctx.editOrReply({
+                content: "You need to be in a voice channel to use this command.",
+            });
 
-		const me = await ctx.me();
-		const bot = await me.voice();
+        const me = await ctx.me();
+        const bot = await me.voice();
 
-		if (bot && bot.channelId !== state.channelId)
-			return ctx.editOrReply({ content: "I'm already in a voice channel." });
+        if (bot && bot.channelId !== state.channelId) return ctx.editOrReply({ content: "I'm already in a voice channel." });
 
-		const player = client.manager.getPlayer(ctx.guildId);
-		if (!player) return ctx.editOrReply({ content: "No player found." });
+        const player = client.manager.getPlayer(ctx.guildId);
+        if (!player) return ctx.editOrReply({ content: "No player found." });
 
-		player.data.set("enabledAutoplay", !player.data.get("enabledAutoplay"));
+        player.data.set("enabledAutoplay", !player.data.get("enabledAutoplay"));
 
-		const autoplay = !!player.data.get("enabledAutoplay");
-		const type = autoplay ? "enabled" : "disabled";
+        const autoplay = !!player.data.get("enabledAutoplay");
+        const type = autoplay ? "enabled" : "disabled";
 
-		await ctx.editOrReply({ content: `Autoplay is now **${type}**.` });
-	}
+        await ctx.editOrReply({ content: `Autoplay is now **${type}**.` });
+    }
 }

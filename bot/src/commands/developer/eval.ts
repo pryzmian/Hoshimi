@@ -1,13 +1,13 @@
 import {
-	Command,
-	type CommandContext,
-	createNumberOption,
-	createStringOption,
-	Declare,
-	Embed,
-	type Message,
-	Options,
-	type WebhookMessage,
+    Command,
+    type CommandContext,
+    createNumberOption,
+    createStringOption,
+    Declare,
+    Embed,
+    type Message,
+    Options,
+    type WebhookMessage,
 } from "seyfert";
 import { EmbedColors, Formatter } from "seyfert/lib/common";
 import { DeclareParserConfig, ParserRecommendedConfig, Watch, Yuna } from "yunaforseyfert";
@@ -19,143 +19,139 @@ const concatRegex = /".*?"\s*\+\s*".*?"(?:\s*\+\s*".*?")*/;
 const awaitableRegex = /^(?:\(?)\s*await\b/;
 
 const options = {
-	code: createStringOption({
-		description: "Enter some code.",
-		required: true,
-	}),
-	depth: createNumberOption({
-		description: "Enter the depth of the result code.",
-		required: false,
-	}),
+    code: createStringOption({
+        description: "Enter some code.",
+        required: true,
+    }),
+    depth: createNumberOption({
+        description: "Enter the depth of the result code.",
+        required: false,
+    }),
 };
 
 @Declare({
-	name: "eval",
-	description: "Eval code with Stelle.",
-	aliases: ["code"],
-	defaultMemberPermissions: ["ManageGuild", "Administrator"],
-	integrationTypes: ["GuildInstall"],
-	contexts: ["Guild"],
+    name: "eval",
+    description: "Eval code with Stelle.",
+    aliases: ["code"],
+    defaultMemberPermissions: ["ManageGuild", "Administrator"],
+    integrationTypes: ["GuildInstall"],
+    contexts: ["Guild"],
 })
 @Options(options)
 @DeclareParserConfig(ParserRecommendedConfig.Eval)
 export default class EvalCommand extends Command {
-	@Watch({
-		idle: ms("1min"),
-		beforeCreate(ctx): void {
-			const watcher = Yuna.watchers.find(ctx.client, {
-				userId: ctx.author.id,
-				command: this,
-				channelId: ctx.channelId,
-			});
-			if (!watcher) return;
+    @Watch({
+        idle: ms("1min"),
+        beforeCreate(ctx): void {
+            const watcher = Yuna.watchers.find(ctx.client, {
+                userId: ctx.author.id,
+                command: this,
+                channelId: ctx.channelId,
+            });
+            if (!watcher) return;
 
-			watcher.stop("Another instance running.");
-		},
-		onStop(reason): void {
-			this.ctx?.editOrReply({
-				content: "",
-				embeds: [
-					{
-						description: `\`🐐\` Eval command watcher ended by: \`${reason}\``,
-						color: EmbedColors.White,
-					},
-				],
-			});
-		},
-	})
-	public override async run(
-		ctx: CommandContext<typeof options>,
-	): Promise<Message | WebhookMessage | void> {
-		const { client, options, author, channelId } = ctx;
+            watcher.stop("Another instance running.");
+        },
+        onStop(reason): void {
+            this.ctx?.editOrReply({
+                content: "",
+                embeds: [
+                    {
+                        description: `\`🐐\` Eval command watcher ended by: \`${reason}\``,
+                        color: EmbedColors.White,
+                    },
+                ],
+            });
+        },
+    })
+    public override async run(ctx: CommandContext<typeof options>): Promise<Message | WebhookMessage | void> {
+        const { client, options, author, channelId } = ctx;
 
-		const now = Date.now();
+        const now = Date.now();
 
-		let code: string = options.code;
-		let output: string | null = null;
-		let typecode: any;
+        let code: string = options.code;
+        let output: string | null = null;
+        let typecode: any;
 
-		if (ctx.message) await client.channels.typing(channelId);
+        if (ctx.message) await client.channels.typing(channelId);
 
-		if (!code.length)
-			return ctx.editOrReply({
-				embeds: [
-					{
-						description: "`❌` Hey! Try typing some code to be evaluated...",
-						color: EmbedColors.Red,
-					},
-				],
-			});
+        if (!code.length)
+            return ctx.editOrReply({
+                embeds: [
+                    {
+                        description: "`❌` Hey! Try typing some code to be evaluated...",
+                        color: EmbedColors.Red,
+                    },
+                ],
+            });
 
-		try {
-			if (secretsRegex.test(code.toLowerCase()) || concatRegex.test(code.toLowerCase()))
-				output = "**`❌` - You cannot use secrets or concatenation in eval commands.**";
-			else if (typeof output !== "string") {
-				if (awaitableRegex.test(code.toLowerCase())) code = `(async () => ${code})()`;
+        try {
+            if (secretsRegex.test(code.toLowerCase()) || concatRegex.test(code.toLowerCase()))
+                output = "**`❌` - You cannot use secrets or concatenation in eval commands.**";
+            else if (typeof output !== "string") {
+                if (awaitableRegex.test(code.toLowerCase())) code = `(async () => ${code})()`;
 
-				output = await eval(code);
-				typecode = typeof output;
-				output = getInspect(output, options.depth ?? 0);
-			}
+                output = await eval(code);
+                typecode = typeof output;
+                output = getInspect(output, options.depth ?? 0);
+            }
 
-			await ctx.editOrReply({
-				embeds: [
-					new Embed()
-						.setAuthor({ name: author.tag, iconUrl: author.avatarURL() })
-						.setColor("White")
-						.setDescription(
-							`\`📖\` A code has been evaluated.\n \n${Formatter.codeBlock(sliceText(output, 1900), "js")}`,
-						)
-						.setThumbnail(client.me.avatarURL())
-						.setTimestamp()
-						.addFields(
-							{
-								name: "`📖` Type",
-								value: `${Formatter.codeBlock(typecode, "js")}`,
-								inline: true,
-							},
-							{
-								name: "`⏳` Evaluated",
-								value: `\`${Math.floor(Date.now() - now)}ms\``,
-								inline: true,
-							},
-							{
-								name: "`📥` Input",
-								value: `${Formatter.codeBlock(sliceText(options.code, 1024), "js")}`,
-							},
-							{ name: "`📤` Output", value: "Check the embed description." },
-						),
-				],
-			});
-		} catch (error) {
-			await ctx.editOrReply({
-				embeds: [
-					new Embed()
-						.setAuthor({ name: author.tag, iconUrl: author.avatarURL() })
-						.setColor("Red")
-						.setDescription("`❌` - An error occurred while trying to evaluate.")
-						.addFields(
-							{
-								name: "`📖` Type",
-								value: `${Formatter.codeBlock(typecode, "js")}`,
-								inline: true,
-							},
-							{
-								name: "`⏳` Evaluated",
-								value: `\`${Math.floor(Date.now() - now)}ms\``,
-								inline: true,
-							},
-							{
-								name: "`📥` Input",
-								value: `${Formatter.codeBlock(sliceText(options.code, 1024), "js")}`,
-							},
-							{
-								name: "`📤` Output",
-								value: `${Formatter.codeBlock(sliceText(`${error}`, 1024), "js")}`,
-							},
-						),
-				],
-			});
-		}
-	}
+            await ctx.editOrReply({
+                embeds: [
+                    new Embed()
+                        .setAuthor({ name: author.tag, iconUrl: author.avatarURL() })
+                        .setColor("White")
+                        .setDescription(`\`📖\` A code has been evaluated.\n \n${Formatter.codeBlock(sliceText(output, 1900), "js")}`)
+                        .setThumbnail(client.me.avatarURL())
+                        .setTimestamp()
+                        .addFields(
+                            {
+                                name: "`📖` Type",
+                                value: `${Formatter.codeBlock(typecode, "js")}`,
+                                inline: true,
+                            },
+                            {
+                                name: "`⏳` Evaluated",
+                                value: `\`${Math.floor(Date.now() - now)}ms\``,
+                                inline: true,
+                            },
+                            {
+                                name: "`📥` Input",
+                                value: `${Formatter.codeBlock(sliceText(options.code, 1024), "js")}`,
+                            },
+                            { name: "`📤` Output", value: "Check the embed description." },
+                        ),
+                ],
+            });
+        } catch (error) {
+            await ctx.editOrReply({
+                embeds: [
+                    new Embed()
+                        .setAuthor({ name: author.tag, iconUrl: author.avatarURL() })
+                        .setColor("Red")
+                        .setDescription("`❌` - An error occurred while trying to evaluate.")
+                        .addFields(
+                            {
+                                name: "`📖` Type",
+                                value: `${Formatter.codeBlock(typecode, "js")}`,
+                                inline: true,
+                            },
+                            {
+                                name: "`⏳` Evaluated",
+                                value: `\`${Math.floor(Date.now() - now)}ms\``,
+                                inline: true,
+                            },
+                            {
+                                name: "`📥` Input",
+                                value: `${Formatter.codeBlock(sliceText(options.code, 1024), "js")}`,
+                            },
+                            {
+                                name: "`📤` Output",
+                                value: `${Formatter.codeBlock(sliceText(`${error}`, 1024), "js")}`,
+                            },
+                        ),
+                ],
+            });
+        }
+    }
 }

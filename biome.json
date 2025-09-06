@@ -1,57 +1,60 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.1.1/schema.json",
-	"root": true,
-	"assist": { "actions": { "source": { "organizeImports": "on" } } },
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true,
-			"style": {
-				"noNonNullAssertion": "off",
-				"noInferrableTypes": "off",
-				"noParameterAssign": "off",
-				"useAsConstAssertion": "error",
-				"useDefaultParameterLast": "error",
-				"useEnumInitializers": "error",
-				"useSelfClosingElements": "error",
-				"useSingleVarDeclarator": "error",
-				"noUnusedTemplateLiteral": "error",
-				"useNumberNamespace": "error",
-				"noUselessElse": "error"
-			},
-			"suspicious": {
-				"noConfusingVoidType": "off",
-				"noExplicitAny": "off",
-				"noEmptyInterface": "off"
-			},
-			"correctness": {
-				"noVoidTypeReturn": "off"
-			}
-		}
-	},
-	"formatter": {
-		"enabled": true,
-		"indentStyle": "tab",
-		"indentWidth": 4,
-		"lineWidth": 80
-	},
-	"javascript": {
-		"formatter": {
-			"enabled": true,
-			"quoteStyle": "double",
-			"indentWidth": 4,
-			"lineWidth": 100,
-			"semicolons": "always",
-			"trailingCommas": "all"
-		}
-	},
-	"files": {
-		"includes": [
-			"**/*",
-			"!**/node_modules",
-			"!**/dist",
-			"!**/.vscode",
-			"!**/.npm"
-		]
-	}
+    "$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
+    "assist": {
+        "actions": {
+            "source": {
+                "organizeImports": "on"
+            }
+        }
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "suspicious": {
+                "noExplicitAny": "off",
+                "noConfusingVoidType": "off"
+            },
+            "security": {
+                "noGlobalEval": "off"
+            },
+            "style": {
+                "noNonNullAssertion": "off"
+            }
+        }
+    },
+    "files": {
+        "ignoreUnknown": true,
+        "includes": [
+            "**",
+            "!**/.vscode",
+            "!**/node_modules",
+            "!**/dist",
+            "!**/generated",
+            "!**/cache"
+        ]
+    },
+    "json": {
+        "formatter": {
+            "enabled": true,
+            "indentWidth": 4,
+            "lineWidth": 80
+        }
+    },
+    "formatter": {
+        "enabled": true,
+        "indentWidth": 4,
+        "indentStyle": "space",
+        "lineWidth": 140,
+        "lineEnding": "crlf",
+        "formatWithErrors": true
+    },
+    "javascript": {
+        "formatter": {
+            "quoteStyle": "double",
+            "arrowParentheses": "always",
+            "bracketSameLine": true,
+            "semicolons": "always"
+        }
+    }
 }

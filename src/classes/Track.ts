@@ -1,15 +1,15 @@
 import { DebugLevels, Events, type Inferable } from "../types/Manager";
 import {
-	SourceNames,
-	type LavalinkTrack,
-	type PluginInfo,
-	type TrackInfo,
-	type UnresolvedLavalinkTrack,
-	type UnresolvedTrackInfo,
+    SourceNames,
+    type LavalinkTrack,
+    type PluginInfo,
+    type TrackInfo,
+    type UnresolvedLavalinkTrack,
+    type UnresolvedTrackInfo,
 } from "../types/Node";
+import type { PlayerStructure } from "../types/Structures";
 import { isTrack, isUnresolvedTrack, validateEngine } from "../util/functions/utils";
 import { ResolveError } from "./Errors";
-import type { Player } from "./player/Player";
 
 /**
  *
@@ -25,81 +25,81 @@ const escapeRegExp = (input: string): string => input.replace(/[.*+?^${}()|[\]\\
  * @implements {LavalinkTrack}
  */
 export class Track implements LavalinkTrack {
-	/**
-	 * The base64 encoded track.
-	 * @type {string}
-	 */
-	readonly encoded: string;
+    /**
+     * The base64 encoded track.
+     * @type {string}
+     */
+    readonly encoded: string;
 
-	/**
-	 * The track info.
-	 * @type {TrackInfo}
-	 */
-	readonly info: TrackInfo;
+    /**
+     * The track info.
+     * @type {TrackInfo}
+     */
+    readonly info: TrackInfo;
 
-	/**
-	 * The plugin info of the track.
-	 * @type {PluginInfo}
-	 */
-	readonly pluginInfo: PluginInfo;
+    /**
+     * The plugin info of the track.
+     * @type {PluginInfo}
+     */
+    readonly pluginInfo: PluginInfo;
 
-	/**
-	 * The track user data.
-	 * @type {Record<string, unknown>}
-	 */
-	public userData: Record<string, unknown>;
+    /**
+     * The track user data.
+     * @type {Record<string, unknown>}
+     */
+    public userData: Record<string, unknown>;
 
-	/**
-	 * The requester of the track.
-	 * @type {TrackRequester}
-	 */
-	public requester: TrackRequester;
+    /**
+     * The requester of the track.
+     * @type {TrackRequester}
+     */
+    public requester: TrackRequester;
 
-	/**
-	 * The constructor for the track.
-	 * @param {LavalinkTrack} track The track to construct the track from.
-	 * @param {TrackRequester} requester The requester of the track.
-	 * @example
-	 * ```ts
-	 * const track = new Track({
-	 * 	encoded: "base64",
-	 * 	info: {
-	 * 		title: "Track Title",
-	 * 		uri: "https://example.com",
-	 * 		duration: 300000,
-	 * 	},
-	 * 	// the rest of the track info
-	 * }, requester);
-	 *
-	 * console.log(track.encoded); // the track encoded in base64
-	 * ```
-	 */
-	constructor(track: LavalinkTrack | null, requester?: TrackRequester) {
-		if (!track) throw new ResolveError("Track is not defined for construction.");
+    /**
+     * The constructor for the track.
+     * @param {LavalinkTrack} track The track to construct the track from.
+     * @param {TrackRequester} requester The requester of the track.
+     * @example
+     * ```ts
+     * const track = new Track({
+     * 	encoded: "base64",
+     * 	info: {
+     * 		title: "Track Title",
+     * 		uri: "https://example.com",
+     * 		duration: 300000,
+     * 	},
+     * 	// the rest of the track info
+     * }, requester);
+     *
+     * console.log(track.encoded); // the track encoded in base64
+     * ```
+     */
+    constructor(track: LavalinkTrack | null, requester?: TrackRequester) {
+        if (!track) throw new ResolveError("Track is not defined for construction.");
 
-		this.info = track.info;
-		this.encoded = track.encoded;
-		this.requester = requester ?? {};
-		this.pluginInfo = track.pluginInfo;
-		this.userData = track.userData ?? {};
-	}
+        this.info = track.info;
+        this.encoded = track.encoded;
+        this.requester = requester ?? {};
+        this.pluginInfo = track.pluginInfo;
+        this.userData = track.userData ?? {};
+    }
 
-	/**
-	 *
-	 * Get the hyperlink of the track.
-	 * @param {boolean} [embedable=true] Whether the hyperlink should be embedable or not.
-	 * @returns {string} The hyperlink of the track.
-	 * @example
-	 * ```ts
-	 * const track = queue.current;
-	 * console.log(track.toHyperlink()); // [Track Title](https://example.com)
-	 * console.log(track.toHyperlink(false)); // [Track Title](<https://example.com>)
-	 * ```
-	 */
-	public toHyperlink(embedable: boolean = true): string {
-		if (embedable) return `[${this.info.title}](${this.info.uri})`;
-		return `[${this.info.title}](<${this.info.uri}>)`;
-	}
+    /**
+     *
+     * Get the hyperlink of the track.
+     * @param {boolean} [embedable=true] Whether the hyperlink should be embedable or not.
+     * @returns {string} The hyperlink of the track.
+     * @example
+     * ```ts
+     * const track = queue.current;
+     * console.log(track.toHyperlink()); // [Track Title](https://example.com)
+     * console.log(track.toHyperlink(false)); // [Track Title](<https://example.com>)
+     * ```
+     */
+    public toHyperlink(embedable: boolean = true): string {
+        if (embedable) return `[${this.info.title}](${this.info.uri})`;
+        return `[${this.info.title}](<${this.info.uri}>)`;
+    }
 }
 
 /**
@@ -108,158 +108,138 @@ export class Track implements LavalinkTrack {
  * @implements {UnresolvedLavalinkTrack}
  */
 export class UnresolvedTrack implements UnresolvedLavalinkTrack {
-	/**
-	 * The base64 encoded track.
-	 * @type {string | undefined}
-	 */
-	readonly encoded?: string;
+    /**
+     * The base64 encoded track.
+     * @type {string | undefined}
+     */
+    readonly encoded?: string;
 
-	/**
-	 * The track info.
-	 * @type {UnresolvedTrackInfo}
-	 */
-	readonly info: UnresolvedTrackInfo;
+    /**
+     * The track info.
+     * @type {UnresolvedTrackInfo}
+     */
+    readonly info: UnresolvedTrackInfo;
 
-	/**
-	 * The plugin info of the track.
-	 * @type {Partial<PluginInfo>}
-	 */
-	readonly pluginInfo?: Partial<PluginInfo>;
+    /**
+     * The plugin info of the track.
+     * @type {Partial<PluginInfo>}
+     */
+    readonly pluginInfo?: Partial<PluginInfo>;
 
-	/**
-	 * The track user data.
-	 * @type {Record<string, unknown> | undefined}
-	 */
-	public userData?: Record<string, unknown>;
+    /**
+     * The track user data.
+     * @type {Record<string, unknown> | undefined}
+     */
+    public userData?: Record<string, unknown>;
 
-	/**
-	 * The requester of the track.
-	 * @type {TrackRequester | undefined}
-	 */
-	public requester: TrackRequester;
+    /**
+     * The requester of the track.
+     * @type {TrackRequester | undefined}
+     */
+    public requester: TrackRequester;
 
-	/**
-	 * The constructor for the track.
-	 * @param {UnresolvedLavalinkTrack} track The track to construct the track from.
-	 * @param {TrackRequester} requester The requester of the track.
-	 * @example
-	 * ```ts
-	 * const track = new UnresolvedTrack({
-	 * 	encoded: "base64",
-	 * 	info: {
-	 * 		title: "Track Title",
-	 * 	},
-	 * 	// the rest of the track info
-	 * }, requester);
-	 *
-	 * console.log(track.encoded); // the track encoded in base64
-	 * ```
-	 */
-	constructor(track: UnresolvedLavalinkTrack, requester: TrackRequester) {
-		this.info = track.info;
-		this.encoded = track.encoded;
-		this.requester = requester;
-		this.pluginInfo = track.pluginInfo;
-		this.userData = track.userData ?? {};
-	}
+    /**
+     * The constructor for the track.
+     * @param {UnresolvedLavalinkTrack} track The track to construct the track from.
+     * @param {TrackRequester} requester The requester of the track.
+     * @example
+     * ```ts
+     * const track = new UnresolvedTrack({
+     * 	encoded: "base64",
+     * 	info: {
+     * 		title: "Track Title",
+     * 	},
+     * 	// the rest of the track info
+     * }, requester);
+     *
+     * console.log(track.encoded); // the track encoded in base64
+     * ```
+     */
+    constructor(track: UnresolvedLavalinkTrack, requester: TrackRequester) {
+        this.info = track.info;
+        this.encoded = track.encoded;
+        this.requester = requester;
+        this.pluginInfo = track.pluginInfo;
+        this.userData = track.userData ?? {};
+    }
 
-	/**
-	 * Resolves the track to a playable track.
-	 * @param {Player} player The player to resolve the track for.
-	 * @returns {Promise<Track>} The resolved track.
-	 * @throws {ResolveError} If the track cannot be resolved.
-	 */
-	public async resolve(player: Player): Promise<Track> {
-		if (!player) throw new ResolveError("Player is not defined for track resolution.");
+    /**
+     * Resolves the track to a playable track.
+     * @param {PlayerStructure} player The player to resolve the track for.
+     * @returns {Promise<Track>} The resolved track.
+     * @throws {ResolveError} If the track cannot be resolved.
+     */
+    public async resolve(player: PlayerStructure): Promise<Track> {
+        if (!player) throw new ResolveError("Player is not defined for track resolution.");
 
-		if (isTrack(this)) return new Track(this, this.requester);
+        if (isTrack(this)) return new Track(this, this.requester);
 
-		if (!isUnresolvedTrack(this)) throw new ResolveError("Track is not an unresolved track.");
-		if (!this.requester)
-			throw new ResolveError("Requester is not defined for track resolution.");
-		if (!this.info.title && !this.encoded && !this.info.uri)
-			throw new ResolveError("Track is missing required properties for resolution.");
+        if (!isUnresolvedTrack(this)) throw new ResolveError("Track is not an unresolved track.");
+        if (!this.requester) throw new ResolveError("Requester is not defined for track resolution.");
+        if (!this.info.title && !this.encoded && !this.info.uri)
+            throw new ResolveError("Track is missing required properties for resolution.");
 
-		player.manager.emit(
-			Events.Debug,
-			DebugLevels.Player,
-			`[Unresolved] -> [Track] Resolving the track: ${this.info.title}`,
-		);
+        player.manager.emit(Events.Debug, DebugLevels.Player, `[Unresolved] -> [Track] Resolving the track: ${this.info.title}`);
 
-		if (this.encoded) return player.node.decode.single(this.encoded, this.requester);
+        if (this.encoded) return player.node.decode.single(this.encoded, this.requester);
 
-		if (this.info.uri) {
-			const track = await player
-				.search({ query: this.info.uri, requester: this.requester })
-				.then((result) => result.tracks[0]);
-			if (!track) throw new ResolveError("Track could not be resolved from URI.");
+        if (this.info.uri) {
+            const track = await player.search({ query: this.info.uri, requester: this.requester }).then((result) => result.tracks[0]);
+            if (!track) throw new ResolveError("Track could not be resolved from URI.");
 
-			player.manager.emit(
-				Events.Debug,
-				DebugLevels.Player,
-				`[Unresolved] -> [Track] Resolved the track from URI: ${this.info.uri}`,
-			);
+            player.manager.emit(Events.Debug, DebugLevels.Player, `[Unresolved] -> [Track] Resolved the track from URI: ${this.info.uri}`);
 
-			return track;
-		}
+            return track;
+        }
 
-		const query = [this.info.title, this.info.uri].filter(Boolean).join(" by ");
-		const excluded = [
-			SourceNames.Twitch,
-			SourceNames.FloweryTTS,
-			SourceNames.Mixer,
-			SourceNames.Vimeo,
-		];
+        const query = [this.info.title, this.info.uri].filter(Boolean).join(" by ");
+        const excluded = [SourceNames.Twitch, SourceNames.FloweryTTS, SourceNames.Mixer, SourceNames.Vimeo];
 
-		const engine =
-			this.info.sourceName && !excluded.includes(this.info.sourceName)
-				? validateEngine(this.info.sourceName)
-				: player.manager.options.defaultSearchEngine;
+        const engine =
+            this.info.sourceName && !excluded.includes(this.info.sourceName)
+                ? validateEngine(this.info.sourceName)
+                : player.manager.options.defaultSearchEngine;
 
-		player.manager.emit(
-			Events.Debug,
-			DebugLevels.Player,
-			`[Unresolved] -> [Track] Searching for track with query: ${query} using engine: ${engine}`,
-		);
+        player.manager.emit(
+            Events.Debug,
+            DebugLevels.Player,
+            `[Unresolved] -> [Track] Searching for track with query: ${query} using engine: ${engine}`,
+        );
 
-		return player.search({ query, engine, requester: this.requester }).then((result) => {
-			let track: Track | null = result.tracks[0] ?? null;
+        return player.search({ query, engine, requester: this.requester }).then((result) => {
+            let track: Track | null = result.tracks[0] ?? null;
 
-			if (this.info.author && !track)
-				track =
-					result.tracks.find(
-						(t) =>
-							[this.info.author ?? "", `${this.info.author} - Topic`].some((name) =>
-								new RegExp(`^${escapeRegExp(name)}$`, "i").test(t.info.author),
-							) ||
-							new RegExp(`^${escapeRegExp(this.info.title)}$`, "i").test(
-								t.info.title,
-							),
-					) ?? null;
+            if (this.info.author && !track)
+                track =
+                    result.tracks.find(
+                        (t) =>
+                            [this.info.author ?? "", `${this.info.author} - Topic`].some((name) =>
+                                new RegExp(`^${escapeRegExp(name)}$`, "i").test(t.info.author),
+                            ) || new RegExp(`^${escapeRegExp(this.info.title)}$`, "i").test(t.info.title),
+                    ) ?? null;
 
-			if (this.info.length && !track)
-				track =
-					result.tracks.find((t) => {
-						const length = this.info.length;
-						if (!length) return false;
+            if (this.info.length && !track)
+                track =
+                    result.tracks.find((t) => {
+                        const length = this.info.length;
+                        if (!length) return false;
 
-						return t.info.length >= length - 1500 && t.info.length <= length + 1500;
-					}) ?? null;
+                        return t.info.length >= length - 1500 && t.info.length <= length + 1500;
+                    }) ?? null;
 
-			if (this.info.isrc && !track)
-				track = result.tracks.find((t) => t.info.isrc === this.info.isrc) ?? null;
+            if (this.info.isrc && !track) track = result.tracks.find((t) => t.info.isrc === this.info.isrc) ?? null;
 
-			if (!track) throw new ResolveError("Track could not be resolved from search query.");
+            if (!track) throw new ResolveError("Track could not be resolved from search query.");
 
-			player.manager.emit(
-				Events.Debug,
-				DebugLevels.Player,
-				`[Unresolved] -> [Track] Resolved the track ${track.info.title} from search query: ${query}`,
-			);
+            player.manager.emit(
+                Events.Debug,
+                DebugLevels.Player,
+                `[Unresolved] -> [Track] Resolved the track ${track.info.title} from search query: ${query}`,
+            );
 
-			return track;
-		});
-	}
+            return track;
+        });
+    }
 }
 
 /**

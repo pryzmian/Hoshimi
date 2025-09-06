@@ -5,16 +5,16 @@ await rm(".npm", { recursive: true, force: true });
 await mkdir(".npm").catch(() => null);
 
 const {
-	scripts: _s,
-	"lint-staged": _l,
-	private: _p,
-	devDependencies: _dev,
-	packageManager: _pm,
-	...newPackageJsonRaw
+    scripts: _s,
+    "lint-staged": _l,
+    private: _p,
+    devDependencies: _dev,
+    packageManager: _pm,
+    ...newPackageJsonRaw
 } = packageJson as typeof packageJson & { private: boolean };
 
 const newPackageJson = {
-	...newPackageJsonRaw,
+    ...newPackageJsonRaw,
 };
 
 await writeFile(".npm/package.json", JSON.stringify(newPackageJson, null, 4), "utf-8");

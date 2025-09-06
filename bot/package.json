@@ -1,35 +1,35 @@
 {
-	"name": "hoshimi-test",
-	"version": "1.0.0",
-	"description": "A example bot to show how to use hoshimi",
-	"main": "./src/index.ts",
-	"packageManager": "pnpm@10.13.1+sha512.37ebf1a5c7a30d5fabe0c5df44ee8da4c965ca0c5af3dbab28c3a1681b70a256218d05c81c9c0dcf767ef6b8551eb5b960042b9ed4300c59242336377e01cfad",
-	"keywords": [],
-	"author": "",
-	"license": "MIT",
-	"scripts": {
-		"typecheck": "tsc --noEmit",
-		"start": "tsx ./src/index.ts",
-		"dev": "tsx ./src/index.ts --debug",
-		"lint": "biome lint --write .",
-		"format": "biome format --write ."
-	},
-	"dependencies": {
-		"dotenv": "^17.2.0",
-		"hoshimi": "link:..",
-		"seyfert": "github:tiramisulabs/seyfert",
-		"yunaforseyfert": "github:SagiriIkeda/yunaforseyfert"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "^2.1.1",
-		"@types/node": "^24.0.13",
-		"tsx": "^4.20.3",
-		"typescript": "^5.8.3"
-	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"@biomejs/biome",
-			"esbuild"
-		]
-	}
+    "name": "hoshimi-test",
+    "version": "1.0.0",
+    "description": "A example bot to show how to use hoshimi",
+    "main": "./src/index.ts",
+    "packageManager": "pnpm@10.13.1+sha512.37ebf1a5c7a30d5fabe0c5df44ee8da4c965ca0c5af3dbab28c3a1681b70a256218d05c81c9c0dcf767ef6b8551eb5b960042b9ed4300c59242336377e01cfad",
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "scripts": {
+        "typecheck": "tsc --noEmit",
+        "start": "tsx ./src/index.ts",
+        "dev": "tsx ./src/index.ts --debug",
+        "lint": "biome lint --write .",
+        "format": "biome format --write ."
+    },
+    "dependencies": {
+        "dotenv": "^17.2.2",
+        "hoshimi": "link:..",
+        "seyfert": "github:tiramisulabs/seyfert",
+        "yunaforseyfert": "github:SagiriIkeda/yunaforseyfert"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "^2.2.3",
+        "@types/node": "^24.3.1",
+        "tsx": "^4.20.5",
+        "typescript": "^5.9.2"
+    },
+    "pnpm": {
+        "onlyBuiltDependencies": [
+            "@biomejs/biome",
+            "esbuild"
+        ]
+    }
 }

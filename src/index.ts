@@ -18,3 +18,4 @@ export * from "./types/Node";
 export * from "./types/Player";
 export * from "./types/Queue";
 export * from "./types/Rest";
+export * from "./types/Structures";
