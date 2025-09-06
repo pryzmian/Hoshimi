@@ -1,6 +1,7 @@
 import { Node } from "../classes/node/Node";
 import { Rest } from "../classes/node/Rest";
 import { Player } from "../classes/player/Player";
+import { Queue } from "../classes/queue/Queue";
 import type { CustomizableStructures } from "./Manager";
 
 /**
@@ -19,6 +20,11 @@ export type RestStructure = InferCustomStructure<Rest, "Rest">;
 export type NodeStructure = InferCustomStructure<Node, "Node">;
 
 /**
+ * The structure for the Queue class.
+ */
+export type QueueStructure = InferCustomStructure<Queue, "Queue">;
+
+/**
  * The structures of the Hoshimi classes.
  */
 export const Structures = {
@@ -30,6 +36,9 @@ export const Structures = {
     },
     Node(...args: ConstructorParameters<typeof Node>): NodeStructure {
         return new Node(...args);
+    },
+    Queue(...args: ConstructorParameters<typeof Queue>): QueueStructure {
+        return new Queue(...args);
     },
 };
 

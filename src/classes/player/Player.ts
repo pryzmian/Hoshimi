@@ -8,11 +8,10 @@ import {
     type PlayerJson,
     type PlayerOptions,
 } from "../../types/Player";
-import type { NodeStructure } from "../../types/Structures";
+import { Structures, type NodeStructure, type QueueStructure } from "../../types/Structures";
 import { isTrack, isUnresolvedTrack, validateTrack, validatePlayerOptions } from "../../util/functions/utils";
 import { PlayerError } from "../Errors";
 import type { Hoshimi } from "../Hoshimi";
-import { Queue } from "../queue/Queue";
 import { PlayerStorage } from "./Storage";
 
 /**
@@ -46,7 +45,7 @@ export class Player {
      * @type {Queue}
      * @readonly
      */
-    readonly queue: Queue;
+    readonly queue: QueueStructure;
 
     /**
      * Check if the player is self deafened.
@@ -175,7 +174,7 @@ export class Player {
 
         validatePlayerOptions(this.options);
 
-        this.queue = new Queue(this);
+        this.queue = Structures.Queue(this);
     }
 
     /**
@@ -248,13 +247,11 @@ export class Player {
     public async skip(to: number = 0): Promise<void> {
         if (!this.queue.size) {
             this.manager.emit(Events.Debug, DebugLevels.Player, "[Player] -> [Skip] No tracks to skip.");
-
             return;
         }
 
         if (typeof to === "number" && to > 0) {
             if (to > this.queue.size) throw new PlayerError("Cannot skip to a track that doesn't exist.");
-
             if (to < 0) throw new PlayerError("Cannot skip to a negative number.");
 
             this.queue.splice(0, to - 1);

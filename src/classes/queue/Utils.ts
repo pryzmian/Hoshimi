@@ -1,11 +1,11 @@
 import { DebugLevels, Events, type Awaitable } from "../../types/Manager";
-import type { Queue } from "./Queue";
 
 import { StorageError } from "../Errors";
 import { QueueStore } from "./Store";
 
 import { isTrack } from "../../util/functions/utils";
-import type { HoshimiQueueOptions } from "../../types/Queue";
+import type { HoshimiQueueOptions, QueueJson } from "../../types/Queue";
+import type { QueueStructure } from "../../types/Structures";
 
 /**
  * Class representing the queue utils.
@@ -19,7 +19,7 @@ export class QueueUtils {
      * @readonly
      * @internal
      */
-    private readonly queue: Queue;
+    private readonly queue: QueueStructure;
 
     /**
      * Queue store.
@@ -42,9 +42,9 @@ export class QueueUtils {
     /**
      *
      * Constructor of the queue utils.
-     * @param queue Player instance.
+     * @param {QueueStructure} queue The queue instance.
      */
-    constructor(queue: Queue) {
+    constructor(queue: QueueStructure) {
         this.queue = queue;
         this.options = queue.player.manager.options.queueOptions;
         this.store = new QueueStore(this.options.storage);
@@ -60,9 +60,9 @@ export class QueueUtils {
      * ```
      */
     public save(): Awaitable<void> {
-        const max = this.options.maxPreviousTracks;
-        const length = this.queue.tracks.length;
-        const json = this.queue.toJSON();
+        const max: number = this.options.maxPreviousTracks;
+        const length: number = this.queue.tracks.length;
+        const json: QueueJson = this.queue.toJSON();
 
         if (length > max) this.queue.history.splice(0, length - max);
 
@@ -104,7 +104,7 @@ export class QueueUtils {
      * ```
      */
     public async sync(override = true, syncCurrent = false): Promise<void> {
-        const data = await this.store.get(this.queue.player.guildId);
+        const data: QueueJson | undefined = await this.store.get(this.queue.player.guildId);
         if (!data) throw new StorageError(`No data found to sync for guildId: ${this.queue.player.guildId}`);
 
         if (syncCurrent && data.current && !this.queue.current && isTrack(data.current)) this.queue.current = data.current;

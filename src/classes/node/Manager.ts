@@ -85,7 +85,7 @@ export class NodeManager {
      */
     public getLeastUsed(): NodeStructure {
         const nodes: NodeStructure[] = this.nodes.filter((node) => node.state === State.Connected);
-        return nodes.reduce((a, b) => (a.penalties < b.penalties ? a : b));
+        return nodes.reduce((a, b): NodeStructure => (a.penalties < b.penalties ? a : b));
     }
 
     /**

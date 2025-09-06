@@ -482,3 +482,12 @@ export class Hoshimi extends EventEmitter<RawEvents> {
         }
     }
 }
+
+/**
+ * Create a new Hoshimi instance.
+ * @param {ConstructorParameters<typeof Hoshimi>} args The arguments for the constructor.
+ * @returns {Hoshimi} The new Hoshimi instance.
+ */
+export function createHoshimi(...args: ConstructorParameters<typeof Hoshimi>): Hoshimi {
+    return new Hoshimi(...args);
+}

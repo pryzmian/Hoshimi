@@ -1,8 +1,8 @@
 import { PluginNames, type LyricsResult } from "../../types/Node";
 import { HttpMethods } from "../../types/Rest";
+import type { NodeStructure } from "../../types/Structures";
 import { validateNodePlugins } from "../../util/functions/utils";
 import type { Track } from "../Track";
-import type { Node } from "./Node";
 
 /**
  * Class representing a LyricsManager.
@@ -11,28 +11,28 @@ import type { Node } from "./Node";
 export class LyricsManager {
     /**
      * The node instance.
-     * @type {Node}
+     * @type {NodeStructure}
      * @readonly
      */
-    readonly node: Node;
+    readonly node: NodeStructure;
 
     /**
      * Create a new LyricsManager instance.
-     * @param {Node} node The node instance.
+     * @param {NodeStructure} node The node instance.
      * @example
      * ```ts
      * const node = manager.nodeManager.get("nodeId");
      * const lyricsManager = new LyricsManager(node);
      * ```
      */
-    constructor(node: Node) {
+    constructor(node: NodeStructure) {
         this.node = node;
     }
 
     /**
      *
      * Get the current lyrics for the current track.
-     * @param {boolean} skipSource Whether to skip the source or not.
+     * @param {boolean} skipSource Whether to skip the track source or not.
      * @returns {Promise<LyricsResult | null>} The lyrics result or null if not found.
      * @example
      * ```ts
@@ -57,7 +57,7 @@ export class LyricsManager {
      *
      * Get the lyrics for a specific track.
      * @param {Track} track The track to get the lyrics for.
-     * @param {boolean} skipSource Whether to skip the source or not.
+     * @param {boolean} skipSource Whether to skip the track source or not.
      * @returns {Promise<LyricsResult | null>} The lyrics result or null if not found.
      * @example
      * ```ts
@@ -83,7 +83,7 @@ export class LyricsManager {
      *
      * Subscribe to the lyrics for a specific guild.
      * @param {string} guildId The guild id to subscribe to.
-     * @param {boolean} skipSource Whether to skip the source or not.
+     * @param {boolean} skipSource Whether to skip the track source or not.
      * @returns {Promise<void>} Let's start the sing session!
      * @example
      * ```ts
