@@ -213,15 +213,15 @@ export class Hoshimi extends EventEmitter<RawEvents> {
 
     /**
      *
-     * Handle the raw packet.
+     * Handle the raw packet for voice state and voice server updates.
      * @param {GatewayPackets} packet The packet to handle
      * @returns {Promise<void>}
      * @example
      * ```ts
-     * client.on("raw", (packet) => manager.sendRaw(packet));
+     * client.on("raw", (packet) => manager.updateVoiceState(packet));
      * ```
      */
-    public async sendRaw(packet: GatewayPackets): Promise<void> {
+    public async updateVoiceState(packet: GatewayPackets): Promise<void> {
         if (!this.ready) {
             this.emit(Events.Debug, DebugLevels.Player, "[Player] -> [Manager] The manager is not ready.");
             return;
@@ -306,6 +306,9 @@ export class Hoshimi extends EventEmitter<RawEvents> {
 
                     this.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Voice] The player voice is missing for: ${data.guild_id}`);
                 }
+                break;
+
+            default:
                 break;
         }
     }
