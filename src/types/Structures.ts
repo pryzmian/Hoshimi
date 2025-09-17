@@ -1,3 +1,4 @@
+import { LyricsManager } from "../classes/node/Lyrics";
 import { Node } from "../classes/node/Node";
 import { Rest } from "../classes/node/Rest";
 import { Player } from "../classes/player/Player";
@@ -25,6 +26,11 @@ export type NodeStructure = InferCustomStructure<Node, "Node">;
 export type QueueStructure = InferCustomStructure<Queue, "Queue">;
 
 /**
+ * The structure for the LyricsManager class.
+ */
+export type LyricsManagerStructure = InferCustomStructure<LyricsManager, "LyricsManager">;
+
+/**
  * The structures of the Hoshimi classes.
  */
 export const Structures = {
@@ -39,6 +45,9 @@ export const Structures = {
     },
     Queue(...args: ConstructorParameters<typeof Queue>): QueueStructure {
         return new Queue(...args);
+    },
+    LyricsManager(...args: ConstructorParameters<typeof LyricsManager>): LyricsManagerStructure {
+        return new LyricsManager(...args);
     },
 };
 
