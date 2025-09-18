@@ -24,13 +24,12 @@ import {
     type NullableLavalinkSession,
     type UpdatePlayerInfo,
 } from "../../types/Rest";
-import type { NodeManager } from "./Manager";
 
 import { DebugLevels, Events } from "../../types/Manager";
 import { validateQuery } from "../../util/functions/utils";
 import { WebSocket } from "ws";
 import { Track } from "../Track";
-import { LyricsManagerStructure, type RestStructure, Structures } from "../../types/Structures";
+import { type LyricsManagerStructure, type NodeManagerStructure, type RestStructure, Structures } from "../../types/Structures";
 
 /**
  * Class representing a Lavalink node.
@@ -51,9 +50,9 @@ export class Node {
 
     /**
      * The manager for the node.
-     * @type {NodeManager}
+     * @type {NodeManagerStructure}
      */
-    readonly nodeManager: NodeManager;
+    readonly nodeManager: NodeManagerStructure;
 
     /**
      * The lyrics manager for the node.
@@ -120,7 +119,7 @@ export class Node {
     /**
      *
      * Create a new Lavalink node.
-     * @param {NodeManager} nodeManager The manager for the node.
+     * @param {NodeManagerStructure} nodeManager The manager for the node.
      * @param {NodeOptions} options The options for the node.
      * @example
      * ```ts
@@ -143,7 +142,7 @@ export class Node {
      * console.log(node.state); // the state of the node
      * ```
      */
-    constructor(nodeManager: NodeManager, options: NodeOptions) {
+    constructor(nodeManager: NodeManagerStructure, options: NodeOptions) {
         this.options = {
             ...options,
             sessionId: options.sessionId ?? "",

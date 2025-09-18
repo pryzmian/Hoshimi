@@ -26,9 +26,8 @@ import { ManagerError, OptionError } from "./Errors";
 import { Track } from "./Track";
 import { autoplayFn } from "../util/functions/autoplay";
 import { HoshimiAgent } from "../util/constants";
-import { NodeManager } from "./node/Manager";
 import { MemoryAdapter } from "./queue/adapters/memory";
-import { type PlayerStructure, Structures } from "../types/Structures";
+import { type NodeManagerStructure, type PlayerStructure, Structures } from "../types/Structures";
 
 /**
  * The packet type for the manager.
@@ -72,7 +71,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
      * @type {NodeManager}
      * @readonly
      */
-    readonly nodeManager: NodeManager;
+    readonly nodeManager: NodeManagerStructure;
 
     /**
      * If the manager is ready.
@@ -149,7 +148,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
 
         validateManagerOptions(this.options);
 
-        this.nodeManager = new NodeManager(this);
+        this.nodeManager = Structures.NodeManager(this);
 
         process.emitWarning(
             "Using Hoshimi is not recommended for production use. It is still in development and may have bugs.",

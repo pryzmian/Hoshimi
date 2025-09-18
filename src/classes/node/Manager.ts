@@ -125,10 +125,10 @@ export class NodeManager {
      * @example
      * ```ts
      * const node = manager.nodeManager.get("node1");
-     * if (node) node.reconnectNodes();
+     * if (node) node.reconnect();
      * ```
      */
-    public reconnectNodes(): void {
+    public reconnect(): void {
         if (!this.nodes.size) return;
 
         for (const node of this.nodes.filter((node) => node.state !== State.Connected)) {
@@ -142,10 +142,10 @@ export class NodeManager {
      * @example
      * ```ts
      * const node = manager.nodeManager.get("node1");
-     * if (node) node.disconnectNodes();
+     * if (node) node.disconnect();
      * ```
      */
-    public disconnectNodes(): void {
+    public disconnect(): void {
         if (!this.nodes.size) return;
 
         for (const node of this.nodes.filter((node) => node.state !== State.Disconnected)) {
@@ -159,10 +159,10 @@ export class NodeManager {
      * @example
      * ```ts
      * const node = manager.nodeManager.get("node1");
-     * if (node) node.connectNodes();
+     * if (node) node.connect();
      * ```
      */
-    public connectNodes(): void {
+    public connect(): void {
         if (!this.nodes.size) return;
 
         for (const node of this.nodes.filter((node) => node.state !== State.Connected)) {
@@ -176,10 +176,10 @@ export class NodeManager {
      * @example
      * ```ts
      * const node = manager.nodeManager.get("node1");
-     * if (node) node.destroyNodes();
+     * if (node) node.destroy();
      * ```
      */
-    public destroyNodes(): void {
+    public destroy(): void {
         if (!this.nodes.size) return;
 
         for (const node of this.nodes.values()) {
