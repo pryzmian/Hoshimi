@@ -1,7 +1,7 @@
 import type { Node } from "../classes/node/Node";
 import type { Track, UnresolvedTrack } from "../classes/Track";
 import type { Nullable } from "./Manager";
-import type { Exception, LavalinkTrack, LyricsLine, LyricsResult, OpCodes } from "./Node";
+import type { Exception, LavalinkTrack, LyricsLine, LyricsResult, NodeJson, OpCodes } from "./Node";
 import type { QueueJson } from "./Queue";
 
 /**
@@ -745,9 +745,14 @@ export interface PlayerJson {
     textId?: string;
     /**
      * The queue of the player.
-     * @type {QueueJson}
+     * @type {QueueJson | undefined}
      */
     queue?: QueueJson;
+    /**
+     * The node of the player.
+     * @type {NodeJson | undefined}
+     */
+    node?: NodeJson;
 }
 
 /**

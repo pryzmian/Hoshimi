@@ -467,8 +467,9 @@ export class Player {
             selfMute: this.selfMute,
             selfDeaf: this.selfDeaf,
             options: this.options,
-            queue: this.queue.toJSON(),
             voice: this.voice,
+            queue: this.queue.toJSON(),
+            node: this.node.toJSON(),
         };
     }
 }

@@ -11,6 +11,7 @@ import {
     WebsocketCloseCodes,
     NodeDestroyReasons,
     type LavalinkTrack,
+    type NodeJson,
 } from "../../types/Node";
 
 import { NodeError } from "../Errors";
@@ -515,5 +516,25 @@ export class Node {
             this.retryAmount--;
             this.connect();
         }, this.options.retryDelay);
+    }
+
+    /**
+     *
+     * Convert the node to JSON.
+     * @returns {NodeJson} The JSON representation of the node.
+     * @example
+     * ```ts
+     * const node = manager.nodeManager.get("node1");
+     * if (node) {
+     * 	const json = node.toJSON();
+     * 	console.log(json);
+     * }
+     * ```
+     */
+    toJSON(): NodeJson {
+        return {
+            id: this.id,
+            sessionId: this.sessionId,
+        };
     }
 }

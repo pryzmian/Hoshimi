@@ -1129,6 +1129,22 @@ export interface LyricsLine {
 }
 
 /**
+ * The interface of the node json object.
+ */
+export interface NodeJson {
+    /**
+     * The node id.
+     * @type {string}
+     */
+    id: string;
+    /**
+     * The node session id.
+     * @type {string | null}
+     */
+    sessionId: string | null;
+}
+
+/**
  * The type for the unresolved track info.
  */
 export type UnresolvedTrackInfo = PickRequired<Partial<TrackInfo>, "title">;
