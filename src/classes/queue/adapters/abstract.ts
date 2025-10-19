@@ -102,5 +102,5 @@ export abstract class StorageAdapter<T extends QueueJson = QueueJson> {
      * console.log(stringified); // "{'key':'value'}"
      * ```
      */
-    abstract stringify(value: unknown): Awaitable<T>;
+    abstract stringify<R = string>(value: unknown): Awaitable<R>;
 }

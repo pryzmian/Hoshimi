@@ -14,14 +14,14 @@ export class MemoryAdapter<T extends QueueJson = QueueJson> extends StorageAdapt
      * @readonly
      * @internal
      */
-    private readonly storage: Map<string, T> = new Map();
+    private readonly storage: Map<string, QueueJson> = new Map();
 
     public override get(key: string): T | undefined {
         return this.parse(this.storage.get(key));
     }
 
     public override set(key: string, value: T): void {
-        this.storage.set(key, this.stringify(value));
+        this.storage.set(key, this.stringify<QueueJson>(value));
     }
 
     public override delete(key: string): boolean {
@@ -40,7 +40,7 @@ export class MemoryAdapter<T extends QueueJson = QueueJson> extends StorageAdapt
         return value as T;
     }
 
-    public override stringify(value: unknown): T {
-        return value as T;
+    public override stringify<R = string>(value: unknown): R {
+        return value as R;
     }
 }

@@ -712,7 +712,7 @@ export interface ChannelDeletePacket {
 /**
  * Make a function awaitable by returning a promise or the value.
  */
-export type Awaitable<T> = Promise<T> | T;
+export type Awaitable<T> = T | Promise<T>;
 
 /**
  * Create a type that infers the value of a key from an object.
