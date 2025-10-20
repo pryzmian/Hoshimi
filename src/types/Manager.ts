@@ -35,52 +35,153 @@ import type { PlayerStructure } from "./Structures";
 export enum SearchEngines {
     /**
      * Search on YouTube.
+     * @description Provided by youtube-source plugin.
      */
     Youtube = "ytsearch",
     /**
      * Search on YouTube Music.
+     * @description Provided by youtube-source plugin.
      */
     YoutubeMusic = "ytmsearch",
+
     /**
      * Search on Spotify.
+     * @description Provided by lava-src plugin.
      */
     Spotify = "spsearch",
     /**
      * Search on Spotify recommendations.
+     * @description Provided by lava-src plugin.
      */
     SpotifyRecommendations = "sprec",
     /**
+     * Search on Spotify artist recommendations.
+     * @description Provided by lava-src plugin.
+     */
+    SpotifyArtistMix = "sprec:mix:artist",
+    /**
+     * Search on Spotify album recommendations.
+     * @description Provided by lava-src plugin.
+     */
+    SpotifyAlbumMix = "sprec:mix:album",
+    /**
+     * Search on Spotify track recommendations.
+     * @description Provided by lava-src plugin.
+     */
+    SpotifyTrackMix = "sprec:mix:track",
+    /**
+     * Search on Spotify using ISRC code.
+     * @description Provided by lava-src plugin.
+     */
+    SpotifyISRCMix = "sprec:mix:isrc",
+
+    /**
      * Search on SoundCloud.
+     * @description Provided by lavalink.
      */
     SoundCloud = "scsearch",
     /**
      * Search on Apple Music.
+     * @description Provided by lava-src plugin.
      */
     AppleMusic = "amsearch",
     /**
      * Search on Bandcamp.
+     * @description Provided by lava-src plugin.
      */
     BandCamp = "bcsearch",
-    /**
-     * Search on Vimeo.
-     */
-    Vimeo = "vmsearch",
+
     /**
      * Search on Deezer.
+     * @description Provided by lava-src plugin.
      */
     Deezer = "dzsearch",
     /**
+     * Search on Deezer using ISRC code.
+     * @description Provided by lava-src plugin.
+     */
+    DeezerISRC = "dzisrc",
+    /**
+     * Search on Deezer recommendations.
+     * @description Provided by lava-src plugin.
+     */
+    DeezerRecommendations = "dzrec",
+
+    /**
+     * Search on Yandex Music.
+     * @description Provided by lava-src plugin.
+     */
+    YandexMusic = "ymsearch",
+    /**
+     * Search on Yandex Music for recommendations.
+     * @description Provided by lava-src plugin.
+     */
+    YandexMusicRecommendations = "ymrec",
+
+    /**
+     * Search on VK Music.
+     * @description Provided by lava-src plugin.
+     */
+    VKMusic = "vksearch",
+    /**
+     * Search on VK Music for recommendations.
+     * @description Provided by lava-src plugin.
+     */
+    VKMusicRecommendations = "vkrec",
+
+    /**
+     * Search on Tidal.
+     * @description Provided by lava-src plugin.
+     */
+    Tidal = "tdsearch",
+    /**
+     * Search on Tidal for recommendations.
+     * @description Provided by lava-src plugin.
+     */
+    TidalRecommendations = "tdrec",
+
+    /**
+     * Search on Qobuz.
+     * @description Provided by lava-src plugin.
+     */
+    Qobuz = "qbsearch",
+    /**
+     * Search on Qobuz using ISRC code.
+     * @description Provided by lava-src plugin.
+     */
+    QobuzISRC = "qbisrc",
+    /**
+     * Search on Qobuz for recommendations.
+     * @description Provided by lava-src plugin.
+     */
+    QobuzRecommendations = "qbrec",
+
+    /**
+     * Search on JioSaavn.
+     * @description Provided by lava-src plugin.
+     */
+    JioSaavn = "jssearch",
+    /**
+     * Search on JioSaavn using ISRC code.
+     * @description Provided by lava-src plugin.
+     */
+    JioSaavnRecommendations = "jsrec",
+
+    /**
      * Search on Twitch.
+     * @description Provided by lavalink.
      */
     Twitch = "twsearch",
     /**
      * Search on Mixer.
+     * @description Provided by lavalink.
      */
     Mixer = "mxsearch",
     /**
-     * Search on Yandex Music.
+     * Search on Vimeo.
+     * @description Provided by lavalink.
      */
-    YandexMusic = "ymsearch",
+    Vimeo = "vmsearch",
     /**
      * Play voice using flowery tts.
      */
@@ -89,6 +190,16 @@ export enum SearchEngines {
      * Play a local file.
      */
     Local = "local",
+    /**
+     * This is self-explanatory.
+     * @description Provided by skybot-lavalink-plugin plugin.
+     */
+    PornHub = "phsearch",
+    /**
+     * Play voice using text to speech.
+     * @description Provided by skybot-lavalink-plugin plugin.
+     */
+    TextToSpeech = "speak",
 }
 
 /**

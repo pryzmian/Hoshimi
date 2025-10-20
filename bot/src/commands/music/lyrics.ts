@@ -13,6 +13,8 @@ export default class LyricsCommand extends Command {
     public override async run(ctx: GuildCommandContext): Promise<Message | WebhookMessage | void> {
         const { client, guildId } = ctx;
 
+        await ctx.deferReply();
+
         const player = client.manager.getPlayer(guildId);
         if (!player) return ctx.editOrReply({ content: "No player found." });
 

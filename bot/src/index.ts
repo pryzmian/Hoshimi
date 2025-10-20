@@ -9,6 +9,7 @@ import type { HoshimiUser } from "./manager/types";
 
 import { mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
+import { autoplayFn } from "./autoplay";
 
 const path = resolve(process.cwd(), "cache");
 
@@ -20,8 +21,11 @@ const client = new Client({
     commands: {
         prefix: () => ["hoshimi", "h."],
         reply: () => true,
+        deferReplyResponse: ({ client }) => ({
+            content: `**${client.me.username}** is thinking...`,
+        }),
     },
-}) as UsingClient;
+}) as Client<true> & UsingClient;
 
 client.manager = new Hoshimi({
     sendPayload: (guildId, payload) => client.gateway.send(client.gateway.calculateShardId(guildId), payload),
@@ -29,6 +33,9 @@ client.manager = new Hoshimi({
     nodeOptions: {
         resumable: false,
         resumeByLibrary: false,
+    },
+    queueOptions: {
+        autoplayFn,
     },
     nodes: [
         {

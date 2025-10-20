@@ -39,5 +39,10 @@ export const ValidSources: Map<SourceNames, SearchEngines> = new Map(
         [SourceNames.AppleMusic]: SearchEngines.AppleMusic,
         [SourceNames.YandexMusic]: SearchEngines.YandexMusic,
         [SourceNames.FloweryTTS]: SearchEngines.FloweryTTS,
+        [SourceNames.JioSaavn]: SearchEngines.JioSaavn,
+        [SourceNames.VKMusic]: SearchEngines.VKMusic,
+        [SourceNames.Tidal]: SearchEngines.Tidal,
+        [SourceNames.TextToSpeech]: SearchEngines.TextToSpeech,
+        [SourceNames.PornHub]: SearchEngines.PornHub,
     }) as [SourceNames, SearchEngines][],
 );

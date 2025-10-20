@@ -10,14 +10,14 @@ const options = {
 };
 
 @Declare({
-    name: "resolve",
-    description: "Resolve a track using the encoded track.",
+    name: "decode",
+    description: "Decode a track using the encoded track.",
     aliases: ["r"],
     integrationTypes: ["GuildInstall"],
     contexts: ["Guild"],
 })
 @Options(options)
-export default class ResolveCommand extends Command {
+export default class DecodeCommand extends Command {
     override async run(ctx: GuildCommandContext<typeof options>) {
         const { client } = ctx;
 
@@ -93,6 +93,16 @@ export default class ResolveCommand extends Command {
                     content: Formatter.codeBlock(stringified, "json"),
                 });
             }
+
+            case LoadType.Empty: {
+                const stringified = JSON.stringify(search, null, 2);
+                const codeblock = Formatter.codeBlock(stringified, "json");
+
+                return ctx.editOrReply({ content: codeblock });
+            }
+
+            case LoadType.Error:
+                return ctx.editOrReply({ content: "No results found." });
         }
     }
 }

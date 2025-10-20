@@ -99,65 +99,140 @@ export enum LoadType {
 export enum SourceNames {
     /**
      * The lavalink built-in source name for Youtube.
-     * @description Privided by lavalink
+     * @description Provided by lavalink
      */
     Youtube = "youtube",
     /**
      * The lavalink built-in source name for Youtube Music.
-     * @description Privided by lavalink
+     * @description Provided by lavalink
      */
     YoutubeMusic = "youtubemusic",
     /**
      * The lavalink built-in source name for Soundcloud.
-     * @description Privided by lavalink
+     * @description Provided by lavalink
      */
     Soundcloud = "soundcloud",
     /**
      * The lavalink built-in source name for Bandcamp.
-     * @description Privided by lavalink
+     * @description Provided by lavalink
      */
     Bandcamp = "bandcamp",
     /**
      * The lavalink built-in source name for Twitch.
-     * @description Privided by lavalink
+     * @description Provided by lavalink
      */
     Twitch = "twitch",
     /**
      * The lavalink built-in source name for Vimeo.
-     * @description Privided by lavalink
+     * @description Provided by lavalink
      */
     Vimeo = "vimeo",
     /**
      * The lavalink built-in source name for Mixer.
-     * @description Privided by lavalink
+     * @description Provided by lavalink
      */
     Mixer = "mixer",
 
     /**
      * The lavasrc built-in source name for Spotify.
-     * @description Privided by lavasrc
+     * @description Provided by lavasrc
      */
     Spotify = "spotify",
     /**
      * The lavasrc built-in source name for Deezer.
-     * @description Privided by lavasrc
+     * @description Provided by lavasrc
      */
     Deezer = "deezer",
     /**
+     * The lavasrc built-in source name for VK Music.
+     * @description Provided by lavasrc
+     */
+    VKMusic = "vkmusic",
+    /**
+     * The lavasrc built-in source name for Tidal.
+     * @description Provided by lavasrc
+     */
+    Tidal = "tidal",
+    /**
+     * The lavasrc built-in source name for JioSaavn.
+     * @description Provided by lavasrc
+     */
+    JioSaavn = "jiosaavn",
+    /**
      * The lavasrc built-in source name for Apple Music.
-     * @description Privided by lavasrc
+     * @description Provided by lavasrc
      */
     AppleMusic = "applemusic",
     /**
      * The lavasrc built-in source name for Yandex Music.
-     * @description Privided by lavasrc
+     * @description Provided by lavasrc
      */
     YandexMusic = "yandexmusic",
     /**
      * The lavasrc built-in source name for Flowery TTS.
-     * @description Privided by lavasrc
+     * @description Provided by lavasrc
      */
     FloweryTTS = "flowery-tts",
+    /**
+     * The http source name.
+     * @description Generic HTTP source
+     */
+    HTTP = "http",
+    /**
+     * This is self-explanatory too.
+     * @description Provided by skybot-lavalink-plugin.
+     */
+    PornHub = "pornhub",
+    /**
+     * Play voice using text to speech.
+     * @description Provided by skybot-lavalink-plugin.
+     */
+    TextToSpeech = "tts",
+    /**
+     * Play voice using text to speech.
+     * @description Provided by skybot-lavalink-plugin.
+     */
+    Clypit = "clypit",
+    /**
+     * Play voice using text to speech.
+     * @description Provided by skybot-lavalink-plugin.
+     */
+    StreamDeckAudio = "StreamDeckAudio",
+    /**
+     * Play voice using text to speech.
+     * @description Provided by skybot-lavalink-plugin.
+     */
+    GetYarn = "getyarn.io",
+    /**
+     * Play voice using text to speech.
+     * @description Provided by skybot-lavalink-plugin.
+     */
+    MixCloud = "mixcloud",
+    /**
+     * Play voice using text to speech.
+     * @description Provided by skybot-lavalink-plugin.
+     */
+    OCRemix = "ocremix",
+    /**
+     * Play voice using text to speech.
+     * @description Provided by skybot-lavalink-plugin.
+     */
+    PixelDrain = "pixeldrain",
+    /**
+     * Play voice using text to speech.
+     * @description Provided by skybot-lavalink-plugin.
+     */
+    Reddit = "reddit",
+    /**
+     * Play voice using text to speech.
+     * @description Provided by skybot-lavalink-plugin.
+     */
+    SoundGasm = "soundgasm",
+    /**
+     * Play voice using text to speech.
+     * @description Provided by skybot-lavalink-plugin.
+     */
+    TikTok = "tiktok",
 }
 
 /**

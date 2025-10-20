@@ -112,10 +112,10 @@ export class QueueUtils {
         const tracks = data.tracks.filter((track) => isTrack(track)) || [];
         const history = data.history.filter((track) => isTrack(track)) || [];
 
-        if (tracks.length)
-            this.queue.tracks.splice(override ? 0 : this.queue.tracks.length, override ? this.queue.tracks.length : 0, ...tracks);
+        const length = this.queue.tracks.length;
 
-        if (history.length) this.queue.history.splice(0, override ? this.queue.tracks.length : 0, ...history);
+        if (tracks.length) this.queue.tracks.splice(override ? 0 : length, override ? length : 0, ...tracks);
+        if (history.length) this.queue.history.splice(0, override ? length : 0, ...history);
 
         this.queue.player.manager.emit(
             Events.Debug,
