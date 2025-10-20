@@ -19,7 +19,7 @@
 </div>
 
 ## 📦 Features
-- 📋 **v4**: Fully supports the latest v4 lavalink features.
+- 📋 **V4**: Fully supports the latest v4 lavalink features.
 - 🔗 **Node Manager**: Manage nodes, auto least‑used selection by penalties, session resume and more.
 - ▶️ **Autoplay**: YouTube and Spotify recommendations out of the box; easily extend with your own function.
 - 📝 **Lyrics**: Control your lyrics with live-lyrics updates; validates required plugins.
