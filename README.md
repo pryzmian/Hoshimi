@@ -64,9 +64,9 @@ You can read [this](/bot/src/index.ts) or you can follow this one:
 
 ```typescript
 import { Hoshimi } from "hoshimi"; // She is all ears!
-import { Client } from "seyfert"; // Only example client, you can use whatever you want,
+import { Client } from "seyfert"; // Only example client, you can use whatever you want...
 
-const client = new Client();
+const client = new Client(); // https://www.seyfert.dev/guide
 
 const hoshimi = new Hoshimi({
     nodes: [
