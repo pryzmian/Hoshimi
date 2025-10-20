@@ -21,9 +21,9 @@
 ## 📦 Features
 - 📋 **v4**: Fully supports the latest v4 lavalink features.
 - 🔗 **Node Manager**: Manage nodes, auto least‑used selection by penalties, session resume and more.
-- ▶️ **Autoplay**: YouTube “mix” and Spotify recommendations out of the box; easily extend with your own function.
+- ▶️ **Autoplay**: YouTube and Spotify recommendations out of the box; easily extend with your own function.
 - 📝 **Lyrics**: Control your lyrics with live-lyrics updates; validates required plugins.
-- 🌐 **REST + WebSocket**: typed REST helpers, player/session control, decode single/multiple tracks.
+- 🌐 **REST + WebSocket**: Typed REST helpers, player/session control, decode single/multiple tracks.
 - 📣 **Events**: Granular events with debug levels.
 - 🧩 **Extensible**: Override structures and augment types.
 - 🧪 **Safety & DX**: Strict validation, descriptive errors, TypeScript-first API build, and formatting/linting.
