@@ -10,14 +10,14 @@ const options = {
 };
 
 @Declare({
-    name: "decode",
-    description: "Decode a track using the encoded track.",
+    name: "resolve",
+    description: "Resolve a track using the encoded track.",
     aliases: ["r"],
     integrationTypes: ["GuildInstall"],
     contexts: ["Guild"],
 })
 @Options(options)
-export default class DecodeCommand extends Command {
+export default class ResolveCommand extends Command {
     override async run(ctx: GuildCommandContext<typeof options>) {
         const { client } = ctx;
 
