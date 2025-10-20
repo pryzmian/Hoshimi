@@ -8,10 +8,12 @@ import {
     type PlayerJson,
     type PlayerOptions,
 } from "../../types/Player";
+import type { LavalinkPlayer, UpdatePlayerInfo } from "../../types/Rest";
 import { Structures, type NodeStructure, type QueueStructure } from "../../types/Structures";
 import { isTrack, isUnresolvedTrack, validateTrack, validatePlayerOptions } from "../../util/functions/utils";
 import { PlayerError } from "../Errors";
 import type { Hoshimi } from "../Hoshimi";
+import type { FilterManager } from "./Filters";
 import { PlayerStorage } from "./Storage";
 
 /**
@@ -46,6 +48,13 @@ export class Player {
      * @readonly
      */
     readonly queue: QueueStructure;
+
+    /**
+     * The filter manager for the player.
+     * @type {FilterManager}
+     * @readonly
+     */
+    readonly filterManager: FilterManager;
 
     /**
      * Check if the player is self deafened.
@@ -175,6 +184,7 @@ export class Player {
         validatePlayerOptions(this.options);
 
         this.queue = Structures.Queue(this);
+        this.filterManager = Structures.FilterManager(this);
     }
 
     /**
@@ -341,8 +351,7 @@ export class Player {
 
         this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Play] A new track is playing: ${this.queue.current.info.title}`);
 
-        await this.node.updatePlayer({
-            guildId: this.guildId,
+        await this.updatePlayer({
             noReplace: options.noReplace,
             playerOptions: {
                 ...options,
@@ -416,10 +425,7 @@ export class Player {
             `[Player] -> [Pause] Player is now ${paused ? "paused" : "resumed"} for guild: ${this.guildId}`,
         );
 
-        await this.node.updatePlayer({
-            guildId: this.guildId,
-            playerOptions: { paused },
-        });
+        await this.updatePlayer({ playerOptions: { paused } });
 
         return paused;
     }
@@ -439,9 +445,18 @@ export class Player {
         if (typeof volume !== "number" || Number.isNaN(volume) || volume < 0 || volume > 100)
             throw new PlayerError("Volume must be a number between 0 and 100.");
 
-        await this.node.updatePlayer({
+        await this.updatePlayer({ playerOptions: { volume } });
+    }
+
+    /**
+     * Update the player with new data.
+     * @param {NonGuildUpdatePlayerInfo} data The data to update the player with.
+     * @returns {Promise<LavalinkPlayer | null>} The updated player data.
+     */
+    public async updatePlayer(data: NonGuildUpdatePlayerInfo): Promise<LavalinkPlayer | null> {
+        return this.node.updatePlayer({
             guildId: this.guildId,
-            playerOptions: { volume },
+            ...data,
         });
     }
 
@@ -473,6 +488,11 @@ export class Player {
         };
     }
 }
+
+/**
+ * Type representing the update player information without guildId.
+ */
+type NonGuildUpdatePlayerInfo = Omit<UpdatePlayerInfo, "guildId">;
 
 /**
  * Interface representing the customizable player storage.

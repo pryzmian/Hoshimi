@@ -1,7 +1,8 @@
 import type { Track, TrackRequester } from "../classes/Track";
+import type { FilterSettings } from "./Filters";
 import type { PickNullable } from "./Manager";
 import type { LavalinkTrack } from "./Node";
-import type { FilterOptions, LavalinkPlayerVoice, LavalinkPlayOptions } from "./Player";
+import type { LavalinkPlayerVoice, LavalinkPlayOptions } from "./Player";
 
 /**
  * The methods for http requests
@@ -236,9 +237,9 @@ export interface LavalinkPlayer {
     voice: LavalinkPlayerVoice;
     /**
      * The filter options applied to the player.
-     * @type {FilterOptions}
+     * @type {FilterSettings}
      */
-    filters: FilterOptions;
+    filters: FilterSettings;
     /**
      * The state of the player.
      * @type {LavalinkPlayerState}

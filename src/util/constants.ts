@@ -2,6 +2,8 @@ import { SourceNames, type UserAgent } from "../types/Node";
 import { SearchEngines } from "../types/Manager";
 
 import PackageJson from "../../package.json";
+import { AudioOutput } from "../types/Filters";
+import type { ChannelMixSettings } from "../types/Filters";
 
 /**
  * The user agent for Hoshimi.
@@ -46,3 +48,34 @@ export const ValidSources: Map<SourceNames, SearchEngines> = new Map(
         [SourceNames.PornHub]: SearchEngines.PornHub,
     }) as [SourceNames, SearchEngines][],
 );
+
+/**
+ * The audio output data for Hoshimi.
+ * @type {Record<AudioOutput, ChannelMixSettings>}
+ */
+export const AudioOutputData: Record<AudioOutput, ChannelMixSettings> = {
+    [AudioOutput.Mono]: {
+        leftToLeft: 0.5,
+        leftToRight: 0.5,
+        rightToLeft: 0.5,
+        rightToRight: 0.5,
+    },
+    [AudioOutput.Stereo]: {
+        leftToLeft: 1,
+        leftToRight: 0,
+        rightToLeft: 0,
+        rightToRight: 1,
+    },
+    [AudioOutput.Left]: {
+        leftToLeft: 1,
+        leftToRight: 0,
+        rightToLeft: 1,
+        rightToRight: 0,
+    },
+    [AudioOutput.Right]: {
+        leftToLeft: 0,
+        leftToRight: 1,
+        rightToLeft: 0,
+        rightToRight: 1,
+    },
+};
