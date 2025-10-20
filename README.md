@@ -25,7 +25,7 @@
 - 📝 **Lyrics**: Control your lyrics with live-lyrics updates; validates required plugins.
 - 🌐 **REST + WebSocket**: Typed REST helpers, player/session control, decode single/multiple tracks.
 - 📣 **Events**: Granular events with debug levels.
-- 🧩 **Extensible**: Override structures and augment types.
+- 🧩 **Extensible**: Override structures with your own ones.
 - 🧪 **Safety & DX**: Strict validation, descriptive errors, TypeScript-first API build, and formatting/linting.
 - 📜 **Filters (WIP)**: Built-in filters, easy management and easy to use!  
 
