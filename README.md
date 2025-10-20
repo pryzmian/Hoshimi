@@ -37,7 +37,7 @@
 
 ## 📦 Installation
 
-```bash
+```sh
 # Stable... and the development one (unstable)...
 
 # Using NPM
@@ -52,7 +52,7 @@ pnpm install https://github.com/Ganyu-Studios/Hoshimi.git
 yarn add hoshimi
 yarn add https://github.com/Ganyu-Studios/Hoshimi.git
 
-# Using BUM
+# Using BUN
 bun add hoshimi
 bun add https://github.com/Ganyu-Studios/Hoshimi.git
 
