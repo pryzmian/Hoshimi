@@ -1,6 +1,6 @@
 <div align="center">
 <h1>Hoshimi</h1>
-<p>A lavalink@v4 client easy to use, up-to-date</p>
+<p>A lavalink@v4 client easy to use, up-to-date, and of course</p>
 <div align="center">
     <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
     <img src="https://img.shields.io/badge/MIT-green?style=for-the-badge" />

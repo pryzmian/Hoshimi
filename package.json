@@ -1,7 +1,7 @@
 {
     "name": "hoshimi",
     "version": "0.1.0",
-    "description": "A lavalink@v4 client easy to use, up-to-date.",
+    "description": "A lavalink@v4 client easy to use, up-to-date and all ears.",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
