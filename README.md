@@ -123,7 +123,7 @@ package takes some ideas provided from libraries like:
 - 📦 [`discord-player`](https://github.com/Androz2091/discord-player)
 - 📦 [`shoukaku`](https://github.com/shipgirlproject/Shoukaku)
 
-**I'm not stealing their job, I love their job, all of them, I just taked some
+**I'm taking their job as a base for this project, I love their job, all of them, I just taked some
 stuff because i'm too lazy to make my own.**</br> If anyone of them want's to
 talk me to remove some stuff, they can.</br>
 
