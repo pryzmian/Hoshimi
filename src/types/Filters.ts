@@ -498,6 +498,11 @@ export interface EnabledPlayerFilters {
      */
     volume: boolean;
     /**
+     * Check if the distortion filter is enabled or not.
+     * @type {boolean}
+     */
+    distortion: boolean;
+    /**
      * The lavalink filter plugin enabled filters.
      * @type {EnabledLavalinkFilters}
      */

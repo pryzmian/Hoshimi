@@ -8,6 +8,7 @@ import {
     type TremoloSettings,
     type KaraokeSettings,
     type FilterType,
+    type DistortionSettings,
 } from "../../../types/Filters";
 import type { RestOrArray } from "../../../types/Manager";
 import type { PlayerStructure } from "../../../types/Structures";
@@ -59,6 +60,7 @@ export class FilterManager {
         tremolo: false,
         vibrato: false,
         lowPass: false,
+        distortion: false,
         lavalinkFilterPlugin: {
             echo: false,
             reverb: false,
@@ -127,6 +129,9 @@ export class FilterManager {
         this.filters.karaoke = false;
         this.filters.karaoke = false;
         this.filters.volume = false;
+        this.filters.vaporwave = false;
+        this.filters.custom = false;
+        this.filters.distortion = false;
 
         for (const [key, value] of Object.entries(DefaultPlayerFilters)) {
             this.data[key as keyof FilterSettings] = value;
@@ -167,6 +172,7 @@ export class FilterManager {
         if (!this.filters.lowPass) delete filters.lowPass;
         if (!this.filters.karaoke) delete filters.karaoke;
         if (!this.filters.rotation) delete filters.rotation;
+        if (!this.filters.distortion) delete filters.distortion;
 
         if (this.data.timescale && Object.values(this.data.timescale).every((v) => v === 1)) delete filters.timescale;
 
@@ -175,7 +181,7 @@ export class FilterManager {
         if (!filters.equalizer.length) delete filters.equalizer;
 
         for (const key in filters) {
-            if (this.player.node.info?.filters?.includes(key)) delete filters[key as keyof FilterSettings];
+            if (!this.player.node.info?.filters?.includes(key)) delete filters[key as keyof FilterSettings];
         }
 
         this.isCustomActive();
@@ -458,8 +464,9 @@ export class FilterManager {
      * @returns {Promise<boolean>} Whether the filter is now active.
      */
     public async setVaporwave(settings: Partial<TimescaleSettings> = DefaultFilterPreset.Vaporwave): Promise<boolean> {
-        if (this.player.node.info && !this.player.node.info?.filters?.includes("timescale"))
-            throw new Error("Node#Info#filters does not include the 'timescale' Filter (Node has it not enable)");
+        if (!this.player.node.info?.filters?.includes("timescale"))
+            throw new PlayerError("Node filters does not include the 'timescale' filter. (Or the node doesn't have it enabled)");
+
         this.data.timescale!.speed = this.filters.vaporwave ? 1 : settings.speed;
         this.data.timescale!.pitch = this.filters.vaporwave ? 1 : settings.pitch;
         this.data.timescale!.rate = this.filters.vaporwave ? 1 : settings.rate;
@@ -480,8 +487,8 @@ export class FilterManager {
      * @returns {Promise<boolean>} Whether the filter is now active.
      */
     public async setKaraoke(settings: Partial<KaraokeSettings> = DefaultFilterPreset.Karaoke): Promise<boolean> {
-        if (this.player.node.info && !this.player.node.info?.filters?.includes("karaoke"))
-            throw new Error("Node#Info#filters does not include the 'karaoke' Filter (Node has it not enable)");
+        if (!this.player.node.info?.filters?.includes("karaoke"))
+            throw new PlayerError("Node filters does not include the 'karaoke' filter. (Or the node doesn't have it enabled)");
 
         this.data.karaoke!.level = this.filters.karaoke ? 0 : settings.level;
         this.data.karaoke!.monoLevel = this.filters.karaoke ? 0 : settings.monoLevel;
@@ -493,5 +500,32 @@ export class FilterManager {
         await this.apply();
 
         return this.filters.karaoke;
+    }
+
+    /**
+     *
+     * Set the distortion filter with the given settings.
+     * @param {Partial<DistortionSettings>} [settings=DefaultFilter.Distortion] The settings for the distortion filter.
+     * @returns {Promise<boolean>} Whether the filter is now active.
+     */
+    public async setDistortion(settings: Partial<DistortionSettings> = DefaultFilterPreset.Distortion): Promise<boolean> {
+        if (!this.player.node.info?.filters?.includes("distortion"))
+            throw new PlayerError("Node filters does not include the 'distortion' filter. (Or the node doesn't have it enabled)");
+
+        this.data.distortion = {
+            sinOffset: this.filters.distortion ? 0 : settings.sinOffset,
+            sinScale: this.filters.distortion ? 1 : settings.sinScale,
+            cosOffset: this.filters.distortion ? 0 : settings.cosOffset,
+            cosScale: this.filters.distortion ? 1 : settings.cosScale,
+            tanOffset: this.filters.distortion ? 0 : settings.tanOffset,
+            offset: this.filters.distortion ? 0 : settings.offset,
+            scale: this.filters.distortion ? 1 : settings.scale,
+        };
+
+        this.filters.distortion = !this.filters.distortion;
+
+        await this.apply();
+
+        return this.filters.distortion;
     }
 }

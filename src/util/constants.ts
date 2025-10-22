@@ -91,6 +91,7 @@ export const DefaultFilterPreset = {
     Lowpass: { smoothing: 20 },
     Tremolo: { frequency: 4, depth: 0.8 },
     Vibrato: { frequency: 4, depth: 0.8 },
+    Distortion: { cosOffset: 0.4, sinOffset: 0.4, tanOffset: 0.4, offset: 0.4, scale: 1.5, cosScale: 1.5, sinScale: 1.5, tanScale: 1.5 },
 
     DSPXHighPass: { boostFactor: 1.0, cutoffFrequency: 80 },
     DSPXLowPass: { boostFactor: 1.0, cutoffFrequency: 80 },
