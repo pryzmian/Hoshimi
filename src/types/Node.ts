@@ -421,6 +421,11 @@ export enum PluginNames {
      * @author appujet
      */
     Jiosaavn = "jiosaavn-plugin",
+    /**
+     * The lavalink filter plugin name.
+     * @author ???
+     */
+    FilterPlugin = "lavalink-filter-plugin",
 }
 
 /**

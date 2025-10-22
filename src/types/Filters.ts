@@ -1,20 +1,70 @@
 export enum AudioOutput {
     /**
      * Mono output (both channels mixed equally).
+     * @type {string}
      */
     Mono = "mono",
     /**
      * Stereo output (normal).
+     * @type {string}
      */
     Stereo = "stereo",
     /**
      * Left channel only output.
+     * @type {string}
      */
     Left = "left",
     /**
      * Right channel only output.
+     * @type {string}
      */
     Right = "right",
+}
+
+/**
+ * The types of filters available.
+ */
+export enum FilterType {
+    /**
+     * Volume filter.
+     * @type {string}
+     */
+    Volume = "volume",
+    /**
+     * Audio output filter.
+     * @type {string}
+     */
+    AudioOutput = "audioOutput",
+    /**
+     * Low pass filter.
+     * @type {string}
+     */
+    LowPass = "lowPass",
+    /**
+     * Karaoke filter.
+     * @type {string}
+     */
+    Karaoke = "karaoke",
+    /**
+     * Rotation filter.
+     * @type {string}
+     */
+    Rotation = "rotation",
+    /**
+     * Tremolo filter.
+     * @type {string}
+     */
+    Tremolo = "tremolo",
+    /**
+     * Vibrato filter.
+     * @type {string}
+     */
+    Vibrato = "vibrato",
+    /**
+     * Custom filter.
+     * @type {string}
+     */
+    Custom = "custom",
 }
 
 /**
@@ -190,6 +240,19 @@ export interface LowPassSettings {
     smoothing?: number;
 }
 
+export interface TremoloSettings {
+    /**
+     * The frequency of the tremolo effect.
+     * @type {number}
+     */
+    frequency: number;
+    /**
+     * The depth of the tremolo effect.
+     * @type {number}
+     */
+    depth: number;
+}
+
 /**
  * The options for the filters.
  */
@@ -269,12 +332,12 @@ export interface PluginFilterSettings {
      * The high pass settings.
      * @type {FilterPluginPassSettings | undefined}
      */
-    "high-pass"?: FilterPluginPassSettings;
+    "high-pass"?: Partial<FilterPluginPassSettings>;
     /**
      * The low pass settings.
      * @type {FilterPluginPassSettings | undefined}
      */
-    "low-pass"?: FilterPluginPassSettings;
+    "low-pass"?: Partial<FilterPluginPassSettings>;
     /**
      * The settings for the lavalink filter plugin.
      * @type {LavalinkFilterPluginSettings | undefined}

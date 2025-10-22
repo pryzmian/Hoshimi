@@ -13,7 +13,7 @@ import { Structures, type NodeStructure, type QueueStructure } from "../../types
 import { isTrack, isUnresolvedTrack, validateTrack, validatePlayerOptions } from "../../util/functions/utils";
 import { PlayerError } from "../Errors";
 import type { Hoshimi } from "../Hoshimi";
-import type { FilterManager } from "./Filters";
+import type { FilterManager } from "./filters/Manager";
 import { PlayerStorage } from "./Storage";
 
 /**

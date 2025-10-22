@@ -1,5 +1,5 @@
 import type { SourceNames, LavalinkTrack, NodeOptions, PluginNames, SearchQuery, UnresolvedLavalinkTrack } from "../../types/Node";
-import { type RestOrArray, SearchEngines, type HoshimiOptions } from "../../types/Manager";
+import { SearchEngines, type HoshimiOptions } from "../../types/Manager";
 import type { Node } from "../../classes/node/Node";
 import type { PlayerOptions } from "../../types/Player";
 import type { UpdatePlayerInfo } from "../../types/Rest";
@@ -132,7 +132,7 @@ export function validatePlayerData(this: Node, data: Partial<UpdatePlayerInfo>):
  * @param {Node} node The node to validate the plugins for.
  * @param {RestOrArray<string>} plugins The plugins to validate.
  */
-export function validateNodePlugins(node: Node, ...plugins: RestOrArray<PluginNames>): void {
+export function validateNodePlugins(node: Node, plugins: PluginNames[]): void {
     const info = node.info;
     if (!info) throw new NodeError({ id: node.id, message: "Node is not ready yet." });
 
@@ -142,7 +142,7 @@ export function validateNodePlugins(node: Node, ...plugins: RestOrArray<PluginNa
             message: "No plugins found in the node.",
         });
 
-    const missings = plugins.flat().filter((name) => !info.plugins.some((p) => p.name === name));
+    const missings = plugins.filter((name) => !info.plugins.some((p) => p.name === name));
     if (missings.length)
         throw new NodeError({
             id: node.id,

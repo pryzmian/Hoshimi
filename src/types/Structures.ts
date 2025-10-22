@@ -2,7 +2,7 @@ import { LyricsManager } from "../classes/node/Lyrics";
 import { NodeManager } from "../classes/node/Manager";
 import { Node } from "../classes/node/Node";
 import { Rest } from "../classes/node/Rest";
-import { FilterManager } from "../classes/player/Filters";
+import { FilterManager } from "../classes/player/filters/Manager";
 import { Player } from "../classes/player/Player";
 import { Queue } from "../classes/queue/Queue";
 import type { CustomizableStructures } from "./Manager";

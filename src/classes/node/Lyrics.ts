@@ -43,7 +43,7 @@ export class LyricsManager {
     public async current(guildId: string, skipSource: boolean = false): Promise<LyricsResult | null> {
         if (!this.node.sessionId) return null;
 
-        validateNodePlugins(this.node, PluginNames.LavaLyrics, PluginNames.JavaLyrics, PluginNames.LavaSrc);
+        validateNodePlugins(this.node, [PluginNames.LavaLyrics, PluginNames.JavaLyrics, PluginNames.LavaSrc]);
 
         return this.node.rest.request<LyricsResult>({
             endpoint: `/sessions/${this.node.sessionId}/players/${guildId}/track/lyrics`,
@@ -68,7 +68,7 @@ export class LyricsManager {
     public async get(track: Track, skipSource: boolean = false): Promise<LyricsResult | null> {
         if (!this.node.sessionId) return null;
 
-        validateNodePlugins(this.node, PluginNames.LavaLyrics, PluginNames.JavaLyrics, PluginNames.LavaSrc);
+        validateNodePlugins(this.node, [PluginNames.LavaLyrics, PluginNames.JavaLyrics, PluginNames.LavaSrc]);
 
         return this.node.rest.request<LyricsResult>({
             endpoint: "/lyrics",
@@ -94,7 +94,7 @@ export class LyricsManager {
     public async subscribe(guildId: string, skipSource: boolean = false): Promise<void> {
         if (!this.node.sessionId) return;
 
-        validateNodePlugins(this.node, PluginNames.LavaLyrics, PluginNames.JavaLyrics, PluginNames.LavaSrc);
+        validateNodePlugins(this.node, [PluginNames.LavaLyrics, PluginNames.JavaLyrics, PluginNames.LavaSrc]);
 
         await this.node.rest.request({
             endpoint: `/sessions/${this.node.sessionId}/players/${guildId}/lyrics/subscribe`,
@@ -119,7 +119,7 @@ export class LyricsManager {
     public async unsubscribe(guildId: string): Promise<void> {
         if (!this.node.sessionId) return;
 
-        validateNodePlugins(this.node, PluginNames.LavaLyrics, PluginNames.JavaLyrics, PluginNames.LavaSrc);
+        validateNodePlugins(this.node, [PluginNames.LavaLyrics, PluginNames.JavaLyrics, PluginNames.LavaSrc]);
 
         await this.node.rest.request({
             endpoint: `/sessions/${this.node.sessionId}/players/${guildId}/lyrics/subscribe`,
