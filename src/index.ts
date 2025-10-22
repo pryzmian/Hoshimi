@@ -5,12 +5,18 @@ export * from "./classes/node/Rest";
 // Exports related to queue and the store.
 export * from "./classes/queue/Queue";
 export * from "./classes/queue/adapters/abstract";
+export * from "./classes/queue/adapters/memory";
 
 // Exports related to package classes.
 export * from "./classes/Errors";
 export * from "./classes/Hoshimi";
 export * from "./classes/player/Player";
 export * from "./classes/Track";
+
+// Exports related to filters.
+export * from "./classes/player/filters/Manager";
+export * from "./classes/player/filters/DSPXPlugin";
+export * from "./classes/player/filters/LavalinkPlugin";
 
 // Exports related to types.
 export * from "./types/Manager";
