@@ -41,11 +41,11 @@
     "author": "Ganyu Studios",
     "license": "MIT",
     "devDependencies": {
-        "@biomejs/biome": "^2.2.6",
+        "@biomejs/biome": "^2.2.7",
         "@types/node": "^24.9.1",
         "@types/ws": "^8.18.1",
         "husky": "^9.1.7",
-        "lint-staged": "^16.2.5",
+        "lint-staged": "^16.2.6",
         "tsup": "^8.5.0",
         "tsx": "^4.20.6",
         "typescript": "^5.9.3"
