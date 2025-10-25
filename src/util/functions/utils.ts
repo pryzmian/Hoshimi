@@ -218,6 +218,16 @@ export function isUnresolvedTrack(
 
 /**
  *
+ * Check if the value is valid (not undefined or null).
+ * @param {unknown} value
+ * @returns {boolean} True if the value is valid, false otherwise.
+ */
+export function isValid(value: unknown): boolean {
+    return typeof value !== "undefined" && value !== null;
+}
+
+/**
+ *
  * Validate if the node options are correct.
  * @param {NodeOptions} options The node options to validate.
  * @returns {boolean} If the node options are correct.

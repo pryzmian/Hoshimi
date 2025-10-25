@@ -65,6 +65,46 @@ export enum FilterType {
      * @type {string}
      */
     Custom = "custom",
+    /**
+     * Timescale filter.
+     * @type {string}
+     */
+    Timescale = "timescale",
+    /**
+     * Distortion filter.
+     * @type {string}
+     */
+    Distortion = "distortion",
+    /**
+     * Echo filter.
+     * @type {string}
+     */
+    Echo = "echo",
+    /**
+     * Reverb filter.
+     * @type {string}
+     */
+    Reverb = "reverb",
+    /**
+     * DSPX low-pass filter.
+     * @type {string}
+     */
+    DSPXLowpass = "low-pass",
+    /**
+     * DSPX high-pass filter.
+     * @type {string}
+     */
+    DSPXHighpass = "high-pass",
+    /**
+     * DSPX echo filter.
+     * @type {string}
+     */
+    DSPXEcho = "echo",
+    /**
+     * DSPX normalization filter.
+     * @type {string}
+     */
+    DSPXNormalization = "normalization",
 }
 
 /**
@@ -502,6 +542,11 @@ export interface EnabledPlayerFilters {
      * @type {boolean}
      */
     distortion: boolean;
+    /**
+     * Check if the timescale filter is enabled or not.
+     * @type {boolean}
+     */
+    timescale: boolean;
     /**
      * The lavalink filter plugin enabled filters.
      * @type {EnabledLavalinkFilters}

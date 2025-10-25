@@ -1,3 +1,4 @@
+import type { FilterType } from "./Filters";
 import type { PickRequired, SearchEngines } from "./Manager";
 import type {
     LyricsFoundEvent,
@@ -988,9 +989,9 @@ export interface NodeInfo {
     sourceManagers: string[];
     /**
      * The filters available in the node.
-     * @type {string[]}
+     * @type {FilterType[]}
      */
-    filters: string[];
+    filters: FilterType[];
     /**
      * The plugins installed in the node.
      * @type {NodeInfoPlugin[]}

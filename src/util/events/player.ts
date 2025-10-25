@@ -24,7 +24,7 @@ import { validateTrack } from "../functions/utils";
  * @param {PlayerStructure} this The player that emitted the event.
  * @returns {Promise<void>} Yeah, this is something weird but it works.
  */
-async function onTrackEnd(this: PlayerStructure): Promise<void> {
+async function onEnd(this: PlayerStructure): Promise<void> {
     if (
         this.queue.current &&
         !this.queue.history.find(
@@ -76,7 +76,7 @@ async function queueEnd(
 
         this.manager.emit(Events.Debug, DebugLevels.Player, "[Queue] -> [Autoplay] Autoplay function executed.");
 
-        if (this.queue.size > 0) await onTrackEnd.call(this);
+        if (this.queue.size > 0) await onEnd.call(this);
         if (this.queue.current) {
             if (payload.type === PlayerEventType.TrackEnd) this.manager.emit(Events.TrackEnd, this, track, payload);
 
@@ -140,7 +140,7 @@ export async function trackEnd(this: PlayerStructure, payload: TrackEndEvent): P
         case TrackEndReason.Cleanup: {
             this.playing = false;
 
-            await onTrackEnd.call(this);
+            await onEnd.call(this);
 
             if (!this.queue.size || !this.queue.current) return queueEnd.call(this, current, payload);
 
@@ -159,7 +159,7 @@ export async function trackEnd(this: PlayerStructure, payload: TrackEndEvent): P
 
     if (current) await this.queue.utils.save();
 
-    await onTrackEnd.call(this);
+    await onEnd.call(this);
 
     this.queue.current = null;
 
@@ -203,7 +203,7 @@ export async function trackStuck(this: PlayerStructure, payload: TrackStuckEvent
         }
     }
 
-    await onTrackEnd.call(this);
+    await onEnd.call(this);
 
     if (!this.queue.current) return queueEnd.call(this, this.queue.current, payload);
 }

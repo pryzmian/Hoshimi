@@ -1,7 +1,7 @@
 import "dotenv/config";
 
 import { Client, type ParseClient, type UsingClient } from "seyfert";
-import { Hoshimi, Player, SearchEngines, Structures, type LyricsResult } from "hoshimi";
+import { createHoshimi, type Hoshimi, Player, SearchEngines, Structures, type LyricsResult } from "hoshimi";
 import { HandleCommand } from "seyfert/lib/commands/handle";
 import { Yuna } from "yunaforseyfert";
 import { LavalinkHandler } from "./manager/handler";
@@ -27,7 +27,7 @@ const client = new Client({
     },
 }) as Client<true> & UsingClient;
 
-client.manager = new Hoshimi({
+client.manager = createHoshimi({
     sendPayload: (guildId, payload) => client.gateway.send(client.gateway.calculateShardId(guildId), payload),
     defaultSearchEngine: SearchEngines.Spotify,
     nodeOptions: {
