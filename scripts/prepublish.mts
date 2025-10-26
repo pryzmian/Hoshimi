@@ -10,6 +10,7 @@ const {
     private: _p,
     devDependencies: _dev,
     packageManager: _pm,
+    pnpm: _pnpm,
     ...newPackageJsonRaw
 } = packageJson as typeof packageJson & { private: boolean };
 
