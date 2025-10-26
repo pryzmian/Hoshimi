@@ -114,8 +114,7 @@ client.events.values.RAW = {
 - For now, no one is using it :(
 
 ## 📝 Additional Notes
-I am currently working on this package. It is not ready for use yet. </br> This
-package takes some ideas provided from libraries like:
+I am currently working on this package.</br> This package takes some ideas provided from libraries like:
 
 - 📦 [`lavalink-client`](https://github.com/Tomato6966/lavalink-client/)
 - 📦 [`kazagumo`](https://github.com/Takiyo0/Kazagumo)

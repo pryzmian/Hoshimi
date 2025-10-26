@@ -149,11 +149,6 @@ export class Hoshimi extends EventEmitter<RawEvents> {
         validateManagerOptions(this.options);
 
         this.nodeManager = Structures.NodeManager(this);
-
-        process.emitWarning(
-            "Using Hoshimi is not recommended for production use. It is still in development and may have bugs.",
-            "HoshimiUsageWarning",
-        );
     }
 
     /**
