@@ -43,14 +43,13 @@ export class FilterManager {
      * @type {FilterSettings}
      * @public
      */
-    public data: FilterSettings = DefaultPlayerFilters;
+    public data: FilterSettings = { ...DefaultPlayerFilters };
 
     /**
      * The enabled filters for the player.
      * @type {EnabledPlayerFilters}
-     * @readonly
      */
-    public readonly filters: EnabledPlayerFilters = {
+    public filters: EnabledPlayerFilters = {
         audioOutput: AudioOutput.Stereo,
         volume: false,
         vaporwave: false,
@@ -116,24 +115,30 @@ export class FilterManager {
      * @returns {Promise<void>} A promise that resolves when the filters have been reset.
      */
     public async reset(): Promise<void> {
-        this.filters.audioOutput = AudioOutput.Stereo;
-        this.filters.lavalinkLavaDspxPlugin.echo = false;
-        this.filters.lavalinkLavaDspxPlugin.normalization = false;
-        this.filters.lavalinkLavaDspxPlugin.highPass = false;
-        this.filters.lavalinkLavaDspxPlugin.lowPass = false;
-        this.filters.lavalinkFilterPlugin.echo = false;
-        this.filters.lavalinkFilterPlugin.reverb = false;
-        this.filters.nightcore = false;
-        this.filters.lowPass = false;
-        this.filters.rotation = false;
-        this.filters.tremolo = false;
-        this.filters.vibrato = false;
-        this.filters.karaoke = false;
-        this.filters.karaoke = false;
-        this.filters.volume = false;
-        this.filters.vaporwave = false;
-        this.filters.custom = false;
-        this.filters.distortion = false;
+        this.filters = {
+            audioOutput: AudioOutput.Stereo,
+            volume: false,
+            vaporwave: false,
+            custom: false,
+            nightcore: false,
+            rotation: false,
+            karaoke: false,
+            tremolo: false,
+            vibrato: false,
+            lowPass: false,
+            distortion: false,
+            timescale: false,
+            lavalinkFilterPlugin: {
+                echo: false,
+                reverb: false,
+            },
+            lavalinkLavaDspxPlugin: {
+                lowPass: false,
+                highPass: false,
+                normalization: false,
+                echo: false,
+            },
+        };
 
         for (const [key, value] of Object.entries(DefaultPlayerFilters)) {
             this.data[key as keyof FilterSettings] = value;
@@ -151,6 +156,7 @@ export class FilterManager {
         if (!this.player.node.sessionId) return;
 
         this.check();
+        this.isCustom();
 
         const filters = { ...this.data };
 
@@ -186,8 +192,6 @@ export class FilterManager {
         for (const key in filters) {
             if (!this.player.node.info?.filters?.includes(key as FilterType)) delete filters[key as keyof FilterSettings];
         }
-
-        this.isCustom();
 
         await this.player.updatePlayer({ playerOptions: { filters } });
     }
