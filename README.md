@@ -1,5 +1,5 @@
 <div align="center">
-<h1>Hoshimi</h1>
+<h1>Hoshimi (BETA)</h1>
 <p>A lavalink@v4 client easy to use, up-to-date, and of course</p>
 <div align="center">
     <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
@@ -123,9 +123,9 @@ package takes some ideas provided from libraries like:
 - 📦 [`discord-player`](https://github.com/Androz2091/discord-player)
 - 📦 [`shoukaku`](https://github.com/shipgirlproject/Shoukaku)
 
-**I'm taking their job as a base for this project, I love their job, all of them, I just taked some
-stuff because i'm too lazy to make my own.**</br> If anyone of them want's to
-talk me to remove some stuff, they can.</br>
+**I'm taking their job as a base for this project, I love their job, all of them, I just took some
+stuff because i'm too lazy to make my own.**</br> If anyone of them wants to
+talk to me to remove their stuff, they can.</br>
 
 But made with my code style and my knowledge and of course up-to-date.
 
