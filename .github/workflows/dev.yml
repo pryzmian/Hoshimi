@@ -24,7 +24,9 @@ jobs:
                   node-version: "22.x"
                   registry-url: "https://registry.npmjs.org"
 
-            - uses: pnpm/action-setup@v4
+            - name: Setup pnpm
+              id: pnpm
+              uses: pnpm/action-setup@v4
               with:
                   version: 10
 
