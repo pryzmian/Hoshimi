@@ -1,7 +1,6 @@
-import type { Node } from "../classes/node/Node";
 import type { Track, UnresolvedTrack } from "../classes/Track";
 import type { FilterSettings } from "./Filters";
-import type { Nullable } from "./Manager";
+import type { NodeIdentifier, Nullable } from "./Manager";
 import type { Exception, LavalinkTrack, LyricsLine, LyricsResult, NodeJson, OpCodes } from "./Node";
 import type { QueueJson } from "./Queue";
 
@@ -395,9 +394,9 @@ export interface PlayerOptions {
     textId?: string;
     /**
      * Lavalink node of the player.
-     * @type {string | Node | undefined}
+     * @type {NodeIdentifier}
      */
-    node?: string | Node;
+    node?: NodeIdentifier;
 }
 
 /**
@@ -581,6 +580,11 @@ export interface LyricsMethods {
      */
     unsubscribe(): Promise<void>;
 }
+
+/**
+ * The voice channel update options.
+ */
+export type VoiceChannelUpdate = Pick<PlayerOptions, "selfDeaf" | "voiceId" | "selfMute">;
 
 /**
  * The voice settings for the player.

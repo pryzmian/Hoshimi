@@ -116,13 +116,13 @@ export function validatePlayerData(this: Node, data: Partial<UpdatePlayerInfo>):
         if (!player) return;
 
         if (typeof data.playerOptions.voice === "object") player.voice = data.playerOptions.voice;
-
         if (typeof data.playerOptions.paused === "boolean") {
             player.paused = data.playerOptions.paused;
             player.playing = !data.playerOptions.paused;
         }
 
         if (typeof data.playerOptions.volume === "number") player.volume = data.playerOptions.volume;
+        if (typeof data.playerOptions.position === "number") player.position = data.playerOptions.position;
     }
 }
 

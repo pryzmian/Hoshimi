@@ -18,7 +18,6 @@ import {
 } from "../types/Manager";
 import { type LavalinkSearchResponse, LoadType, State } from "../types/Node";
 import type { LavalinkPlayerVoice, PlayerOptions } from "../types/Player";
-import type { Node } from "./node/Node";
 
 import { Collection } from "../util/collection";
 import { validateManagerOptions } from "../util/functions/utils";
@@ -27,7 +26,7 @@ import { Track } from "./Track";
 import { autoplayFn } from "../util/functions/autoplay";
 import { HoshimiAgent } from "../util/constants";
 import { MemoryAdapter } from "./queue/adapters/memory";
-import { type NodeManagerStructure, type PlayerStructure, Structures } from "../types/Structures";
+import { type NodeManagerStructure, type NodeStructure, type PlayerStructure, Structures } from "../types/Structures";
 
 /**
  * The packet type for the manager.
@@ -398,7 +397,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
      * ```
      */
     public async search(options: SearchOptions): Promise<QueryResult> {
-        let node: Node | null = null;
+        let node: NodeStructure | null = null;
 
         if (options.node) {
             const nodeId: string = typeof options.node === "string" ? options.node : options.node.id;

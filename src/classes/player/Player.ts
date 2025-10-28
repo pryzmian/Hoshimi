@@ -1,18 +1,29 @@
-import { DebugLevels, DestroyReasons, Events, type Nullable, type SearchOptions, type QueryResult } from "../../types/Manager";
-import type { LyricsResult } from "../../types/Node";
 import {
+    DebugLevels,
+    DestroyReasons,
+    Events,
+    type Nullable,
+    type SearchOptions,
+    type QueryResult,
+    type NodeIdentifier,
+} from "../../types/Manager";
+import { type SourceNames, State, type LyricsResult } from "../../types/Node";
+import {
+    type LavalinkPlayOptions,
     type LavalinkPlayerVoice,
     LoopMode,
     type LyricsMethods,
     type PlayOptions,
     type PlayerJson,
     type PlayerOptions,
+    type VoiceChannelUpdate,
 } from "../../types/Player";
 import type { LavalinkPlayer, UpdatePlayerInfo } from "../../types/Rest";
 import { Structures, type NodeStructure, type QueueStructure } from "../../types/Structures";
 import { isTrack, isUnresolvedTrack, validateTrack, validatePlayerOptions } from "../../util/functions/utils";
 import { PlayerError } from "../Errors";
 import type { Hoshimi } from "../Hoshimi";
+import type { HoshimiTrack } from "../Track";
 import type { FilterManager } from "./filters/Manager";
 import { PlayerStorage } from "./Storage";
 
@@ -55,6 +66,12 @@ export class Player {
      * @readonly
      */
     readonly filterManager: FilterManager;
+
+    /**
+     * The node for the player.
+     * @type {NodeStructure}
+     */
+    public node: NodeStructure;
 
     /**
      * Check if the player is self deafened.
@@ -181,6 +198,10 @@ export class Player {
         this.volume = options.volume ?? 100;
         this.textId = options.textId;
 
+        this.node =
+            (typeof this.options.node === "string" ? this.manager.nodeManager.get(this.options.node) : this.options.node) ??
+            this.manager.nodeManager.getLeastUsed();
+
         validatePlayerOptions(this.options);
 
         this.queue = Structures.Queue(this);
@@ -198,24 +219,6 @@ export class Player {
         current: (skipSource): Promise<LyricsResult | null> => this.node.lyricsManager.current(this.guildId, skipSource),
         get: (track, skipSource): Promise<LyricsResult | null> => this.node.lyricsManager.get(track, skipSource),
     };
-
-    /**
-     *
-     * The node for the player.
-     * @type {NodeStructure}
-     * @readonly
-     * @example
-     * ```ts
-     * const player = manager.getPlayer("guildId");
-     * const node = player.node;
-     * ```
-     */
-    public get node(): NodeStructure {
-        return (
-            (typeof this.options.node === "string" ? this.manager.nodeManager.get(this.options.node) : this.options.node) ??
-            this.manager.nodeManager.getLeastUsed()
-        );
-    }
 
     /**
      *
@@ -244,7 +247,8 @@ export class Player {
     /**
      *
      * Play the next track in the queue.
-     * @param {number} [to] The amount of tracks to skip.
+     * @param {number} [to=0] The amount of tracks to skip.
+     * @param {boolean} [throwError=true] Whether to throw an error if there are no tracks to skip.
      * @returns {Promise<void>}
      * @throws {PlayerError} If there are no tracks to skip.
      * @example
@@ -254,10 +258,11 @@ export class Player {
      * player.skip(); // skip 1 track
      * ```
      */
-    public async skip(to: number = 0): Promise<void> {
+    public async skip(to: number = 0, throwError: boolean = true): Promise<void> {
         if (!this.queue.size) {
             this.manager.emit(Events.Debug, DebugLevels.Player, "[Player] -> [Skip] No tracks to skip.");
-            return;
+
+            if (throwError) throw new PlayerError("No tracks to skip.");
         }
 
         if (typeof to === "number" && to > 0) {
@@ -269,21 +274,44 @@ export class Player {
 
         if (!this.playing && !this.queue.current) return this.play();
 
+        this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Skip] Skipping to next track for guild: ${this.guildId}`);
+
         await this.node.stopPlayer(this.guildId);
     }
 
     /**
      *
-     * Disconnect the player from the voice channel.
+     * Seek to a specific position in the current track.
+     * @param {number} position The position to seek to in milliseconds.
      * @returns {Promise<void>}
+     * @throws {PlayerError} If the position is invalid.
+     * @example
+     * ```ts
+     * const player = manager.getPlayer("guildId");
+     * player.seek(30000); // seek to 30 seconds
+     * ```
+     */
+    public async seek(position: number): Promise<void> {
+        if (typeof position !== "number" || Number.isNaN(position) || position < 0)
+            throw new PlayerError("Position must be a positive number.");
+
+        this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Seek] Seeking to ${position} for guild: ${this.guildId}`);
+
+        await this.updatePlayer({ playerOptions: { position } });
+    }
+
+    /**
+     *
+     * Disconnect the player from the voice channel.
+     * @returns {Promise<this>} The player instance.
      * @example
      * ```ts
      * const player = manager.getPlayer("guildId");
      * player.disconnect();
      * ```
      */
-    public async disconnect(): Promise<void> {
-        if (!this.voiceId) return;
+    public async disconnect(): Promise<this> {
+        if (!this.voiceId) return this;
 
         await this.manager.options.sendPayload(this.guildId, {
             op: 4,
@@ -295,7 +323,10 @@ export class Player {
             },
         });
 
+        this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Disconnect] Player disconnected for guild: ${this.guildId}`);
         this.connected = false;
+
+        return this;
     }
 
     /**
@@ -361,19 +392,21 @@ export class Player {
                 },
             },
         });
+
+        return;
     }
 
     /**
      * Connect the player to the voice channel.
-     * @returns {Promise<void>}
+     * @returns {Promise<this>} The player instance.
      * @example
      * ```ts
      * const player = manager.getPlayer("guildId");
      * player.connect();
      * ```
      */
-    public async connect(): Promise<void> {
-        if (!this.voiceId) return;
+    public async connect(): Promise<this> {
+        if (!this.voiceId) return this;
 
         await this.manager.options.sendPayload(this.guildId, {
             op: 4,
@@ -385,7 +418,10 @@ export class Player {
             },
         });
 
+        this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Connect] Player connected for guild: ${this.guildId}`);
         this.connected = true;
+
+        return this;
     }
 
     /**
@@ -404,8 +440,14 @@ export class Player {
 
         if (destroy) await this.destroy(DestroyReasons.Stop);
 
+        this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Stop] Player stopped for guild: ${this.guildId}`);
+
         this.playing = false;
         this.paused = false;
+        this.position = 0;
+        this.queue.current = null;
+
+        return;
     }
 
     /**
@@ -446,6 +488,145 @@ export class Player {
             throw new PlayerError("Volume must be a number between 0 and 100.");
 
         await this.updatePlayer({ playerOptions: { volume } });
+
+        this.volume = volume;
+        this.manager.emit(
+            Events.Debug,
+            DebugLevels.Player,
+            `[Player] -> [Volume] Player volume set to ${volume}% for guild: ${this.guildId}`,
+        );
+
+        return;
+    }
+
+    /**
+     *
+     * Set the loop mode of the player.
+     * @param {LoopMode} mode The loop mode to set.
+     * @throws {PlayerError} If the loop mode is invalid.
+     * @example
+     * ```ts
+     * const player = manager.getPlayer("guildId");
+     * player.setLoop(LoopMode.Track);
+     * ```
+     */
+    public setLoop(mode: LoopMode): this {
+        const loopValues = Object.values(LoopMode).filter((v) => typeof v === "number");
+        if (!loopValues.includes(mode)) throw new PlayerError(`Invalid loop mode. Valid modes are: ${loopValues.join(", ")}`);
+
+        this.loop = mode;
+        this.manager.emit(
+            Events.Debug,
+            DebugLevels.Player,
+            `[Player] -> [Loop] Player loop mode set to ${mode} for guild: ${this.guildId}`,
+        );
+
+        return this;
+    }
+
+    /**
+     * Set the voice of the player.
+     * @param {Partial<VoiceChannelUpdate>} voice The voice state to set.
+     * @returns {Promise<void>}
+     * @example
+     * ```ts
+     * const player = manager.getPlayer("guildId");
+     * player.setVoice({ voiceId: "newVoiceId" });
+     * ```
+     */
+    public async setVoice(voice: Partial<VoiceChannelUpdate>): Promise<void> {
+        if (voice.voiceId === this.voiceId) return;
+
+        if (voice.voiceId) {
+            this.voiceId = voice.voiceId;
+            this.options.voiceId = voice.voiceId;
+        }
+
+        if (voice.selfDeaf) {
+            this.selfDeaf = voice.selfDeaf;
+            this.options.selfDeaf = voice.selfDeaf;
+        }
+
+        if (voice.selfMute) {
+            this.selfMute = voice.selfMute;
+            this.options.selfMute = voice.selfMute;
+        }
+
+        await this.manager.options.sendPayload(this.guildId, {
+            op: 4,
+            d: {
+                guild_id: this.guildId,
+                self_deaf: this.selfDeaf,
+                self_mute: this.selfMute,
+                channel_id: this.voiceId ?? null,
+            },
+        });
+
+        this.manager.emit(
+            Events.Debug,
+            DebugLevels.Player,
+            `[Player] -> [VoiceState] Updated voice state for guild: ${this.guildId} with voiceId: ${this.voiceId}`,
+        );
+    }
+
+    /**
+     *
+     * Change the node the player is connected to.
+     * @param {NodeIdentifier} node The node to change to.
+     * @returns {Promise<void>} A promise that resolves when the node has been changed.
+     * @throws {PlayerError} If the target node is not found, not connected, or missing source managers.
+     * @example
+     * ```ts
+     * const player = manager.getPlayer("guildId");
+     * player.move("newNodeId");
+     * ```
+     */
+    public async move(node: NodeIdentifier): Promise<void> {
+        const id = typeof node === "string" ? node : node.id;
+        const target = this.manager.nodeManager.get(id);
+
+        if (!target) throw new PlayerError("Target node not found.");
+        if (!target.info) throw new PlayerError("Target node info not available.");
+
+        if (target.state !== State.Connected) throw new PlayerError("Target node is not connected.");
+        if (target.id === this.node.id) return;
+
+        if (this.queue.current || this.queue.size) {
+            const sources = [this.queue.current, ...this.queue.tracks]
+                .filter((t): t is HoshimiTrack => t != null || typeof t !== "undefined")
+                .map((t) => t.info.sourceName)
+                .filter((s): s is SourceNames => s != null || typeof s !== "undefined");
+
+            const missings = [...new Set(sources)].filter((s) => !target.info!.sourceManagers.includes(s));
+            if (missings.length) throw new PlayerError(`Target node is missing source managers for: ${missings.join(", ")}`);
+        }
+
+        const current = this.queue.current;
+
+        if (!this.voice.endpoint || !this.voice.sessionId || !this.voice.token)
+            throw new PlayerError("Player voice connection data is incomplete.");
+        if (this.node.state === State.Connected) await this.node.destroyPlayer(this.guildId);
+
+        this.node = target;
+
+        await this.updatePlayer({
+            playerOptions: {
+                voice: this.voice as LavalinkPlayerVoice,
+                ...((current && {
+                    track: current.encoded,
+                    position: this.position,
+                    volume: this.volume,
+                }) as LavalinkPlayOptions),
+            },
+        });
+
+        await this.filterManager.apply();
+
+        this.manager.emit(
+            Events.Debug,
+            DebugLevels.Player,
+            `[Player] -> [Move] Player moved to node: ${target.id} for guild: ${this.guildId}`,
+        );
     }
 
     /**

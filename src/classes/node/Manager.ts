@@ -1,5 +1,5 @@
 import { Events } from "../../types/Manager";
-import { type NodeOptions, State } from "../../types/Node";
+import { type NodeOptions, NodeSortTypes, State } from "../../types/Node";
 import { type NodeStructure, Structures } from "../../types/Structures";
 import { Collection } from "../../util/collection";
 import type { Hoshimi } from "../Hoshimi";
@@ -83,9 +83,38 @@ export class NodeManager {
      * }
      * ```
      */
-    public getLeastUsed(): NodeStructure {
+    public getLeastUsed(sortType: NodeSortTypes = NodeSortTypes.Players): NodeStructure {
         const nodes: NodeStructure[] = this.nodes.filter((node) => node.state === State.Connected);
-        return nodes.reduce((a, b): NodeStructure => (a.penalties < b.penalties ? a : b));
+        if (!nodes.length) throw new Error("No connected nodes available.");
+
+        let node: NodeStructure | undefined;
+
+        switch (sortType) {
+            case NodeSortTypes.Players: {
+                const sorted = nodes.sort((a, b) => (a.stats?.players ?? 0) - (b.stats?.players ?? 0));
+                node = sorted[0];
+                break;
+            }
+            case NodeSortTypes.PlayingPlayers: {
+                const sorted = nodes.sort((a, b) => (a.stats?.playingPlayers ?? 0) - (b.stats?.playingPlayers ?? 0));
+                node = sorted[0];
+                break;
+            }
+            case NodeSortTypes.SystemLoad: {
+                const sorted = nodes.sort((a, b) => (a.stats?.cpu.systemLoad ?? 0) - (b.stats?.cpu.systemLoad ?? 0));
+                node = sorted[0];
+                break;
+            }
+            case NodeSortTypes.LavalinkLoad: {
+                const sorted = nodes.sort((a, b) => (a.stats?.cpu.lavalinkLoad ?? 0) - (b.stats?.cpu.lavalinkLoad ?? 0));
+                node = sorted[0];
+                break;
+            }
+        }
+
+        if (!node) node = nodes.reduce((a, b): NodeStructure => (a.penalties < b.penalties ? a : b));
+
+        return node;
     }
 
     /**

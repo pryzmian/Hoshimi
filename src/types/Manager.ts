@@ -27,7 +27,7 @@ import type {
 } from "./Player";
 import type { HoshimiQueueOptions } from "./Queue";
 import type { HoshimiRestOptions, LavalinkPlayer } from "./Rest";
-import type { PlayerStructure } from "./Structures";
+import type { NodeStructure, PlayerStructure } from "./Structures";
 
 /**
  * The search engines to use.
@@ -665,9 +665,9 @@ export interface SearchOptions extends SearchQuery {
     requester: TrackRequester;
     /**
      * The node or the node id to make the query.
-     * @type {Node | string}
+     * @type {NodeIdentifier}
      */
-    node?: Node | string;
+    node?: NodeIdentifier;
 }
 
 /**
@@ -873,6 +873,11 @@ export type DeepRequired<T> = {
             ? DeepRequired<T[P]>
             : Required<T[P]>;
 };
+
+/**
+ * A node identifier can be either a string or a node structure.
+ */
+export type NodeIdentifier = string | NodeStructure;
 
 /**
  * Custom structures for Hoshimi.

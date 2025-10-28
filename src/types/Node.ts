@@ -430,6 +430,42 @@ export enum PluginNames {
 }
 
 /**
+ * The node sort types.
+ */
+export enum NodeSortTypes {
+    /**
+     * Sort by memory usage.
+     * @type {string}
+     */
+    Memory = "memory",
+    /**
+     * Sort by cpu usage.
+     * @type {string}
+     */
+    Cpu = "cpu",
+    /**
+     * Sort by player count.
+     * @type {string}
+     */
+    Players = "players",
+    /**
+     * Sort by playing player count.
+     * @type {string}
+     */
+    PlayingPlayers = "playingPlayers",
+    /**
+     * Sort by system load.
+     * @type {string}
+     */
+    SystemLoad = "systemLoad",
+    /**
+     * Sort by lavalink load.
+     * @type {string}
+     */
+    LavalinkLoad = "lavalinkLoad",
+}
+
+/**
  * The track result.
  */
 interface TrackResult {
@@ -984,9 +1020,9 @@ export interface NodeInfo {
     lavaplayer: string;
     /**
      * The source managers available in the node.
-     * @type {string[]}
+     * @type {SourceNames[]}
      */
-    sourceManagers: string[];
+    sourceManagers: SourceNames[];
     /**
      * The filters available in the node.
      * @type {FilterType[]}

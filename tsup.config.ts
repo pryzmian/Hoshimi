@@ -8,7 +8,7 @@ export default defineConfig({
     format: ["esm", "cjs"],
     entry: ["./src/index.ts"],
     splitting: false,
-    sourcemap: true,
+    sourcemap: false,
     clean: true,
     skipNodeModulesBundle: true,
     ignoreWatch: ["**/node_modules/**", "**/.git/**"],
