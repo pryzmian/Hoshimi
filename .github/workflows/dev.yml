@@ -41,4 +41,6 @@ jobs:
                   new_version=$(npm version prerelease --preid dev-${{github.run_id}} --no-git-tag-version)
                   echo "New version: $new_version"
                   npm config set //registry.npmjs.org/:_authToken ${NODE_AUTH_TOKEN}
+                  pnpm tool:prepublish
+                  cd .npm
                   npm publish --provenance --tag=dev
