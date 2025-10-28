@@ -53,7 +53,8 @@ jobs:
               run: pnpm ci
 
             - name: Build v${{ needs.release.outputs.version }}
-              run: pnpm run build
-
+              run: |
+                  pnpm tool:prepublish
+                  cd .npm
             - name: Publish v${{ needs.release.outputs.version }}
               run: npm publish
