@@ -95,7 +95,7 @@ export abstract class StorageAdapter<T extends QueueJson = QueueJson> {
      *
      * Stringify the value.
      * @param {unknown} value The value to stringify.
-     * @returns {T} The stringified value.
+     * @returns {R} The stringified value.
      * @example
      * ```ts
      * const stringified = await storage.stringify({ key: "value" });
