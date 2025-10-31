@@ -8,7 +8,7 @@ import { NodeError, OptionError, ResolveError } from "../../classes/Errors";
 import { UrlRegex, ValidEngines, ValidSources } from "../constants";
 import { Track, UnresolvedTrack } from "../../classes/Track";
 
-import { StorageAdapter } from "../../classes/queue/adapters/abstract";
+import { StorageAdapter } from "../../classes/queue/adapters/adapter";
 import type { PlayerStructure } from "../../types/Structures";
 
 /**

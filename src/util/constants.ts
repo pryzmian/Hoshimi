@@ -1,5 +1,5 @@
 import { SourceNames, type UserAgent } from "../types/Node";
-import { type DeepRequired, SearchEngines } from "../types/Manager";
+import { SearchEngines } from "../types/Manager";
 
 import PackageJson from "../../package.json";
 import { AudioOutput } from "../types/Filters";
@@ -51,9 +51,9 @@ export const ValidSources: Map<SourceNames, SearchEngines> = new Map(
 
 /**
  * The audio output data for Hoshimi.
- * @type {Record<AudioOutput, ChannelMixSettings>}
+ * @type {Record<AudioOutput, Required<ChannelMixSettings>>}
  */
-export const AudioOutputData: Record<AudioOutput, DeepRequired<ChannelMixSettings>> = {
+export const AudioOutputData: Record<AudioOutput, Required<ChannelMixSettings>> = {
     [AudioOutput.Mono]: {
         leftToLeft: 0.5,
         leftToRight: 0.5,
@@ -84,7 +84,7 @@ export const AudioOutputData: Record<AudioOutput, DeepRequired<ChannelMixSetting
  * The default filter presets.
  * @constant {Object} DefaultFilter
  */
-export const DefaultFilterPreset = {
+export const DefaultFilterPreset = Object.freeze({
     Karaoke: { level: 1, monoLevel: 1, filterBand: 220, filterWidth: 100 },
     Vaporwave: { speed: 0.8500000238418579, pitch: 0.800000011920929, rate: 1 },
     Nightcore: { speed: 1.289999523162842, pitch: 1.289999523162842, rate: 0.9365999523162842 },
@@ -100,13 +100,13 @@ export const DefaultFilterPreset = {
 
     PluginEcho: { decay: 0.8, delay: 4 },
     PluginReverb: { delays: [0.037, 0.042, 0.048, 0.053], gains: [0.84, 0.83, 0.82, 0.81] },
-};
+});
 
 /**
  * The default filter settings.
  * @constant {FilterSettings} DefaultFilters
  */
-export const DefaultPlayerFilters: FilterSettings = {
+export const DefaultPlayerFilters: FilterSettings = Object.freeze({
     volume: 1,
     lowPass: {
         smoothing: 0,
@@ -174,4 +174,4 @@ export const DefaultPlayerFilters: FilterSettings = {
         tanScale: 1,
     },
     channelMix: AudioOutputData.mono,
-};
+});

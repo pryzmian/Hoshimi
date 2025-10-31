@@ -1,4 +1,4 @@
-import type { StorageAdapter } from "../classes/queue/adapters/abstract";
+import type { StorageAdapter } from "../classes/queue/adapters/adapter";
 import type { HoshimiTrack, Track } from "../classes/Track";
 import type { Awaitable } from "./Manager";
 import type { PlayerStructure } from "./Structures";

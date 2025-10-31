@@ -463,6 +463,11 @@ export enum NodeSortTypes {
      * @type {string}
      */
     LavalinkLoad = "lavalinkLoad",
+    /**
+     * Sort by penalties.
+     * @type {string}
+     */
+    Penalties = "penalties",
 }
 
 /**
@@ -1259,6 +1264,11 @@ export interface NodeJson {
      * @type {string | null}
      */
     sessionId: string | null;
+    /**
+     * The node options.
+     * @type {NodeOptions}
+     */
+    options: NodeOptions;
 }
 
 /**

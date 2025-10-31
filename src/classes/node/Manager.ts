@@ -83,7 +83,7 @@ export class NodeManager {
      * }
      * ```
      */
-    public getLeastUsed(sortType: NodeSortTypes = NodeSortTypes.Players): NodeStructure {
+    public getLeastUsed(sortType: NodeSortTypes = NodeSortTypes.Penalties): NodeStructure {
         const nodes: NodeStructure[] = this.nodes.filter((node) => node.state === State.Connected);
         if (!nodes.length) throw new Error("No connected nodes available.");
 
@@ -95,24 +95,53 @@ export class NodeManager {
                 node = sorted[0];
                 break;
             }
+
             case NodeSortTypes.PlayingPlayers: {
                 const sorted = nodes.sort((a, b) => (a.stats?.playingPlayers ?? 0) - (b.stats?.playingPlayers ?? 0));
                 node = sorted[0];
                 break;
             }
+
             case NodeSortTypes.SystemLoad: {
                 const sorted = nodes.sort((a, b) => (a.stats?.cpu.systemLoad ?? 0) - (b.stats?.cpu.systemLoad ?? 0));
                 node = sorted[0];
                 break;
             }
+
             case NodeSortTypes.LavalinkLoad: {
                 const sorted = nodes.sort((a, b) => (a.stats?.cpu.lavalinkLoad ?? 0) - (b.stats?.cpu.lavalinkLoad ?? 0));
                 node = sorted[0];
                 break;
             }
+
+            case NodeSortTypes.Penalties: {
+                const sorted = nodes.sort((a, b) => a.penalties - b.penalties);
+                node = sorted[0];
+                break;
+            }
+
+            case NodeSortTypes.Cpu: {
+                const sorted = nodes.sort((a, b) => {
+                    const aLoad = ((a.stats?.cpu.systemLoad ?? 0) + (a.stats?.cpu.lavalinkLoad ?? 0)) / 2;
+                    const bLoad = ((b.stats?.cpu.systemLoad ?? 0) + (b.stats?.cpu.lavalinkLoad ?? 0)) / 2;
+                    return aLoad - bLoad;
+                });
+                node = sorted[0];
+                break;
+            }
+
+            case NodeSortTypes.Memory: {
+                const sorted = nodes.sort((a, b) => {
+                    const aLoad = ((a.stats?.memory.used ?? 0) / (a.stats?.memory.allocated ?? 1)) * 100;
+                    const bLoad = ((b.stats?.memory.used ?? 0) / (b.stats?.memory.allocated ?? 1)) * 100;
+                    return aLoad - bLoad;
+                });
+                node = sorted[0];
+                break;
+            }
         }
 
-        if (!node) node = nodes.reduce((a, b): NodeStructure => (a.penalties < b.penalties ? a : b));
+        if (!node) throw new Error("No connected nodes available.");
 
         return node;
     }

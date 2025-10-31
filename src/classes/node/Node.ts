@@ -241,6 +241,7 @@ export class Node {
         if (!this.stats) return 0;
 
         const { players, cpu, frameStats } = this.stats;
+
         const cpuPenalty = Math.round(1.05 ** (100 * cpu.systemLoad) * 10 - 10);
         const framePenalty = frameStats ? frameStats.deficit + frameStats.nulled * 2 : 0;
 
@@ -410,11 +411,13 @@ export class Node {
     public disconnect(disconnect: NodeDisconnectInfo = {}): void {
         if (this.state !== State.Connected) return;
 
-        this.ws?.close(disconnect.code, disconnect.reason);
-        this.ws?.removeAllListeners();
-        this.ws = null;
-        this.state = State.Disconnected;
+        if (this.ws) {
+            this.ws.close(disconnect.code, disconnect.reason);
+            this.ws.removeAllListeners();
+            this.ws = null;
+        }
 
+        this.state = State.Disconnected;
         this.retryAmount = this.options.retryAmount;
 
         if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
@@ -437,11 +440,13 @@ export class Node {
     public destroy(destroy: NodeDestroyInfo = {}): void {
         if (this.state !== State.Connected) return;
 
-        this.ws?.close(destroy.code, destroy.reason);
-        this.ws?.removeAllListeners();
-        this.ws = null;
-        this.state = State.Destroyed;
+        if (this.ws) {
+            this.ws.close(destroy.code, destroy.reason);
+            this.ws.removeAllListeners();
+            this.ws = null;
+        }
 
+        this.state = State.Destroyed;
         this.retryAmount = 0;
 
         if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
@@ -511,8 +516,11 @@ export class Node {
                 return;
             }
 
-            this.ws?.removeAllListeners();
-            this.ws = null;
+            if (this.ws) {
+                this.ws.removeAllListeners();
+                this.ws = null;
+            }
+
             this.retryAmount--;
             this.connect();
         }, this.options.retryDelay);
@@ -535,6 +543,7 @@ export class Node {
         return {
             id: this.id,
             sessionId: this.sessionId,
+            options: this.options,
         };
     }
 }

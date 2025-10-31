@@ -4,7 +4,7 @@ export * from "./classes/node/Rest";
 
 // Exports related to queue and the store.
 export * from "./classes/queue/Queue";
-export * from "./classes/queue/adapters/abstract";
+export * from "./classes/queue/adapters/adapter";
 export * from "./classes/queue/adapters/memory";
 
 // Exports related to package classes.

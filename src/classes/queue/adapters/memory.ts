@@ -1,5 +1,5 @@
 import type { QueueJson } from "../../../types/Queue";
-import { StorageAdapter } from "./abstract";
+import { StorageAdapter } from "./adapter";
 
 /**
  * Class representing a memory storage manager.
