@@ -77,12 +77,15 @@ const hoshimi = new Hoshimi({
         },
     ], // Add more nodes if you want!
     sendPayload(guildId, payload) {
-        // You client send to shard payload function
+        // Your client send to shard payload function
         client.gateway.send(client.gateway.calculateShardId(guildId), payload);
     },
 });
 
-// FOLLOW YOU CLIENT EVENT IMPLEMENTATION
+// Bind the manager into your client!
+client.hoshimi = hoshimi;
+
+// FOLLOW YOUR CLIENT EVENT IMPLEMENTATION
 // THIS IS ONLY A EXAMPLE, NOT A REAL USAGE
 client.events.values.READY = {
     __filePath: null,
