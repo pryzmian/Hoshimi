@@ -87,63 +87,30 @@ export class NodeManager {
         const nodes: NodeStructure[] = this.nodes.filter((node) => node.state === State.Connected);
         if (!nodes.length) throw new Error("No connected nodes available.");
 
-        let node: NodeStructure | undefined;
-
         switch (sortType) {
-            case NodeSortTypes.Players: {
-                const sorted = nodes.sort((a, b) => (a.stats?.players ?? 0) - (b.stats?.players ?? 0));
-                node = sorted[0];
-                break;
-            }
-
-            case NodeSortTypes.PlayingPlayers: {
-                const sorted = nodes.sort((a, b) => (a.stats?.playingPlayers ?? 0) - (b.stats?.playingPlayers ?? 0));
-                node = sorted[0];
-                break;
-            }
-
-            case NodeSortTypes.SystemLoad: {
-                const sorted = nodes.sort((a, b) => (a.stats?.cpu.systemLoad ?? 0) - (b.stats?.cpu.systemLoad ?? 0));
-                node = sorted[0];
-                break;
-            }
-
-            case NodeSortTypes.LavalinkLoad: {
-                const sorted = nodes.sort((a, b) => (a.stats?.cpu.lavalinkLoad ?? 0) - (b.stats?.cpu.lavalinkLoad ?? 0));
-                node = sorted[0];
-                break;
-            }
-
-            case NodeSortTypes.Penalties: {
-                const sorted = nodes.sort((a, b) => a.penalties - b.penalties);
-                node = sorted[0];
-                break;
-            }
-
-            case NodeSortTypes.Cpu: {
-                const sorted = nodes.sort((a, b) => {
+            case NodeSortTypes.Players:
+                return nodes.reduce((a, b) => ((a.stats?.players ?? 0) < (b.stats?.players ?? 0) ? a : b));
+            case NodeSortTypes.PlayingPlayers:
+                return nodes.reduce((a, b) => ((a.stats?.playingPlayers ?? 0) < (b.stats?.playingPlayers ?? 0) ? a : b));
+            case NodeSortTypes.SystemLoad:
+                return nodes.reduce((a, b) => ((a.stats?.cpu.systemLoad ?? 0) < (b.stats?.cpu.systemLoad ?? 0) ? a : b));
+            case NodeSortTypes.LavalinkLoad:
+                return nodes.reduce((a, b) => ((a.stats?.cpu.lavalinkLoad ?? 0) < (b.stats?.cpu.lavalinkLoad ?? 0) ? a : b));
+            case NodeSortTypes.Penalties:
+                return nodes.reduce((a, b) => (a.penalties < b.penalties ? a : b));
+            case NodeSortTypes.Cpu:
+                return nodes.reduce((a, b) => {
                     const aLoad = ((a.stats?.cpu.systemLoad ?? 0) + (a.stats?.cpu.lavalinkLoad ?? 0)) / 2;
                     const bLoad = ((b.stats?.cpu.systemLoad ?? 0) + (b.stats?.cpu.lavalinkLoad ?? 0)) / 2;
-                    return aLoad - bLoad;
+                    return aLoad < bLoad ? a : b;
                 });
-                node = sorted[0];
-                break;
-            }
-
-            case NodeSortTypes.Memory: {
-                const sorted = nodes.sort((a, b) => {
+            case NodeSortTypes.Memory:
+                return nodes.reduce((a, b) => {
                     const aLoad = ((a.stats?.memory.used ?? 0) / (a.stats?.memory.allocated ?? 1)) * 100;
                     const bLoad = ((b.stats?.memory.used ?? 0) / (b.stats?.memory.allocated ?? 1)) * 100;
-                    return aLoad - bLoad;
+                    return aLoad < bLoad ? a : b;
                 });
-                node = sorted[0];
-                break;
-            }
         }
-
-        if (!node) throw new Error("No connected nodes available.");
-
-        return node;
     }
 
     /**

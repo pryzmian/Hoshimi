@@ -19,15 +19,15 @@
 </div>
 
 ## 📦 Features
-- 📋 **V4**: Fully supports the latest v4 lavalink features.
-- 🔗 **Node Manager**: Manage nodes, auto least‑used selection by penalties, session resume and more.
+- 📋 **V4**: Works with lavalink v4 and their features (wip).
+- 🔗 **Node Manager**: Manage nodes, auto least‑used selection, session resume and more.
 - ▶️ **Autoplay**: YouTube and Spotify recommendations out of the box; easily extend with your own function.
 - 📝 **Lyrics**: Control your lyrics with live-lyrics updates; validates required plugins.
 - 🌐 **REST + WebSocket**: Typed REST helpers, player/session control, decode single/multiple tracks.
 - 📣 **Events**: Granular events with debug levels.
 - 🧩 **Extensible**: Override structures with your own ones.
 - 🧪 **Safety & DX**: Strict validation, descriptive errors, TypeScript-first API build, and formatting/linting.
-- 📜 **Filters (WIP)**: Built-in filters, easy management and easy to use!  
+- 📜 **Filters**: Built-in filters, easy management and easy to use!  
 
 ## ⚙️ Requirements
 - **Runtime** - atleast one of:
@@ -105,7 +105,7 @@ client.events.values.RAW = {
 };
 
 (async () => {
-    await client.start()
+    await client.start();
 })();
 ```
 
