@@ -1,5 +1,5 @@
-import type { HoshimiEvents } from "hoshimi";
 import { pathToFileURL } from "node:url";
+import type { HoshimiEvents } from "hoshimi";
 import type { UsingClient } from "seyfert";
 import { BaseHandler } from "seyfert/lib/common";
 import type { Lavalink } from "./events";

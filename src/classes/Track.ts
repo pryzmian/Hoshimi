@@ -1,8 +1,8 @@
 import { DebugLevels, Events, type Inferable } from "../types/Manager";
 import {
-    SourceNames,
     type LavalinkTrack,
     type PluginInfo,
+    SourceNames,
     type TrackInfo,
     type UnresolvedLavalinkTrack,
     type UnresolvedTrackInfo,

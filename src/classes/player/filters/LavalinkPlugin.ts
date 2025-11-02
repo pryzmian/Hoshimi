@@ -1,4 +1,4 @@
-import { FilterType, type EchoSettings, type LavalinkFilterPluginReverbSettings } from "../../../types/Filters";
+import { type EchoSettings, FilterType, type LavalinkFilterPluginReverbSettings } from "../../../types/Filters";
 import type { Omit } from "../../../types/Manager";
 import { PluginNames } from "../../../types/Node";
 import type { FilterManagerStructure } from "../../../types/Structures";

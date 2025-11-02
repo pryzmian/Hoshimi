@@ -1,15 +1,13 @@
-import type { SourceNames, LavalinkTrack, NodeOptions, PluginNames, SearchQuery, UnresolvedLavalinkTrack } from "../../types/Node";
-import { SearchEngines, type HoshimiOptions } from "../../types/Manager";
+import { NodeError, OptionError, ResolveError } from "../../classes/Errors";
 import type { Node } from "../../classes/node/Node";
+import { StorageAdapter } from "../../classes/queue/adapters/adapter";
+import { Track, UnresolvedTrack } from "../../classes/Track";
+import { type HoshimiOptions, SearchEngines } from "../../types/Manager";
+import type { LavalinkTrack, NodeOptions, PluginNames, SearchQuery, SourceNames, UnresolvedLavalinkTrack } from "../../types/Node";
 import type { PlayerOptions } from "../../types/Player";
 import type { UpdatePlayerInfo } from "../../types/Rest";
-
-import { NodeError, OptionError, ResolveError } from "../../classes/Errors";
-import { UrlRegex, ValidEngines, ValidSources } from "../constants";
-import { Track, UnresolvedTrack } from "../../classes/Track";
-
-import { StorageAdapter } from "../../classes/queue/adapters/adapter";
 import type { PlayerStructure } from "../../types/Structures";
+import { UrlRegex, ValidEngines, ValidSources } from "../constants";
 
 /**
  *

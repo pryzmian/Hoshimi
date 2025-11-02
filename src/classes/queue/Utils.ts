@@ -1,11 +1,10 @@
 import { DebugLevels, Events, type Awaitable } from "../../types/Manager";
-
-import { StorageError } from "../Errors";
-import { QueueStore } from "./Store";
-
-import { isTrack } from "../../util/functions/utils";
 import type { HoshimiQueueOptions, QueueJson } from "../../types/Queue";
 import type { QueueStructure } from "../../types/Structures";
+
+import { isTrack } from "../../util/functions/utils";
+import { StorageError } from "../Errors";
+import { QueueStore } from "./Store";
 
 /**
  * Class representing the queue utils.

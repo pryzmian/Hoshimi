@@ -3,16 +3,16 @@ import type { Track } from "../../classes/Track";
 import { DebugLevels, Events } from "../../types/Manager";
 import {
     LoopMode,
-    type TrackStartEvent,
-    type TrackEndEvent,
-    type TrackStuckEvent,
-    type TrackExceptionEvent,
-    PlayerEventType,
-    type PlayerUpdate,
-    TrackEndReason,
     type LyricsFoundEvent,
     type LyricsLineEvent,
     type LyricsNotFoundEvent,
+    PlayerEventType,
+    type PlayerUpdate,
+    type TrackEndEvent,
+    TrackEndReason,
+    type TrackExceptionEvent,
+    type TrackStartEvent,
+    type TrackStuckEvent,
     type WebSocketClosedEvent,
 } from "../../types/Player";
 import type { PlayerStructure } from "../../types/Structures";

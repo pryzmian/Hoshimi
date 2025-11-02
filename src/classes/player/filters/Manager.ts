@@ -1,14 +1,14 @@
 import {
     AudioOutput,
-    FilterType,
-    type TimescaleSettings,
+    type DistortionSettings,
     type EnabledPlayerFilters,
     type EQBandSettings,
     type FilterSettings,
-    type LowPassSettings,
-    type TremoloSettings,
+    FilterType,
     type KaraokeSettings,
-    type DistortionSettings,
+    type LowPassSettings,
+    type TimescaleSettings,
+    type TremoloSettings,
 } from "../../../types/Filters";
 import type { Omit, RestOrArray } from "../../../types/Manager";
 import type { PlayerStructure } from "../../../types/Structures";

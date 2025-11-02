@@ -3,12 +3,12 @@ import type { UserAgent } from "../../types/Node";
 import {
     type FetchOptions,
     HttpMethods,
-    type LavalinkRestError,
-    type RestOptions,
-    type LavalinkPlayer,
-    type UpdatePlayerInfo,
-    type LavalinkSession,
     HttpStatusCodes,
+    type LavalinkPlayer,
+    type LavalinkRestError,
+    type LavalinkSession,
+    type RestOptions,
+    type UpdatePlayerInfo,
 } from "../../types/Rest";
 import type { NodeStructure } from "../../types/Structures";
 import { HoshimiAgent } from "../../util/constants";

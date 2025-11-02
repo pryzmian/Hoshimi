@@ -1,32 +1,31 @@
 import { EventEmitter } from "node:events";
 
 import {
+    type ChannelDeletePacket,
     type ClientData,
-    SearchEngines,
+    DebugLevels,
+    type DeepRequired,
+    DestroyReasons,
+    Events,
     type HoshimiEvents,
     type HoshimiOptions,
     type QueryResult,
+    SearchEngines,
     type SearchOptions,
     type VoicePacket,
     type VoiceServer,
     type VoiceState,
-    type ChannelDeletePacket,
-    DebugLevels,
-    Events,
-    type DeepRequired,
-    DestroyReasons,
 } from "../types/Manager";
 import { type LavalinkSearchResponse, LoadType, State } from "../types/Node";
 import type { LavalinkPlayerVoice, PlayerOptions } from "../types/Player";
-
+import { type NodeManagerStructure, type NodeStructure, type PlayerStructure, Structures } from "../types/Structures";
 import { Collection } from "../util/collection";
+import { HoshimiAgent } from "../util/constants";
+import { autoplayFn } from "../util/functions/autoplay";
 import { validateManagerOptions } from "../util/functions/utils";
 import { ManagerError, OptionError } from "./Errors";
-import { Track } from "./Track";
-import { autoplayFn } from "../util/functions/autoplay";
-import { HoshimiAgent } from "../util/constants";
 import { MemoryAdapter } from "./queue/adapters/memory";
-import { type NodeManagerStructure, type NodeStructure, type PlayerStructure, Structures } from "../types/Structures";
+import { Track } from "./Track";
 
 /**
  * The packet type for the manager.

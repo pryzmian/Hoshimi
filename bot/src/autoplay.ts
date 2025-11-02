@@ -1,4 +1,4 @@
-import { SearchEngines, SourceNames, type HoshimiTrack, type PlayerStructure, type Track } from "hoshimi";
+import { type HoshimiTrack, type PlayerStructure, SearchEngines, SourceNames, type Track } from "hoshimi";
 
 /**
  * The maximum number of tracks to be added to the queue.

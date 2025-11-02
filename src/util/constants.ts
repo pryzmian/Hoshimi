@@ -1,9 +1,8 @@
-import { SourceNames, type UserAgent } from "../types/Node";
-import { SearchEngines } from "../types/Manager";
-
 import PackageJson from "../../package.json";
-import { AudioOutput } from "../types/Filters";
 import type { ChannelMixSettings, FilterSettings } from "../types/Filters";
+import { AudioOutput } from "../types/Filters";
+import { SearchEngines } from "../types/Manager";
+import { SourceNames, type UserAgent } from "../types/Node";
 
 /**
  * The user agent for Hoshimi.

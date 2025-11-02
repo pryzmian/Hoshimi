@@ -2,25 +2,25 @@ import {
     DebugLevels,
     DestroyReasons,
     Events,
-    type Nullable,
-    type SearchOptions,
-    type QueryResult,
     type NodeIdentifier,
+    type Nullable,
+    type QueryResult,
+    type SearchOptions,
 } from "../../types/Manager";
-import { type SourceNames, State, type LyricsResult } from "../../types/Node";
+import { type LyricsResult, type SourceNames, State } from "../../types/Node";
 import {
-    type LavalinkPlayOptions,
     type LavalinkPlayerVoice,
+    type LavalinkPlayOptions,
     LoopMode,
     type LyricsMethods,
-    type PlayOptions,
     type PlayerJson,
     type PlayerOptions,
+    type PlayOptions,
     type VoiceChannelUpdate,
 } from "../../types/Player";
 import type { LavalinkPlayer, UpdatePlayerInfo } from "../../types/Rest";
-import { Structures, type NodeStructure, type QueueStructure } from "../../types/Structures";
-import { isTrack, isUnresolvedTrack, validateTrack, validatePlayerOptions } from "../../util/functions/utils";
+import { type NodeStructure, type QueueStructure, Structures } from "../../types/Structures";
+import { isTrack, isUnresolvedTrack, validatePlayerOptions, validateTrack } from "../../util/functions/utils";
 import { PlayerError } from "../Errors";
 import type { Hoshimi } from "../Hoshimi";
 import type { HoshimiTrack } from "../Track";

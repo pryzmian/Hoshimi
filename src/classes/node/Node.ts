@@ -1,22 +1,20 @@
+import { WebSocket } from "ws";
+import { DebugLevels, Events } from "../../types/Manager";
 import {
     type LavalinkSearchResponse,
+    type LavalinkTrack,
+    type NodeDestroyInfo,
+    NodeDestroyReasons,
+    type NodeDisconnectInfo,
+    type NodeInfo,
+    type NodeJson,
     type NodeOptions,
-    State,
     type ResumableHeaders,
     type SearchQuery,
+    State,
     type Stats,
-    type NodeInfo,
-    type NodeDestroyInfo,
-    type NodeDisconnectInfo,
     WebsocketCloseCodes,
-    NodeDestroyReasons,
-    type LavalinkTrack,
-    type NodeJson,
 } from "../../types/Node";
-
-import { NodeError } from "../Errors";
-
-import { onClose, onError, onMessage, onOpen } from "../../util/events/websocket";
 import {
     type DecodeMethods,
     HttpMethods,
@@ -25,12 +23,11 @@ import {
     type NullableLavalinkSession,
     type UpdatePlayerInfo,
 } from "../../types/Rest";
-
-import { DebugLevels, Events } from "../../types/Manager";
-import { validateQuery } from "../../util/functions/utils";
-import { WebSocket } from "ws";
-import { Track } from "../Track";
 import { type LyricsManagerStructure, type NodeManagerStructure, type RestStructure, Structures } from "../../types/Structures";
+import { onClose, onError, onMessage, onOpen } from "../../util/events/websocket";
+import { validateQuery } from "../../util/functions/utils";
+import { NodeError } from "../Errors";
+import { Track } from "../Track";
 
 /**
  * Class representing a Lavalink node.

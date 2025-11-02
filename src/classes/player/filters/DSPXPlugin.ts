@@ -1,4 +1,4 @@
-import { FilterType, type EchoSettings, type FilterPluginPassSettings, type NormalizationSettings } from "../../../types/Filters";
+import { type EchoSettings, type FilterPluginPassSettings, FilterType, type NormalizationSettings } from "../../../types/Filters";
 import { PluginNames } from "../../../types/Node";
 import type { FilterManagerStructure } from "../../../types/Structures";
 import { DefaultFilterPreset } from "../../../util/constants";

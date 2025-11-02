@@ -1,4 +1,4 @@
-import { PluginNames, type LyricsResult } from "../../types/Node";
+import { type LyricsResult, PluginNames } from "../../types/Node";
 import { HttpMethods } from "../../types/Rest";
 import type { NodeStructure } from "../../types/Structures";
 import { validateNodePlugins } from "../../util/functions/utils";

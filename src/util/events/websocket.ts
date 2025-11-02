@@ -1,8 +1,9 @@
 import type { IncomingMessage } from "node:http";
 import type { Node } from "../../classes/node/Node";
-import { type LavalinkPayload, State, OpCodes, type NodeInfo, WebsocketCloseCodes, NodeDestroyReasons } from "../../types/Node";
 import { DebugLevels, Events } from "../../types/Manager";
+import { type LavalinkPayload, NodeDestroyReasons, type NodeInfo, OpCodes, State, WebsocketCloseCodes } from "../../types/Node";
 import { PlayerEventType } from "../../types/Player";
+import type { LavalinkPlayer } from "../../types/Rest";
 import {
     lyricsFound,
     lyricsLine,
@@ -14,7 +15,6 @@ import {
     trackStart,
     trackStuck,
 } from "./player";
-import type { LavalinkPlayer } from "../../types/Rest";
 
 /**
  *

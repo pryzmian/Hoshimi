@@ -1,6 +1,6 @@
 import type { Node } from "../classes/node/Node";
 import type { Queue } from "../classes/queue/Queue";
-import type { TrackRequester, Track } from "../classes/Track";
+import type { Track, TrackRequester } from "../classes/Track";
 import type {
     Exception,
     HoshimiNodeOptions,
