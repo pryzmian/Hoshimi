@@ -104,7 +104,7 @@ export async function trackStart(this: PlayerStructure, payload: TrackStartEvent
     this.paused = false;
     this.playing = true;
 
-    //if (this.queue.current) await this.queue.utils.save();
+    if (this.queue.current) await this.queue.utils.save();
 
     this.manager.emit(Events.TrackStart, this, this.queue.current, payload);
     this.manager.emit(
