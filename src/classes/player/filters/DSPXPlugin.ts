@@ -29,9 +29,9 @@ export class DSPXPluginFilter {
      *
      * Set the low-pass filter with the given settings.
      * @param {FilterPluginPassSettings} [settings=DefaultFilter.DSPXLowPass] The settings for the low-pass filter.
-     * @returns {Promise<boolean>} Whether the filter is now active.
+     * @returns {Promise<this>} The instance of the filter manager.
      */
-    public async setLowPass(settings: Partial<FilterPluginPassSettings> = DefaultFilterPreset.DSPXLowPass): Promise<boolean> {
+    public async setLowPass(settings: Partial<FilterPluginPassSettings> = DefaultFilterPreset.DSPXLowPass): Promise<this> {
         validateNodePlugins(this.manager.player.node, [PluginNames.LavaDspx]);
 
         if (!this.manager.player.node.info?.filters?.includes(FilterType.DSPXLowpass))
@@ -50,16 +50,16 @@ export class DSPXPluginFilter {
 
         await this.manager.apply();
 
-        return this.manager.filters.lavalinkLavaDspxPlugin.lowPass;
+        return this;
     }
 
     /**
      *
      * Set the high-pass filter with the given settings.
      * @param {FilterPluginPassSettings} [settings=DefaultFilter.DSPXHighPass] The settings for the high-pass filter.
-     * @returns {Promise<boolean>} Whether the filter is now active.
+     * @returns {Promise<this>} The instance of the filter manager.
      */
-    public async setHighPass(settings: Partial<FilterPluginPassSettings> = DefaultFilterPreset.DSPXHighPass): Promise<boolean> {
+    public async setHighPass(settings: Partial<FilterPluginPassSettings> = DefaultFilterPreset.DSPXHighPass): Promise<this> {
         validateNodePlugins(this.manager.player.node, [PluginNames.LavaDspx]);
 
         if (this.manager.player.node.info && !this.manager.player.node.info?.filters?.includes(FilterType.DSPXHighpass))
@@ -79,16 +79,16 @@ export class DSPXPluginFilter {
 
         await this.manager.apply();
 
-        return this.manager.filters.lavalinkLavaDspxPlugin.highPass;
+        return this;
     }
 
     /**
      *
      * Set the normalization filter with the given settings.
      * @param {NormalizationSettings} [settings=DefaultFilter.DSPXNormalization] The settings for the normalization filter.
-     * @returns {Promise<boolean>} Whether the filter is now active.
+     * @returns {Promise<this>} The instance of the filter manager.
      */
-    public async setNormalization(settings: Partial<NormalizationSettings> = DefaultFilterPreset.DSPXNormalization): Promise<boolean> {
+    public async setNormalization(settings: Partial<NormalizationSettings> = DefaultFilterPreset.DSPXNormalization): Promise<this> {
         validateNodePlugins(this.manager.player.node, [PluginNames.LavaDspx]);
 
         if (!this.manager.player.node.info?.filters?.includes(FilterType.DSPXNormalization))
@@ -108,16 +108,16 @@ export class DSPXPluginFilter {
 
         await this.manager.apply();
 
-        return this.manager.filters.lavalinkLavaDspxPlugin.normalization;
+        return this;
     }
 
     /**
      *
      * Set the echo filter with the given settings.
      * @param {EchoSettings} [settings=DefaultFilter.DSPXEcho] The settings for the echo filter.
-     * @returns {Promise<boolean>} Whether the filter is now active.
+     * @returns {Promise<this>} The instance of the filter manager.
      */
-    public async setEcho(settings: Partial<EchoSettings> = DefaultFilterPreset.DSPXEcho): Promise<boolean> {
+    public async setEcho(settings: Partial<EchoSettings> = DefaultFilterPreset.DSPXEcho): Promise<this> {
         validateNodePlugins(this.manager.player.node, [PluginNames.LavaDspx]);
 
         if (!this.manager.player.node.info?.filters?.includes(FilterType.DSPXEcho))
@@ -137,6 +137,6 @@ export class DSPXPluginFilter {
 
         await this.manager.apply();
 
-        return this.manager.filters.lavalinkLavaDspxPlugin.echo;
+        return this;
     }
 }

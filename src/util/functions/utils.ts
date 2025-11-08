@@ -226,6 +226,37 @@ export function isValid(value: unknown): boolean {
 
 /**
  *
+ * Stringify a value, handling circular references, functions, symbols, and bigints.
+ * @param {unknown} value The value to stringify.
+ * @param {string | number} [space] The space to use for indentation.
+ * @returns {string} The stringified value.
+ */
+export function stringify(value: unknown, space?: string | number): string {
+    const seen = new WeakSet();
+
+    return JSON.stringify(
+        value,
+        (_, value) => {
+            if (typeof value === "function") return undefined;
+            if (typeof value === "symbol") return undefined;
+
+            if (typeof value === "bigint") return value.toString();
+            if (typeof value === "object" && value !== null) {
+                if (seen.has(value)) return undefined;
+
+                seen.add(value);
+
+                return value;
+            }
+
+            return value;
+        },
+        space,
+    );
+}
+
+/**
+ *
  * Validate if the node options are correct.
  * @param {NodeOptions} options The node options to validate.
  * @returns {boolean} If the node options are correct.

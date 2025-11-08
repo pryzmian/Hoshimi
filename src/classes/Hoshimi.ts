@@ -22,7 +22,7 @@ import { type NodeManagerStructure, type NodeStructure, type PlayerStructure, St
 import { Collection } from "../util/collection";
 import { HoshimiAgent } from "../util/constants";
 import { autoplayFn } from "../util/functions/autoplay";
-import { validateManagerOptions } from "../util/functions/utils";
+import { stringify, validateManagerOptions } from "../util/functions/utils";
 import { ManagerError, OptionError } from "./Errors";
 import { MemoryAdapter } from "./queue/adapters/memory";
 import { Track } from "./Track";
@@ -421,7 +421,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
         this.emit(
             Events.Debug,
             DebugLevels.Manager,
-            `[Manager] -> [Search] Searching for: ${options.query} (${options.engine ?? "unknown"}) | Result: ${JSON.stringify(res)}`,
+            `[Manager] -> [Search] Searching for: ${options.query} (${options.engine ?? "unknown"}) | Result: ${stringify(res)}`,
         );
 
         switch (res.loadType) {

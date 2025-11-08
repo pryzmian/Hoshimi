@@ -15,6 +15,7 @@ import {
     trackStart,
     trackStuck,
 } from "./player";
+import { stringify } from "../functions/utils";
 
 /**
  *
@@ -221,11 +222,7 @@ export async function onMessage(this: Node, message: Buffer | string): Promise<v
             }
         }
 
-        this.nodeManager.manager.emit(
-            Events.Debug,
-            DebugLevels.Node,
-            `[Socket] -> [${this.id}]: Received payload: ${JSON.stringify(payload)}`,
-        );
+        this.nodeManager.manager.emit(Events.Debug, DebugLevels.Node, `[Socket] -> [${this.id}]: Received payload: ${stringify(payload)}`);
     } catch (error) {
         this.nodeManager.manager.emit(Events.NodeError, this, error);
     }

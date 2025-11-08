@@ -105,7 +105,7 @@ export const DefaultFilterPreset = Object.freeze({
  * The default filter settings.
  * @constant {FilterSettings} DefaultFilters
  */
-export const DefaultPlayerFilters: FilterSettings = Object.freeze({
+export const DefaultPlayerFilters: Readonly<FilterSettings> = Object.freeze({
     volume: 1,
     lowPass: {
         smoothing: 0,

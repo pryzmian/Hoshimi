@@ -12,7 +12,7 @@ import {
 } from "../../types/Rest";
 import type { NodeStructure } from "../../types/Structures";
 import { HoshimiAgent } from "../../util/constants";
-import { validatePlayerData } from "../../util/functions/utils";
+import { stringify, validatePlayerData } from "../../util/functions/utils";
 import type { Hoshimi } from "../Hoshimi";
 
 /**
@@ -185,13 +185,13 @@ export class Rest {
 
         if (![HttpMethods.Get, HttpMethods.Head].includes(options.method) && options.body) {
             if (typeof options.body === "string") fetchOptions.body = options.body;
-            else fetchOptions.body = JSON.stringify(options.body);
+            else fetchOptions.body = stringify(options.body);
         }
 
         this.node.nodeManager.manager.emit(
             Events.Debug,
             DebugLevels.Rest,
-            `[Rest] -> [${this.node.id} : ${options.method}]: Url: ${this.restUrl} | Endpoint: ${options.endpoint} | Params: ${url.search} | Body: ${options.body ? JSON.stringify(options.body) : "None"} | Headers: ${JSON.stringify(headers)}`,
+            `[Rest] -> [${this.node.id} : ${options.method}]: Url: ${this.restUrl} | Endpoint: ${options.endpoint} | Params: ${url.search} | Body: ${options.body ? stringify(options.body) : "None"} | Headers: ${stringify(headers)}`,
         );
 
         const response = await fetch(url.toString(), fetchOptions).finally(() => clearTimeout(timeout));
@@ -239,7 +239,7 @@ export class Rest {
         this.node.nodeManager.manager.emit(
             Events.Debug,
             DebugLevels.Rest,
-            `[Rest] -> [${this.node.id}]: Updated player data for guild: ${data.guildId} | Payload: ${JSON.stringify(data)}`,
+            `[Rest] -> [${this.node.id}]: Updated player data for guild: ${data.guildId} | Payload: ${stringify(data)}`,
         );
 
         validatePlayerData.call(this.node, data);

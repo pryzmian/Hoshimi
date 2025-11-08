@@ -1,4 +1,4 @@
-import { Track, Events } from "hoshimi";
+import { Events, Track } from "hoshimi";
 import { createLavalinkEvent } from "../../manager/events";
 
 export default createLavalinkEvent({

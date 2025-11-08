@@ -2,7 +2,7 @@ import { DebugLevels, Events, type Awaitable } from "../../types/Manager";
 import type { HoshimiQueueOptions, QueueJson } from "../../types/Queue";
 import type { QueueStructure } from "../../types/Structures";
 
-import { isTrack } from "../../util/functions/utils";
+import { isTrack, stringify } from "../../util/functions/utils";
 import { StorageError } from "../Errors";
 import { QueueStore } from "./Store";
 
@@ -68,7 +68,7 @@ export class QueueUtils {
         this.queue.player.manager.emit(
             Events.Debug,
             DebugLevels.Queue,
-            `[Queue] -> [Adapter] Saving queue for ${this.queue.player.guildId} | Object: ${JSON.stringify(json)}`,
+            `[Queue] -> [Adapter] Saving queue for ${this.queue.player.guildId} | Object: ${stringify(json)}`,
         );
 
         return this.store.set(this.queue.player.guildId, json);
@@ -119,7 +119,7 @@ export class QueueUtils {
         this.queue.player.manager.emit(
             Events.Debug,
             DebugLevels.Queue,
-            `[Queue] -> [Adapter] Syncing queue for ${this.queue.player.guildId} | Object: ${JSON.stringify(data)}`,
+            `[Queue] -> [Adapter] Syncing queue for ${this.queue.player.guildId} | Object: ${stringify(data)}`,
         );
 
         await this.save();

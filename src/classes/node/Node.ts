@@ -25,7 +25,7 @@ import {
 } from "../../types/Rest";
 import { type LyricsManagerStructure, type NodeManagerStructure, type RestStructure, Structures } from "../../types/Structures";
 import { onClose, onError, onMessage, onOpen } from "../../util/events/websocket";
-import { validateQuery } from "../../util/functions/utils";
+import { stringify, validateQuery } from "../../util/functions/utils";
 import { NodeError } from "../Errors";
 import { Track } from "../Track";
 
@@ -180,7 +180,7 @@ export class Node {
                 (await this.rest.request<LavalinkTrack[]>({
                     endpoint: "/decodetracks",
                     method: HttpMethods.Post,
-                    body: JSON.stringify(tracks),
+                    body: stringify(tracks),
                 })) ?? [];
 
             return raw.map((track): Track => new Track(track, requester));
@@ -330,7 +330,7 @@ export class Node {
         this.nodeManager.manager.emit(
             Events.Debug,
             DebugLevels.Node,
-            `[Socket] -> [${this.id}]: Connecting to ${this.address} | State: ${this.state} | Session: ${this.sessionId} | Resumed: ${this.session.resuming} | Penalties: ${this.penalties} | Reconnects: ${this.retryAmount} | Headers: ${JSON.stringify(headers)}`,
+            `[Socket] -> [${this.id}]: Connecting to ${this.address} | State: ${this.state} | Session: ${this.sessionId} | Resumed: ${this.session.resuming} | Penalties: ${this.penalties} | Reconnects: ${this.retryAmount} | Headers: ${stringify(headers)}`,
         );
     }
 

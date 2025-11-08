@@ -16,7 +16,7 @@ import {
     type WebSocketClosedEvent,
 } from "../../types/Player";
 import type { PlayerStructure } from "../../types/Structures";
-import { validateTrack } from "../functions/utils";
+import { stringify, validateTrack } from "../functions/utils";
 
 /**
  *
@@ -247,7 +247,7 @@ export async function playerUpdate(this: Node, payload: PlayerUpdate): Promise<v
     this.nodeManager.manager.emit(
         Events.Debug,
         DebugLevels.Node,
-        `[Player] -> [Update] Player updated: ${player.guildId} | Payload: ${JSON.stringify(payload)}`,
+        `[Player] -> [Update] Player updated: ${player.guildId} | Payload: ${stringify(payload)}`,
     );
 }
 
@@ -263,7 +263,7 @@ export async function lyricsFound(this: PlayerStructure, track: Track | null, pa
     this.manager.emit(
         Events.Debug,
         DebugLevels.Player,
-        `[Player] -> [Lyrics] The lyrics have been found: ${this.guildId} | Payload: ${JSON.stringify(payload)}`,
+        `[Player] -> [Lyrics] The lyrics have been found: ${this.guildId} | Payload: ${stringify(payload)}`,
     );
 }
 
@@ -279,7 +279,7 @@ export async function lyricsLine(this: PlayerStructure, track: Track | null, pay
     this.manager.emit(
         Events.Debug,
         DebugLevels.Player,
-        `[Player] -> [Lyrics] The lyrics line has been found: ${this.guildId} | Payload: ${JSON.stringify(payload)}`,
+        `[Player] -> [Lyrics] The lyrics line has been found: ${this.guildId} | Payload: ${stringify(payload)}`,
     );
 }
 
@@ -295,7 +295,7 @@ export async function lyricsNotFound(this: PlayerStructure, track: Track | null,
     this.manager.emit(
         Events.Debug,
         DebugLevels.Player,
-        `[Player] -> [Lyrics] The lyrics were not found: ${this.guildId} | Payload: ${JSON.stringify(payload)}`,
+        `[Player] -> [Lyrics] The lyrics were not found: ${this.guildId} | Payload: ${stringify(payload)}`,
     );
 }
 
@@ -310,6 +310,6 @@ export async function socketClosed(this: PlayerStructure, payload: WebSocketClos
     this.manager.emit(
         Events.Debug,
         DebugLevels.Player,
-        `[Player] -> [Socket] The socket has closed: ${this.guildId} | Payload: ${JSON.stringify(payload)}`,
+        `[Player] -> [Socket] The socket has closed: ${this.guildId} | Payload: ${stringify(payload)}`,
     );
 }

@@ -33,9 +33,9 @@ export class LavalinkPluginFilter {
      *
      * Set the echo filter with the given settings.
      * @param {Omit<EchoSettings, "echoLength">} [settings=DefaultFilter.PluginEcho] The settings for the echo filter.
-     * @returns {Promise<boolean>} Whether the filter is now active.
+     * @returns {Promise<this>} The instance of the filter manager.
      */
-    public async setEcho(settings: Partial<NonLengthEchoSettings> = DefaultFilterPreset.PluginEcho): Promise<boolean> {
+    public async setEcho(settings: Partial<NonLengthEchoSettings> = DefaultFilterPreset.PluginEcho): Promise<this> {
         validateNodePlugins(this.manager.player.node, [PluginNames.FilterPlugin]);
 
         if (!this.manager.player.node.info?.filters?.includes(FilterType.Echo))
@@ -59,16 +59,16 @@ export class LavalinkPluginFilter {
 
         await this.manager.apply();
 
-        return this.manager.filters.lavalinkFilterPlugin.echo;
+        return this;
     }
 
     /**
      *
      * Set the reverb filter with the given settings.
      * @param {Partial<LavalinkFilterPluginReverbSettings>} [settings=DefaultFilter.PluginReverb] The settings for the reverb filter.
-     * @returns {Promise<boolean>} Whether the filter is now active.
+     * @returns {Promise<this>} The instance of the filter manager.
      */
-    public async setReverb(settings: Partial<LavalinkFilterPluginReverbSettings> = DefaultFilterPreset.PluginReverb): Promise<boolean> {
+    public async setReverb(settings: Partial<LavalinkFilterPluginReverbSettings> = DefaultFilterPreset.PluginReverb): Promise<this> {
         validateNodePlugins(this.manager.player.node, [PluginNames.FilterPlugin]);
 
         if (!this.manager.player.node.info?.filters?.includes(FilterType.Reverb))
@@ -91,6 +91,6 @@ export class LavalinkPluginFilter {
 
         await this.manager.apply();
 
-        return this.manager.filters.lavalinkFilterPlugin.reverb;
+        return this;
     }
 }
