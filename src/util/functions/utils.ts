@@ -166,7 +166,7 @@ export function validateEngine(type: SearchEngines | SourceNames): SearchEngines
  * Resolve a track to a valid track instance.
  * @param {Player} player The player to resolve the track for.
  * @param {Track | UnresolvedTrack | null} track The track to resolve.
- * @returns {Promise<Track>} The resolved track.
+ * @returns {Promise<Track | null>} The resolved track.
  * @throws {ResolveError} If the track is not a valid unresolved track.
  */
 export function validateTrack(player: PlayerStructure, track: Track | UnresolvedTrack | null): Promise<Track | null> {

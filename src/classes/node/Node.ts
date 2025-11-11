@@ -288,6 +288,8 @@ export class Node {
      * ```
      */
     public connect(): void {
+        if (this.state === State.Connected || this.state === State.Connecting) return;
+
         if (!this.nodeManager.manager.options.client)
             throw new NodeError({
                 message: "No valid client data provided.",
@@ -488,6 +490,8 @@ export class Node {
      * ```
      */
     public reconnect(): void {
+        if (this.state === State.Disconnected || this.state === State.Destroyed) return;
+
         this.state = State.Idle;
 
         this.nodeManager.manager.emit(Events.NodeReconnecting, this, this.retryAmount, this.retryDelay);

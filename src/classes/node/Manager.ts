@@ -1,4 +1,4 @@
-import { Events } from "../../types/Manager";
+import { Events, type NodeIdentifier } from "../../types/Manager";
 import { type NodeOptions, NodeSortTypes, State } from "../../types/Node";
 import { type NodeStructure, Structures } from "../../types/Structures";
 import { Collection } from "../../util/collection";
@@ -21,7 +21,7 @@ export class NodeManager {
      * @type {Collection<string, Node>}
      * @readonly
      */
-    readonly nodes: Collection<string, NodeStructure> = new Collection();
+    readonly nodes: Collection<string, NodeStructure> = new Collection<string, NodeStructure>();
 
     /**
      *
@@ -42,7 +42,7 @@ export class NodeManager {
     /**
      *
      * Delete the node.
-     * @param {string} id The id of the node to delete.
+     * @param {NodeIdentifier} node The node or node id to delete.
      * @returns {boolean} If the node was deleted.
      * @example
      * ```ts
@@ -50,23 +50,139 @@ export class NodeManager {
      * if (node) manager.nodeManager.delete(node.id); // true if the node was deleted
      * ```
      */
-    public delete(id: string): boolean {
+    public delete(node: NodeIdentifier): boolean {
+        const id: string = typeof node === "string" ? node : node.id;
         return this.nodes.delete(id);
     }
 
     /**
      *
      * Get the node by id.
-     * @param {string} id The id of the node.
+     * @param {NodeIdentifier} node The node or node id to get.
      * @returns {NodeStructure | undefined} The node or undefined if not found.
      * @example
      * ```ts
      * const node = manager.nodeManager.get("node1");
-     * if (node) console.log(node.id); // node1
+     * if (node) {
+     * 	console.log(node.id); // node1
+     * } else {
+     * 	console.log("Node not found");
+     * }
      * ```
      */
-    public get(id: string): NodeStructure | undefined {
+    public get(node: NodeIdentifier): NodeStructure | undefined {
+        const id: string = typeof node === "string" ? node : node.id;
         return this.nodes.get(id);
+    }
+
+    /**
+     *
+     * Create a new node.
+     * @param {NodeOptions} options The options for the node.
+     * @returns {NodeStructure} The created node.
+     * @example
+     * ```ts
+     * const node = manager.nodeManager.create({
+     * 	host: "localhost",
+     * 	port: 2333,
+     * 	password: "password",
+     * 	secure: false,
+     * });
+     *
+     * console.log(node.id); // localhost:2333
+     */
+    public create(options: NodeOptions): NodeStructure {
+        options.id ??= `${options.host}:${options.port}`;
+
+        const oldNode: NodeStructure | undefined = this.nodes.get(options.id);
+        if (oldNode) return oldNode;
+
+        const node = Structures.Node(this, options);
+
+        this.nodes.set(node.id, node);
+        this.manager.emit(Events.NodeCreate, node);
+
+        return node;
+    }
+
+    /**
+     *
+     * Destroy a node.
+     * @param {NodeIdentifier} node The node or node id to destroy.
+     * @returns {void}
+     * @example
+     * ```ts
+     * const node = manager.nodeManager.get("node1");
+     * if (node) node.destroy();
+     * ```
+     */
+    public destroy(node: NodeIdentifier): void {
+        const id: string = typeof node === "string" ? node : node.id;
+
+        const target: NodeStructure | undefined = this.nodes.get(id);
+        if (!target) return;
+
+        target.destroy();
+    }
+
+    /**
+     *
+     * Reconnect a node.
+     * @param {NodeIdentifier} node The node or node id to reconnect.
+     * @returns {void}
+     * @example
+     * ```ts
+     * const node = manager.nodeManager.get("node1");
+     * if (node) node.reconnect();
+     * ```
+     */
+    public reconnect(node: NodeIdentifier): void {
+        const id: string = typeof node === "string" ? node : node.id;
+
+        const target: NodeStructure | undefined = this.nodes.get(id);
+        if (!target) return;
+
+        target.reconnect();
+    }
+
+    /**
+     *
+     * Disconnect a node.
+     * @param {NodeIdentifier} node The node or node id to disconnect.
+     * @returns {void}
+     * @example
+     * ```ts
+     * const node = manager.nodeManager.get("node1");
+     * if (node) node.disconnect();
+     * ```
+     */
+    public disconnect(node: NodeIdentifier): void {
+        const id: string = typeof node === "string" ? node : node.id;
+
+        const target: NodeStructure | undefined = this.nodes.get(id);
+        if (!target) return;
+
+        target.disconnect();
+    }
+
+    /**
+     *
+     * Connect a node.
+     * @param {NodeIdentifier} node The node or node id to connect.
+     * @returns {void}
+     * @example
+     * ```ts
+     * const node = manager.nodeManager.get("node1");
+     * if (node) node.connect();
+     * ```
+     */
+    public connect(node: NodeIdentifier): void {
+        const id: string = typeof node === "string" ? node : node.id;
+
+        const target: NodeStructure | undefined = this.nodes.get(id);
+        if (!target) return;
+
+        target.connect();
     }
 
     /**
@@ -115,45 +231,15 @@ export class NodeManager {
 
     /**
      *
-     * Create a new node.
-     * @param {NodeOptions} options The options for the node.
-     * @returns {NodeStructure} The created node.
-     * @example
-     * ```ts
-     * const node = manager.nodeManager.create({
-     * 	host: "localhost",
-     * 	port: 2333,
-     * 	password: "password",
-     * 	secure: false,
-     * });
-     *
-     * console.log(node.id); // localhost:2333
-     */
-    public create(options: NodeOptions): NodeStructure {
-        options.id ??= `${options.host}:${options.port}`;
-
-        const oldNode: NodeStructure | undefined = this.nodes.get(options.id);
-        if (oldNode) return oldNode;
-
-        const node = Structures.Node(this, options);
-
-        this.nodes.set(node.id, node);
-        this.manager.emit(Events.NodeCreate, node);
-
-        return node;
-    }
-
-    /**
-     *
      * Reconnect the nodes.
      * @returns {void}
      * @example
      * ```ts
      * const node = manager.nodeManager.get("node1");
-     * if (node) node.reconnect();
+     * if (node) node.reconnectAll();
      * ```
      */
-    public reconnect(): void {
+    public reconnectAll(): void {
         if (!this.nodes.size) return;
 
         for (const node of this.nodes.filter((node) => node.state !== State.Connected)) {
@@ -167,10 +253,10 @@ export class NodeManager {
      * @example
      * ```ts
      * const node = manager.nodeManager.get("node1");
-     * if (node) node.disconnect();
+     * if (node) node.disconnectAll();
      * ```
      */
-    public disconnect(): void {
+    public disconnectAll(): void {
         if (!this.nodes.size) return;
 
         for (const node of this.nodes.filter((node) => node.state !== State.Disconnected)) {
@@ -187,7 +273,7 @@ export class NodeManager {
      * if (node) node.connect();
      * ```
      */
-    public connect(): void {
+    public connectAll(): void {
         if (!this.nodes.size) return;
 
         for (const node of this.nodes.filter((node) => node.state !== State.Connected)) {
@@ -204,7 +290,7 @@ export class NodeManager {
      * if (node) node.destroy();
      * ```
      */
-    public destroy(): void {
+    public destroyAll(): void {
         if (!this.nodes.size) return;
 
         for (const node of this.nodes.values()) {
