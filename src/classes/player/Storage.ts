@@ -67,8 +67,8 @@ export class PlayerStorage<K extends StorageKeys = StorageKeys, V extends Storag
      * Get all keys in the storage.
      * @returns {K[]} The keys in the storage.
      */
-    public keys<K extends StorageKeys[]>(): K {
-        return [...this.internal.keys()] as never as K;
+    public keys<K extends StorageKeys[]>(): K[] {
+        return [...this.internal.keys()] as never;
     }
 
     /**
