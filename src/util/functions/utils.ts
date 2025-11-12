@@ -6,7 +6,7 @@ import { type HoshimiOptions, SearchEngines } from "../../types/Manager";
 import type { LavalinkTrack, NodeOptions, PluginNames, SearchQuery, SourceNames, UnresolvedLavalinkTrack } from "../../types/Node";
 import type { PlayerOptions } from "../../types/Player";
 import type { UpdatePlayerInfo } from "../../types/Rest";
-import type { PlayerStructure } from "../../types/Structures";
+import type { NodeStructure, PlayerStructure } from "../../types/Structures";
 import { UrlRegex, ValidEngines, ValidSources } from "../constants";
 
 /**
@@ -99,11 +99,11 @@ export function validatePlayerOptions(options: PlayerOptions): void {
 /**
  *
  * Validate the player data.
- * @param {Node} this The node to validate the player data for.
+ * @param {NodeStructure} this The node to validate the player data for.
  * @param {Partial<UpdatePlayerInfo>} data The data to validate.
  * @returns {void} Nothing.
  */
-export function validatePlayerData(this: Node, data: Partial<UpdatePlayerInfo>): void {
+export function validatePlayerData(this: NodeStructure, data: Partial<UpdatePlayerInfo>): void {
     if (
         typeof data === "object" &&
         typeof data.playerOptions === "object" &&

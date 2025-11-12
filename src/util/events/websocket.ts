@@ -1,9 +1,10 @@
 import type { IncomingMessage } from "node:http";
-import type { Node } from "../../classes/node/Node";
 import { DebugLevels, Events } from "../../types/Manager";
 import { type LavalinkPayload, NodeDestroyReasons, type NodeInfo, OpCodes, State, WebsocketCloseCodes } from "../../types/Node";
 import { PlayerEventType } from "../../types/Player";
 import type { LavalinkPlayer } from "../../types/Rest";
+import type { NodeStructure } from "../../types/Structures";
+import { stringify } from "../functions/utils";
 import {
     lyricsFound,
     lyricsLine,
@@ -15,16 +16,15 @@ import {
     trackStart,
     trackStuck,
 } from "./player";
-import { stringify } from "../functions/utils";
 
 /**
  *
  * Emitted when the socket connection is opened.
- * @param {Node} this The node that emitted the event.
+ * @param {NodeStructure} this The node that emitted the event.
  * @param {IncomingMessage} res The response from the socket connection.
  * @returns {void} Nothing new.
  */
-export function onOpen(this: Node, res: IncomingMessage): void {
+export function onOpen(this: NodeStructure, res: IncomingMessage): void {
     const isResume = res.headers["session-resumed"] === "true";
     const apiVersion = res.headers["lavalink-api-version"] ?? "unknown";
 
@@ -40,12 +40,12 @@ export function onOpen(this: Node, res: IncomingMessage): void {
 /**
  *
  * Emitted when the socket connection is closed.
- * @param {Node} this The node that emitted the event.
+ * @param {NodeStructure} this The node that emitted the event.
  * @param {number} code The close code of the connection.
  * @param {string} reason The close reason message.
  * @returns {void} The same thing as above.
  */
-export function onClose(this: Node, code: number, reason: string): void {
+export function onClose(this: NodeStructure, code: number, reason: string): void {
     this.nodeManager.manager.emit(
         Events.Debug,
         DebugLevels.Node,
@@ -62,11 +62,11 @@ export function onClose(this: Node, code: number, reason: string): void {
 /**
  *
  * Emitted when an error occurs.
- * @param {Node} this The node that emitted the event.
+ * @param {NodeStructure} this The node that emitted the event.
  * @param {Error} [error] The error that occurred.
  * @returns {void} Did you know that void is a type in TypeScript?
  */
-export function onError(this: Node, error?: Error): void {
+export function onError(this: NodeStructure, error?: Error): void {
     if (!error) return;
 
     if (this.reconnectTimeout) {
@@ -85,11 +85,11 @@ export function onError(this: Node, error?: Error): void {
 /**
  *
  * Emitted when a message is received from the socket.
- * @param {Node} this The node that emitted the event.
+ * @param {NodeStructure} this The node that emitted the event.
  * @param {Buffer | string} message The message received from the socket.
  * @returns {Promise<void>} I'm running out of ideas for this.
  */
-export async function onMessage(this: Node, message: Buffer | string): Promise<void> {
+export async function onMessage(this: NodeStructure, message: Buffer | string): Promise<void> {
     if (Array.isArray(message)) message = Buffer.concat(message);
     else if (message instanceof ArrayBuffer) message = Buffer.from(message);
 

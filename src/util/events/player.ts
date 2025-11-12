@@ -1,4 +1,3 @@
-import type { Node } from "../../classes/node/Node";
 import type { Track } from "../../classes/Track";
 import { DebugLevels, Events } from "../../types/Manager";
 import {
@@ -15,7 +14,7 @@ import {
     type TrackStuckEvent,
     type WebSocketClosedEvent,
 } from "../../types/Player";
-import type { PlayerStructure } from "../../types/Structures";
+import type { NodeStructure, PlayerStructure } from "../../types/Structures";
 import { stringify, validateTrack } from "../functions/utils";
 
 /**
@@ -228,11 +227,11 @@ export async function trackError(this: PlayerStructure, payload: TrackExceptionE
 /**
  *
  * The player update event.
- * @param {Node} this The node that emitted the event.
+ * @param {NodeStructure} this The node that emitted the event.
  * @param {PlayerUpdate} payload The payload of the event.
  * @returns {Promise<void>} Yeah, i don't know what to say here.
  */
-export async function playerUpdate(this: Node, payload: PlayerUpdate): Promise<void> {
+export async function playerUpdate(this: NodeStructure, payload: PlayerUpdate): Promise<void> {
     const player = this.nodeManager.manager.getPlayer(payload.guildId);
     if (!player) return;
 
