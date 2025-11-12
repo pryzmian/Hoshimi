@@ -20,13 +20,13 @@ export const UrlRegex: RegExp = /^(https?:\/\/)?([a-zA-Z0-9\-_]+\.)+[a-zA-Z]{2,}
  * The valid search engines for Hoshimi.
  * @type {SearchEngines[]}
  */
-export const ValidEngines: SearchEngines[] = Object.values(SearchEngines);
+export const ValidEngines: SearchEngines[] = Object.values<SearchEngines>(SearchEngines);
 
 /**
  * The valid sources for Hoshimi.
  * @type {Map<SourceNames, SearchEngines>}
  */
-export const ValidSources: Map<SourceNames, SearchEngines> = new Map(
+export const ValidSources: Map<SourceNames, SearchEngines> = new Map<SourceNames, SearchEngines>(
     Object.entries<SearchEngines>({
         [SourceNames.Youtube]: SearchEngines.Youtube,
         [SourceNames.YoutubeMusic]: SearchEngines.YoutubeMusic,
@@ -50,9 +50,11 @@ export const ValidSources: Map<SourceNames, SearchEngines> = new Map(
 
 /**
  * The audio output data for Hoshimi.
- * @type {Record<AudioOutput, Required<ChannelMixSettings>>}
+ * @type {Readonly<Record<AudioOutput, Required<ChannelMixSettings>>>}
  */
-export const AudioOutputData: Record<AudioOutput, Required<ChannelMixSettings>> = {
+export const AudioOutputData: Readonly<Record<AudioOutput, Required<ChannelMixSettings>>> = Object.freeze<
+    Record<AudioOutput, Required<ChannelMixSettings>>
+>({
     [AudioOutput.Mono]: {
         leftToLeft: 0.5,
         leftToRight: 0.5,
@@ -77,11 +79,10 @@ export const AudioOutputData: Record<AudioOutput, Required<ChannelMixSettings>> 
         rightToLeft: 0,
         rightToRight: 1,
     },
-};
+});
 
 /**
  * The default filter presets.
- * @constant {Object} DefaultFilter
  */
 export const DefaultFilterPreset = Object.freeze({
     Karaoke: { level: 1, monoLevel: 1, filterBand: 220, filterWidth: 100 },
@@ -103,10 +104,12 @@ export const DefaultFilterPreset = Object.freeze({
 
 /**
  * The default filter settings.
- * @constant {FilterSettings} DefaultFilters
+ * @type {Readonly<FilterSettings>} DefaultFilters
  */
-export const DefaultPlayerFilters: Readonly<FilterSettings> = Object.freeze({
+export const DefaultPlayerFilters: Readonly<FilterSettings> = Object.freeze<FilterSettings>({
     volume: 1,
+    equalizer: [],
+    channelMix: AudioOutputData.mono,
     lowPass: {
         smoothing: 0,
     },
@@ -161,7 +164,6 @@ export const DefaultPlayerFilters: Readonly<FilterSettings> = Object.freeze({
             maxAmplitude: 0,
         },
     },
-    equalizer: [],
     distortion: {
         cosOffset: 0,
         sinOffset: 0,
@@ -172,5 +174,4 @@ export const DefaultPlayerFilters: Readonly<FilterSettings> = Object.freeze({
         sinScale: 1,
         tanScale: 1,
     },
-    channelMix: AudioOutputData.mono,
 });
