@@ -4,6 +4,9 @@ import { AudioOutput } from "../types/Filters";
 import { SearchEngines } from "../types/Manager";
 import { SourceNames, type UserAgent } from "../types/Node";
 
+/**
+ * The auto output record type.
+ */
 type AutoOutputRecord = Record<AudioOutput, Required<ChannelMixSettings>>;
 
 /**
