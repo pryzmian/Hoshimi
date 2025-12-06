@@ -10,28 +10,53 @@ import type { LavalinkPlayerVoice, LavalinkPlayOptions } from "./Player";
 export enum HttpMethods {
     /**
      * The GET method requests a representation of the specified resource. Requests using GET should only retrieve data.
+     * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
+     * @type {string}
      */
     Get = "GET",
     /**
      * The POST method is used to submit an entity to the specified resource, often causing a change in state or side effects on the server.
+     * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
+     * @type {string}
      */
     Post = "POST",
     /**
      * The PUT method replaces all current representations of the target resource with the request payload.
+     * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT
+     * @type {string}
      */
     Put = "PUT",
     /**
      * The PATCH method is used to apply partial modifications to a resource.
+     * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PATCH
+     * @type {string}
      */
     Patch = "PATCH",
     /**
      * The DELETE method deletes the specified resource.
+     * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
+     * @type {string}
      */
     Delete = "DELETE",
     /**
      * The HEAD method asks for a response identical to that of a GET request, but without the response body.
+     * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD
+     * @type {string}
      */
     Head = "HEAD",
+}
+
+export enum RestPathType {
+    /**
+     * The raw path of the request.
+     * @type {string}
+     */
+    Raw = "/",
+    /**
+     * The versioned path v4 of the request.
+     * @type {string}
+     */
+    V4 = "/v4",
 }
 
 /**
@@ -41,86 +66,107 @@ export enum HttpMethods {
 export enum HttpStatusCodes {
     /**
      * The request has succeeded.
+     * @type {number}
      */
     OK = 200,
     /**
      * The request has been fulfilled and resulted in a new resource being created.
+     * @type {number}
      */
     Created = 201,
     /**
      * The request has been accepted for processing, but the processing has not been completed.
+     * @type {number}
      */
     Accepted = 202,
     /**
      * The server successfully processed the request, but is not returning any content.
+     * @type {number}
      */
     NoContent = 204,
     /**
      * The resource has been moved permanently to a new URI.
+     * @type {number}
      */
     MovedPermanently = 301,
     /**
      * The requested resource has been found at a different URI.
+     * @type {number}
      */
     Found = 302,
     /**
      * The resource has not been modified since the last request.
+     * @type {number}
      */
     NotModified = 304,
     /**
      * The request cannot be processed due to bad syntax.
+     * @type {number}
      */
     BadRequest = 400,
     /**
      * The request requires user authentication.
+     * @type {number}
      */
     Unauthorized = 401,
     /**
      * The request was valid, but the server is refusing action.
+     * @type {number}
      */
     Forbidden = 403,
     /**
      * The server cannot find the requested resource.
+     * @type {number}
      */
     NotFound = 404,
     /**
      * The request method is known by the server but has been disabled and cannot be used.
+     * @type {number}
      */
     MethodNotAllowed = 405,
     /**
      * The server timed out waiting for the request.
+     * @type {number}
      */
     RequestTimeout = 408,
     /**
      * The request could not be completed due to a conflict with the current state of the resource.
+     * @type {number}
      */
     Conflict = 409,
     /**
      * The requested resource is no longer available and will not be available again.
+     * @type {number}
      */
     Gone = 410,
     /**
      * The user has sent too many requests in a given amount of time.
+     * @type {number}
      */
     TooManyRequests = 429,
     /**
      * A generic error message, given when no more specific message is suitable.
+     * @type {number}
      */
     InternalServerError = 500,
     /**
      * The server does not recognize the request method or lacks the ability to fulfill it.
+     * @type {number}
      */
     NotImplemented = 501,
     /**
      * The server was acting as a gateway and received an invalid response.
+     * @type {number}
      */
     BadGateway = 502,
     /**
      * The server is currently unavailable (overloaded or down).
+     * @type {number}
      */
     ServiceUnavailable = 503,
     /**
      * The server did not receive a timely response from an upstream server.
+     * @type {number}
      */
     GatewayTimeout = 504,
 }
@@ -154,6 +200,11 @@ export interface RestOptions {
      * @type {Record<string, string>}
      */
     params?: Record<string, string>;
+    /**
+     * The path type for the REST.
+     * @type {RestPathType}
+     */
+    pathType?: RestPathType;
 }
 
 /**

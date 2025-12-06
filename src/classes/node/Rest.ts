@@ -8,6 +8,7 @@ import {
     type LavalinkRestError,
     type LavalinkSession,
     type RestOptions,
+    RestPathType,
     type UpdatePlayerInfo,
 } from "../../types/Rest";
 import type { NodeStructure } from "../../types/Structures";
@@ -126,7 +127,7 @@ export class Rest {
     constructor(node: NodeStructure) {
         const manager: Hoshimi = node.nodeManager.manager;
 
-        this.url = `${node.options.secure ? "https" : "http"}://${node.options.host}:${node.options.port}/${this.version}`;
+        this.url = `${node.options.secure ? "https" : "http"}://${node.options.host}:${node.options.port}`;
         this.restTimeout = node.options.restTimeout ?? manager.options.restOptions.resumeTimeout ?? 10000;
         this.userAgent = manager.options.nodeOptions.userAgent ?? HoshimiAgent;
         this.node = node;
@@ -163,8 +164,11 @@ export class Rest {
         };
 
         options.method ??= HttpMethods.Get;
+        options.pathType ??= RestPathType.V4;
 
-        const url = new URL(`${this.url}${options.endpoint}`);
+        // normalize the path instead of normalize the whole url
+        const path = `${options.pathType}${options.endpoint}`.replace(/\/+/g, "/");
+        const url = new URL(`${this.url}${path}`);
 
         if (options.params) {
             for (const [key, value] of Object.entries(options.params)) {

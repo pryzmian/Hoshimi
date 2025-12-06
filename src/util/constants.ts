@@ -4,6 +4,8 @@ import { AudioOutput } from "../types/Filters";
 import { SearchEngines } from "../types/Manager";
 import { SourceNames, type UserAgent } from "../types/Node";
 
+type AutoOutputRecord = Record<AudioOutput, Required<ChannelMixSettings>>;
+
 /**
  * The user agent for Hoshimi.
  * @type {UserAgent}
@@ -52,9 +54,7 @@ export const ValidSources: Map<SourceNames, SearchEngines> = new Map<SourceNames
  * The audio output data for Hoshimi.
  * @type {Readonly<Record<AudioOutput, Required<ChannelMixSettings>>>}
  */
-export const AudioOutputData: Readonly<Record<AudioOutput, Required<ChannelMixSettings>>> = Object.freeze<
-    Record<AudioOutput, Required<ChannelMixSettings>>
->({
+export const AudioOutputData: Readonly<AutoOutputRecord> = Object.freeze<AutoOutputRecord>({
     [AudioOutput.Mono]: {
         leftToLeft: 0.5,
         leftToRight: 0.5,
