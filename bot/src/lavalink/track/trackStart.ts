@@ -1,4 +1,4 @@
-import { SourceNames, Events } from "hoshimi";
+import { Events, SourceNames } from "hoshimi";
 import { createLavalinkEvent } from "../../manager/events";
 import { TimeFormat } from "../../time";
 
