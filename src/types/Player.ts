@@ -515,15 +515,45 @@ export interface PlayerJson {
      */
     textId?: string;
     /**
-     * The queue of the player.
-     * @type {QueueJson | undefined}
+     * The last position received from Lavalink.
+     * @type {number}
      */
-    queue?: QueueJson;
+    lastPosition: number;
+    /**
+     * The timestamp when the last position change update happened.
+     * @type {number | null}
+     */
+    lastPositionUpdate: number | null;
+    /**
+     * The current calculated position of the player.
+     * @type {number}
+     */
+    position: number;
+    /**
+     * The timestamp when the player was created.
+     * @type {number}
+     */
+    createdTimestamp: number;
+    /**
+     * The ping of the player.
+     * @type {number}
+     */
+    ping: number;
+    /**
+     * The queue of the player.
+     * @type {QueueJson}
+     */
+    queue: QueueJson;
     /**
      * The node of the player.
-     * @type {NodeJson | undefined}
+     * @type {NodeJson}
      */
-    node?: NodeJson;
+    node: NodeJson;
+    /**
+     * The filter settings of the player.
+     * @type {FilterSettings}
+     */
+    filters: FilterSettings;
 }
 
 /**

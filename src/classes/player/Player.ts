@@ -151,10 +151,25 @@ export class Player {
     public createdTimestamp: number = 0;
 
     /**
-     * The position of the player.
+     * The last position received from Lavalink.
      * @type {number}
      */
-    public position: number = 0;
+    public lastPosition: number = 0;
+
+    /**
+     * The timestamp when the last position change update happened.
+     * @type {number | null}
+     */
+    public lastPositionUpdate: number | null = null;
+
+    /**
+     * The current calculated position of the player.
+     * @type {number}
+     * @readonly
+     */
+    public get position(): number {
+        return this.lastPosition + (this.lastPositionUpdate ? Date.now() - this.lastPositionUpdate : 0);
+    }
 
     /**
      * The voice connection details.
@@ -297,6 +312,9 @@ export class Player {
 
         this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Seek] Seeking to ${position} for guild: ${this.guildId}`);
 
+        this.lastPosition = position;
+        this.lastPositionUpdate = Date.now();
+
         await this.updatePlayer({ playerOptions: { position } });
     }
 
@@ -382,10 +400,17 @@ export class Player {
 
         this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Play] A new track is playing: ${this.queue.current.info.title}`);
 
+        // Reset position to start when playing a new track (unless a specific position is provided)
+        const position: number = options.position ?? 0;
+
+        this.lastPosition = position;
+        this.lastPositionUpdate = Date.now();
+
         await this.updatePlayer({
             noReplace: options.noReplace,
             playerOptions: {
                 ...options,
+                position, // Ensure position is sent to Lavalink
                 track: {
                     userData: this.queue.current.userData,
                     encoded: this.queue.current.encoded,
@@ -444,7 +469,8 @@ export class Player {
 
         this.playing = false;
         this.paused = false;
-        this.position = 0;
+        this.lastPosition = 0;
+        this.lastPositionUpdate = null;
         this.queue.current = null;
 
         return;
@@ -466,6 +492,15 @@ export class Player {
             DebugLevels.Player,
             `[Player] -> [Pause] Player is now ${paused ? "paused" : "resumed"} for guild: ${this.guildId}`,
         );
+
+        // When pausing, stop position calculation by setting lastPositionUpdate to null
+        if (paused) {
+            this.lastPositionUpdate = null;
+        } else {
+            // When resuming, restart position calculation from current position
+            this.lastPosition = this.position;
+            this.lastPositionUpdate = Date.now();
+        }
 
         await this.updatePlayer({ playerOptions: { paused } });
 
@@ -664,6 +699,13 @@ export class Player {
             selfDeaf: this.selfDeaf,
             options: this.options,
             voice: this.voice,
+            textId: this.textId,
+            lastPosition: this.lastPosition,
+            lastPositionUpdate: this.lastPositionUpdate,
+            position: this.position,
+            createdTimestamp: this.createdTimestamp,
+            ping: this.ping,
+            filters: this.filterManager.toJSON(),
             queue: this.queue.toJSON(),
             node: this.node.toJSON(),
         };
