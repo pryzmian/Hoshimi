@@ -67,7 +67,7 @@ const handler = new LavalinkHandler(client);
 
 (async (): Promise<void> => {
     await mkdir(path, { recursive: true });
-    await handler.load();
+    await handler.start();
     await client.start();
 })();
 
