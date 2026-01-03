@@ -31,8 +31,8 @@ async function onEnd(this: PlayerStructure): Promise<void> {
         )
     ) {
         this.queue.history.unshift(this.queue.current);
-        if (this.queue.history.length > this.manager.options.queueOptions.maxPreviousTracks!)
-            this.queue.history.splice(this.manager.options.queueOptions.maxPreviousTracks!, this.queue.history.length);
+        if (this.queue.history.length > this.manager.options.queueOptions.maxHistory!)
+            this.queue.history.splice(this.manager.options.queueOptions.maxHistory!, this.queue.history.length);
 
         await this.queue.utils.save();
 

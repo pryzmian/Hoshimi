@@ -59,7 +59,7 @@ export class QueueUtils {
      * ```
      */
     public save(): Awaitable<void> {
-        const max: number = this.options.maxPreviousTracks;
+        const max: number = this.options.maxHistory;
         const length: number = this.queue.tracks.length;
         const json: QueueJson = this.queue.toJSON();
 

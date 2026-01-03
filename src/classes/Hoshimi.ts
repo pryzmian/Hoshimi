@@ -133,10 +133,22 @@ export class Hoshimi extends EventEmitter<RawEvents> {
                 resumeTimeout: options.nodeOptions?.resumeTimeout ?? 10000,
             },
             queueOptions: {
-                maxPreviousTracks: options.queueOptions?.maxPreviousTracks ?? 25,
+                maxHistory: options.queueOptions?.maxHistory ?? 25,
                 autoplayFn: options.queueOptions?.autoplayFn ?? autoplayFn,
                 autoPlay: options.queueOptions?.autoPlay ?? false,
                 storage: options.queueOptions?.storage ?? new MemoryAdapter(),
+            },
+            playerOptions: {
+                onDisconnect: {
+                    autoDestroy: options.playerOptions?.onDisconnect?.autoDestroy ?? false,
+                    autoReconnect: options.playerOptions?.onDisconnect?.autoReconnect ?? true,
+                    autoQueue: options.playerOptions?.onDisconnect?.autoQueue ?? false,
+                },
+                onError: {
+                    autoDestroy: options.playerOptions?.onError?.autoDestroy ?? false,
+                    autoSkip: options.playerOptions?.onError?.autoSkip ?? false,
+                    autoStop: options.playerOptions?.onError?.autoStop ?? false,
+                },
             },
             client: {
                 id: options.client?.id ?? "",
@@ -292,6 +304,66 @@ export class Hoshimi extends EventEmitter<RawEvents> {
                             DebugLevels.Player,
                             `[Player] -> [Voice] Updated the player voice for: ${data.guild_id} | Session: ${player.voice.sessionId} | Token: ${player.voice.token} | Endpoint: ${player.voice.endpoint}`,
                         );
+
+                        return;
+                    }
+
+                    if ("channel_id" in data && typeof data.channel_id === "string") {
+                        if (data.channel_id !== player.voiceId) {
+                            this.emit(
+                                Events.Debug,
+                                DebugLevels.Player,
+                                `[Player] -> [Voice] Updating the voice channel for: ${data.guild_id} | Old: ${player.voiceId} | New: ${data.channel_id}`,
+                            );
+
+                            player.voice.sessionId = data.session_id ?? player.voice.sessionId;
+
+                            player.voiceId = data.channel_id;
+                            player.options.voiceId = data.channel_id;
+
+                            if (!player.connected) await player.connect();
+
+                            return;
+                        }
+                    } else {
+                        this.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Voice] The channel id is missing for: ${data.guild_id}`);
+
+                        const { autoDestroy, autoReconnect, autoQueue } = this.options.playerOptions.onDisconnect;
+
+                        if (autoDestroy) {
+                            await player.destroy(DestroyReasons.VoiceChannelLeft);
+                            return;
+                        }
+
+                        if (autoReconnect) {
+                            try {
+                                const position = player.position;
+                                const paused = player.paused;
+
+                                this.emit(
+                                    Events.Debug,
+                                    DebugLevels.Player,
+                                    `[Player] -> [Voice] Attempting to reconnect the player for: ${data.guild_id}`,
+                                );
+
+                                if (autoQueue && player.queue.current && !player.queue.isEmpty()) await player.connect();
+
+                                if (player.queue.current) return player.play({ track: player.queue.current, paused, position });
+                                if (!player.queue.isEmpty()) return player.play({ paused });
+
+                                this.emit(
+                                    Events.Debug,
+                                    DebugLevels.Player,
+                                    `[Player] -> [Voice] No tracks to play after reconnect for: ${data.guild_id}`,
+                                );
+                            } catch (error) {
+                                this.emit(Events.PlayerError, player, error);
+                                await player.destroy(DestroyReasons.ReconnectFailed);
+                            }
+                        }
+
+                        player.voiceId = undefined;
+                        player.voice = Object.create({});
 
                         return;
                     }

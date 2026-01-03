@@ -14,6 +14,7 @@ import type {
     SearchQuery,
 } from "./Node";
 import type {
+    HoshimiPlayerOptions,
     LyricsFoundEvent,
     LyricsLineEvent,
     LyricsNotFoundEvent,
@@ -289,6 +290,10 @@ export enum Events {
      * Emitted when the player is destroyed.
      */
     PlayerDestroy = "playerDestroy",
+    /**
+     * Emitted when the player has an error.
+     */
+    PlayerError = "playerError",
 
     /**
      * Emitted when a track starts playing.
@@ -363,6 +368,14 @@ export enum DestroyReasons {
      * The player was destroyed because the voice channel was deleted.
      */
     VoiceChannelDeleted = "Player-VoiceChannelDeleted",
+    /**
+     * The player was destroyed because it left the voice channel.
+     */
+    VoiceChannelLeft = "Player-VoiceChannelLeft",
+    /**
+     * The player was destroyed because it failed to reconnect.
+     */
+    ReconnectFailed = "Player-ReconnectFailed",
 }
 
 /**
@@ -465,6 +478,11 @@ export interface HoshimiOptions {
      * @type {HoshimiRestOptions}
      */
     restOptions?: HoshimiRestOptions;
+    /**
+     * The player options to use.
+     * @type {HoshimiPlayerOptions}
+     */
+    playerOptions?: HoshimiPlayerOptions;
 }
 
 /**
@@ -550,6 +568,12 @@ export interface HoshimiEvents {
      * @param {string} reason The reason for the destroy.
      */
     playerDestroy: [player: PlayerStructure, reason: string];
+    /**
+     * Emitted when the player has an error.
+     * @param {PlayerStructure} player The player that emitted the event.
+     * @param {Error | unknown} error The error that was emitted.
+     */
+    playerError: [player: PlayerStructure, error: Error | unknown];
 
     /**
      * Emitted when a track starts playing.

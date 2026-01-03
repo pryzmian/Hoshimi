@@ -349,7 +349,7 @@ export class Queue {
      * @returns {QueueJson} The queue JSON object.
      */
     public toJSON(): QueueJson {
-        const max = this.player.manager.options.queueOptions.maxPreviousTracks;
+        const max = this.player.manager.options.queueOptions.maxHistory;
 
         if (this.history.length > max) this.history.splice(max, this.history.length);
 

@@ -21,7 +21,7 @@ export function validateManagerOptions(options: HoshimiOptions): void {
     if (typeof options.sendPayload !== "function")
         throw new OptionError("The manager option 'options.sendPayload' must be a vaid function.");
 
-    if (typeof options.queueOptions !== "undefined" && typeof options.queueOptions.maxPreviousTracks !== "number")
+    if (typeof options.queueOptions !== "undefined" && typeof options.queueOptions.maxHistory !== "number")
         throw new OptionError("The manager option 'options.queueOptions.maxPreviousTracks' must be a number.");
     if (typeof options.queueOptions !== "undefined" && typeof options.queueOptions.autoplayFn !== "function")
         throw new OptionError("The manager option 'options.queueOptions.autoplayFn' must be a function.");

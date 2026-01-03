@@ -12,7 +12,7 @@ export interface HoshimiQueueOptions {
      * @type {number}
      * @default 25
      */
-    maxPreviousTracks?: number;
+    maxHistory?: number;
     /**
      *
      * The function to use for autoplay.
