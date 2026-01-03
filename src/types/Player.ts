@@ -1,6 +1,6 @@
-import type { Track, UnresolvedTrack } from "../classes/Track";
+import type { Track, TrackRequester, UnresolvedTrack } from "../classes/Track";
 import type { FilterSettings } from "./Filters";
-import type { NodeIdentifier, Nullable } from "./Manager";
+import type { Awaitable, NodeIdentifier, Nullable } from "./Manager";
 import type { Exception, LavalinkTrack, LyricsLine, LyricsResult, NodeJson, OpCodes } from "./Node";
 import type { QueueJson } from "./Queue";
 
@@ -173,6 +173,12 @@ interface DisconnectPlayerActions extends Pick<ErrorPlayerActions, "autoDestroy"
  * The Hoshimi player options.
  */
 export interface HoshimiPlayerOptions {
+    /**
+     *
+     * The function to use to get the requester data.
+     * @param {TrackRequester} requester The requester of the track.
+     */
+    requesterFn?(requester: TrackRequester): Awaitable<any>;
     /**
      * The options for handling errors.
      * @type {ErrorPlayerActions | undefined}

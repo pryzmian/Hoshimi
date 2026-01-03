@@ -22,7 +22,7 @@ import { type NodeManagerStructure, type NodeStructure, type PlayerStructure, St
 import { Collection } from "../util/collection";
 import { HoshimiAgent } from "../util/constants";
 import { autoplayFn } from "../util/functions/autoplay";
-import { stringify, validateManagerOptions } from "../util/functions/utils";
+import { requesterFn, stringify, validateManagerOptions } from "../util/functions/utils";
 import { ManagerError, OptionError } from "./Errors";
 import { MemoryAdapter } from "./queue/adapters/memory";
 import { Track } from "./Track";
@@ -106,10 +106,24 @@ export class Hoshimi extends EventEmitter<RawEvents> {
      * 		resumeByLibrary: false,
      * 	},
      * 	queueOptions: {
-     * 		maxPreviousTracks: 25,
-     * 		autoplayFn: autoplayFn,
-     * 		autoPlay: false,
+     *      maxHistory: 25,
+     *      autoplayFn: autoplayFn,
+     *      autoPlay: false,
+     *      storage: new MemoryAdapter(),
+     *      requesterFn: defaultRequesterFn,
      * 	},
+     *   playerOptions: {
+     *    	onDisconnect: {
+     *        autoDestroy: false,
+     *        autoReconnect: false,
+     *        autoQueue: false,
+     *   	},
+     *   	onError: {
+     *        autoDestroy: false,
+     *        autoSkip: false,
+     *        autoStop: false,
+     *      },
+     *   },
      * });
      *
      * console.log(manager); // The manager instance
@@ -139,6 +153,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
                 storage: options.queueOptions?.storage ?? new MemoryAdapter(),
             },
             playerOptions: {
+                requesterFn: options.playerOptions?.requesterFn ?? requesterFn,
                 onDisconnect: {
                     autoDestroy: options.playerOptions?.onDisconnect?.autoDestroy ?? false,
                     autoReconnect: options.playerOptions?.onDisconnect?.autoReconnect ?? true,

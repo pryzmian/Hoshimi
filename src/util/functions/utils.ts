@@ -1,7 +1,7 @@
 import { NodeError, OptionError, ResolveError } from "../../classes/Errors";
 import type { Node } from "../../classes/node/Node";
 import { StorageAdapter } from "../../classes/queue/adapters/adapter";
-import { Track, UnresolvedTrack } from "../../classes/Track";
+import { Track, type TrackRequester, UnresolvedTrack } from "../../classes/Track";
 import { type HoshimiOptions, SearchEngines } from "../../types/Manager";
 import type { LavalinkTrack, NodeOptions, PluginNames, SearchQuery, SourceNames, UnresolvedLavalinkTrack } from "../../types/Node";
 import type { PlayerOptions } from "../../types/Player";
@@ -256,6 +256,16 @@ export function stringify(value: unknown, space?: string | number): string {
         },
         space,
     );
+}
+
+/**
+ *
+ * Get the default requester.
+ * @param {TrackRequester} requester The requester to default.
+ * @returns {TrackRequester} The default requester.
+ */
+export function requesterFn(requester: TrackRequester): TrackRequester {
+    return requester;
 }
 
 /**
