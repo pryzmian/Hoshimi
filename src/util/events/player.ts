@@ -1,6 +1,7 @@
 import type { Track } from "../../classes/Track";
 import { DebugLevels, Events } from "../../types/Manager";
 import {
+    type LavalinkPlayerVoice,
     LoopMode,
     type LyricsFoundEvent,
     type LyricsLineEvent,
@@ -312,4 +313,55 @@ export async function socketClosed(this: PlayerStructure, payload: WebSocketClos
         DebugLevels.Player,
         `[Player] -> [Socket] The socket has closed: ${this.guildId} | Payload: ${stringify(payload)}`,
     );
+}
+
+/**
+ *
+ * Resumes players by library.
+ * @param {NodeStructure} this The node that is resuming the players.
+ * @param {PlayerStructure[]} players The players to be resumed.
+ * @returns {Promise<void>} Nothing.
+ */
+export async function resumeByLibrary(this: NodeStructure, players: PlayerStructure[]): Promise<void> {
+    this.nodeManager.manager.emit(Events.Debug, DebugLevels.Node, `[Socket] -> [${this.id}]: Resuming session by library...`);
+
+    for (const player of players) {
+        try {
+            if (!player.playing && !player.paused && !player.queue.totalSize) {
+                this.nodeManager.manager.emit(
+                    Events.Debug,
+                    DebugLevels.Node,
+                    `[Player] -> [Resume] Destroyed player for guild ${player.guildId} due to empty queue.`,
+                );
+                await player.destroy();
+                return;
+            }
+
+            const track = player.queue.current;
+
+            await player.node.updatePlayer({
+                guildId: player.guildId,
+                playerOptions: { voice: player.voice as LavalinkPlayerVoice },
+            });
+
+            await player.connect();
+            await player.queue.utils.sync(false, true);
+
+            if (track)
+                await player.play({
+                    track,
+                    noReplace: false,
+                    position: player.lastPosition,
+                    paused: player.paused,
+                });
+        } catch (error) {
+            this.nodeManager.manager.emit(Events.NodeError, this, error);
+        }
+
+        this.nodeManager.manager.emit(
+            Events.Debug,
+            DebugLevels.Node,
+            `[Player] -> [Resume] Resumed player for guild ${player.guildId} using the library.`,
+        );
+    }
 }

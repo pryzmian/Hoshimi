@@ -10,6 +10,7 @@ import {
     lyricsLine,
     lyricsNotFound,
     playerUpdate,
+    resumeByLibrary,
     socketClosed,
     trackEnd,
     trackError,
@@ -146,6 +147,11 @@ export async function onMessage(this: NodeStructure, message: Buffer | string): 
                             `[Socket] <- [${this.id}]: Resumed session. | Session id: ${payload.sessionId} | Players: ${players.length} | Resumed: ${payload.resumed} | Timeout: ${timeout}ms`,
                         );
                     }
+
+                    const players = this.nodeManager.manager.players.filter((p) => p.node.id === this.id);
+                    const isLibrary = this.nodeManager.manager.options.nodeOptions.resumeByLibrary;
+
+                    if (!payload.resumed && isLibrary && players.length) await resumeByLibrary.call(this, players);
 
                     this.info = await this.rest.request<NodeInfo>({ endpoint: "/info" });
 
