@@ -378,7 +378,11 @@ export class Hoshimi extends EventEmitter<RawEvents> {
                         }
 
                         player.voiceId = undefined;
-                        player.voice = Object.create({});
+                        player.voice = {
+                            endpoint: null,
+                            sessionId: null,
+                            token: null,
+                        };
 
                         return;
                     }

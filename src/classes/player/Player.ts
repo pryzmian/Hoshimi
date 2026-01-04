@@ -28,6 +28,11 @@ import type { FilterManager } from "./filters/Manager";
 import { PlayerStorage } from "./Storage";
 
 /**
+ * Type representing a nullable voice channel update.
+ */
+type NullableVoiceChannelUpdate = Partial<Nullable<VoiceChannelUpdate>>;
+
+/**
  * Class representing a Hoshimi player.
  * @class Player
  */
@@ -331,15 +336,7 @@ export class Player {
     public async disconnect(): Promise<this> {
         if (!this.voiceId) return this;
 
-        await this.manager.options.sendPayload(this.guildId, {
-            op: 4,
-            d: {
-                guild_id: this.guildId,
-                channel_id: null,
-                self_deaf: this.selfDeaf,
-                self_mute: this.selfMute,
-            },
-        });
+        await this.setVoice({ voiceId: null });
 
         this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Disconnect] Player disconnected for guild: ${this.guildId}`);
         this.connected = false;
@@ -433,15 +430,7 @@ export class Player {
     public async connect(): Promise<this> {
         if (!this.voiceId) return this;
 
-        await this.manager.options.sendPayload(this.guildId, {
-            op: 4,
-            d: {
-                guild_id: this.guildId,
-                channel_id: this.voiceId,
-                self_deaf: this.selfDeaf,
-                self_mute: this.selfMute,
-            },
-        });
+        await this.setVoice();
 
         this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Connect] Player connected for guild: ${this.guildId}`);
         this.connected = true;
@@ -561,7 +550,7 @@ export class Player {
 
     /**
      * Set the voice of the player.
-     * @param {Partial<VoiceChannelUpdate>} voice The voice state to set.
+     * @param {NullableVoiceChannelUpdate} options The voice state to set.
      * @returns {Promise<void>}
      * @example
      * ```ts
@@ -569,31 +558,18 @@ export class Player {
      * player.setVoice({ voiceId: "newVoiceId" });
      * ```
      */
-    public async setVoice(voice: Partial<VoiceChannelUpdate>): Promise<void> {
-        if (voice.voiceId === this.voiceId) return;
-
-        if (voice.voiceId) {
-            this.voiceId = voice.voiceId;
-            this.options.voiceId = voice.voiceId;
-        }
-
-        if (voice.selfDeaf) {
-            this.selfDeaf = voice.selfDeaf;
-            this.options.selfDeaf = voice.selfDeaf;
-        }
-
-        if (voice.selfMute) {
-            this.selfMute = voice.selfMute;
-            this.options.selfMute = voice.selfMute;
-        }
+    public async setVoice(options: NullableVoiceChannelUpdate = {}): Promise<void> {
+        options.voiceId ??= this.voiceId;
+        options.selfDeaf ??= this.selfDeaf;
+        options.selfMute ??= this.selfMute;
 
         await this.manager.options.sendPayload(this.guildId, {
             op: 4,
             d: {
                 guild_id: this.guildId,
-                self_deaf: this.selfDeaf,
-                self_mute: this.selfMute,
-                channel_id: this.voiceId ?? null,
+                self_deaf: options.selfDeaf,
+                self_mute: options.selfMute,
+                channel_id: options.voiceId ?? null,
             },
         });
 

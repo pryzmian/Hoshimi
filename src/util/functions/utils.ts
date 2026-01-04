@@ -124,6 +124,13 @@ export function validatePlayerData(this: NodeStructure, data: Partial<UpdatePlay
             player.lastPosition = data.playerOptions.position;
             player.lastPositionUpdate = Date.now();
         }
+
+        if (typeof data.playerOptions.filters === "object") {
+            const timescale = Object.freeze({ ...player.filterManager.data.timescale });
+
+            Object.assign(player.filterManager.data, data.playerOptions.filters);
+            player.filterManager.check(timescale);
+        }
     }
 }
 

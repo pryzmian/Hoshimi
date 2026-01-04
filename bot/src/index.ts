@@ -31,7 +31,7 @@ client.manager = createHoshimi({
     defaultSearchEngine: SearchEngines.Spotify,
     nodeOptions: {
         resumable: false,
-        resumeByLibrary: false,
+        resumeByLibrary: true,
     },
     queueOptions: {
         autoplayFn,
