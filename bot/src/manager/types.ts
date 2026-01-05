@@ -1,7 +1,16 @@
-import type { HoshimiEvents } from "hoshimi";
+import type { HoshimiEvents, Omit, PlayerJson } from "hoshimi";
 import type { UsingClient } from "seyfert";
 import type { Awaitable } from "seyfert/lib/common";
 import type { APIUser } from "seyfert/lib/types";
+
+/**
+ * The interface of the session json.
+ * @extends {PlayerJson}
+ */
+export interface SessionJson
+    extends Omit<PlayerJson, "ping" | "createdTimestamp" | "lastPositionUpdate" | "paused" | "playing" | "queue" | "filters"> {
+    requester: HoshimiUser;
+}
 
 /**
  * The interface of the Hoshimi user.

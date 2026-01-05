@@ -182,11 +182,13 @@ export function validateEngine(type: SearchEngines | SourceNames): SearchEngines
 export function validateTrack(player: PlayerStructure, track: Track | UnresolvedTrack | null): Promise<Track | null> {
     if (!track) return Promise.resolve(null);
 
-    if (isTrack(track)) return Promise.resolve(new Track(track, track.requester));
+    const requesterFn = player.manager.options.playerOptions.requesterFn;
+
+    if (isTrack(track)) return Promise.resolve(new Track(track, requesterFn(track.requester)));
 
     if (!isUnresolvedTrack(track)) throw new ResolveError("The track is not a valid unresolved track.");
-
-    if (!track.resolve || typeof track.resolve !== "function") return new UnresolvedTrack(track, track.requester).resolve(player);
+    if (!track.resolve || typeof track.resolve !== "function")
+        return new UnresolvedTrack(track, requesterFn(track.requester)).resolve(player);
 
     return track.resolve(player);
 }
@@ -271,8 +273,8 @@ export function stringify(value: unknown, space?: string | number): string {
  * @param {TrackRequester} requester The requester to default.
  * @returns {TrackRequester} The default requester.
  */
-export function requesterFn(requester: TrackRequester): TrackRequester {
-    return requester;
+export function requesterFn<T extends TrackRequester = TrackRequester>(requester: TrackRequester): T {
+    return requester as T;
 }
 
 /**

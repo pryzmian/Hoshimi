@@ -1,18 +1,12 @@
 import { config } from "seyfert";
-import { GatewayIntentBits } from "seyfert/lib/types";
-
-/**
- * The debug flag is used to enable debug mode.
- * @type {boolean}
- * @default false
- */
-const debug: boolean = process.argv.includes("--debug");
+import { GatewayIntentBits } from "seyfert/lib/types/index.js";
+import { Constants } from "./src/constants.js";
 
 /**
  * The Seyfert configuration for the bot.
  */
 export default config.bot({
-    debug,
+    debug: Constants.Debug,
     token: process.env.TOKEN ?? "The knave",
     intents: [
         GatewayIntentBits.Guilds,

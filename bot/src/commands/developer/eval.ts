@@ -12,7 +12,7 @@ import {
 import { EmbedColors, Formatter } from "seyfert/lib/common";
 import { DeclareParserConfig, ParserRecommendedConfig, Watch, Yuna } from "yunaforseyfert";
 import { ms } from "../../time";
-import { getInspect, sliceText } from "../../utils";
+import { inspect, truncate } from "../../utils";
 
 const secretsRegex = /\b(?:client\.(?:config)|config|env|process\.(?:env|exit)|eval|atob|btoa)\b/;
 const concatRegex = /".*?"\s*\+\s*".*?"(?:\s*\+\s*".*?")*/;
@@ -93,7 +93,7 @@ export default class EvalCommand extends Command {
 
                 output = await eval(code);
                 typecode = typeof output;
-                output = getInspect(output, options.depth ?? 0);
+                output = inspect(output, options.depth ?? 0);
             }
 
             await ctx.editOrReply({
@@ -101,7 +101,7 @@ export default class EvalCommand extends Command {
                     new Embed()
                         .setAuthor({ name: author.tag, iconUrl: author.avatarURL() })
                         .setColor("White")
-                        .setDescription(`\`📖\` A code has been evaluated.\n \n${Formatter.codeBlock(sliceText(output, 1900), "js")}`)
+                        .setDescription(`\`📖\` A code has been evaluated.\n \n${Formatter.codeBlock(truncate(output, 1900), "js")}`)
                         .setThumbnail(client.me.avatarURL())
                         .setTimestamp()
                         .addFields(
@@ -117,7 +117,7 @@ export default class EvalCommand extends Command {
                             },
                             {
                                 name: "`📥` Input",
-                                value: `${Formatter.codeBlock(sliceText(options.code, 1024), "js")}`,
+                                value: `${Formatter.codeBlock(truncate(options.code, 1024), "js")}`,
                             },
                             { name: "`📤` Output", value: "Check the embed description." },
                         ),
@@ -143,11 +143,11 @@ export default class EvalCommand extends Command {
                             },
                             {
                                 name: "`📥` Input",
-                                value: `${Formatter.codeBlock(sliceText(options.code, 1024), "js")}`,
+                                value: `${Formatter.codeBlock(truncate(options.code, 1024), "js")}`,
                             },
                             {
                                 name: "`📤` Output",
-                                value: `${Formatter.codeBlock(sliceText(`${error}`, 1024), "js")}`,
+                                value: `${Formatter.codeBlock(truncate(`${error}`, 1024), "js")}`,
                             },
                         ),
                 ],

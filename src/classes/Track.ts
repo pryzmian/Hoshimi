@@ -45,9 +45,9 @@ export class Track implements LavalinkTrack {
 
     /**
      * The track user data.
-     * @type {Record<string, unknown>}
+     * @type {TrackUserData}
      */
-    public userData: Record<string, unknown>;
+    public userData: TrackUserData;
 
     /**
      * The requester of the track.
@@ -128,9 +128,9 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
 
     /**
      * The track user data.
-     * @type {Record<string, unknown> | undefined}
+     * @type {TrackUserData | undefined}
      */
-    public userData?: Record<string, unknown>;
+    public userData?: TrackUserData;
 
     /**
      * The requester of the track.
@@ -155,10 +155,10 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
      * console.log(track.encoded); // the track encoded in base64
      * ```
      */
-    constructor(track: UnresolvedLavalinkTrack, requester: TrackRequester) {
+    constructor(track: UnresolvedLavalinkTrack, requester?: TrackRequester) {
         this.info = track.info;
         this.encoded = track.encoded;
-        this.requester = requester;
+        this.requester = requester ?? {};
         this.pluginInfo = track.pluginInfo;
         this.userData = track.userData ?? {};
     }
@@ -256,3 +256,8 @@ export interface CustomizableTrack {}
  * The requester of the track.
  */
 export type TrackRequester = Inferable<CustomizableTrack, "requester">;
+
+/**
+ * The user data of the track.
+ */
+export type TrackUserData = Inferable<CustomizableTrack, "userData">;

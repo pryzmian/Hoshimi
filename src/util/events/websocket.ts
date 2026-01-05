@@ -155,13 +155,6 @@ export async function onMessage(this: NodeStructure, message: Buffer | string): 
 
                     this.info = await this.rest.request<NodeInfo>({ endpoint: "/info" });
 
-                    this.nodeManager.manager.emit(
-                        Events.Debug,
-                        DebugLevels.Node,
-                        `[Socket] <- [${this.id}]: Received ready event. | Session id: ${payload.sessionId} | Resumed: ${payload.resumed}`,
-                    );
-                    this.nodeManager.manager.emit(Events.NodeReady, this, this.retryAmount, payload);
-
                     const isResumable = this.nodeManager.manager.options.nodeOptions.resumable;
                     if (isResumable) {
                         const timeout = this.nodeManager.manager.options.nodeOptions.resumeTimeout;
@@ -169,11 +162,18 @@ export async function onMessage(this: NodeStructure, message: Buffer | string): 
                         this.nodeManager.manager.emit(
                             Events.Debug,
                             DebugLevels.Node,
-                            `[Socket] -> [${this.id}]: Resuming session... | Timeout: ${timeout}ms`,
+                            `[Socket] -> [${this.id}]: Setting timeout to resume session. | Timeout: ${timeout}ms`,
                         );
 
                         await this.updateSession(isResumable, timeout);
                     }
+
+                    this.nodeManager.manager.emit(
+                        Events.Debug,
+                        DebugLevels.Node,
+                        `[Socket] <- [${this.id}]: Received ready event. | Session id: ${payload.sessionId} | Resumed: ${payload.resumed}`,
+                    );
+                    this.nodeManager.manager.emit(Events.NodeReady, this, this.retryAmount, payload);
                 }
                 break;
 

@@ -515,6 +515,8 @@ export class Hoshimi extends EventEmitter<RawEvents> {
             `[Manager] -> [Search] Searching for: ${options.query} (${options.engine ?? "unknown"}) | Result: ${stringify(res)}`,
         );
 
+        const requesterFn = this.options.playerOptions.requesterFn;
+
         switch (res.loadType) {
             case LoadType.Empty: {
                 return {
@@ -542,7 +544,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
                     exception: null,
                     playlist: res.data,
                     pluginInfo: res.data.pluginInfo,
-                    tracks: res.data.tracks.map((t) => new Track(t, options.requester)),
+                    tracks: res.data.tracks.map((t) => new Track(t, requesterFn(options.requester))),
                 };
             }
 
@@ -552,7 +554,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
                     exception: null,
                     playlist: null,
                     pluginInfo: null,
-                    tracks: res.data.map((t) => new Track(t, options.requester)),
+                    tracks: res.data.map((t) => new Track(t, requesterFn(options.requester))),
                 };
             }
 
@@ -562,7 +564,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
                     exception: null,
                     playlist: null,
                     pluginInfo: res.data.pluginInfo,
-                    tracks: [new Track(res.data, options.requester)],
+                    tracks: [new Track(res.data, requesterFn(options.requester))],
                 };
             }
         }

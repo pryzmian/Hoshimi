@@ -178,7 +178,7 @@ export interface HoshimiPlayerOptions {
      * The function to use to get the requester data.
      * @param {TrackRequester} requester The requester of the track.
      */
-    requesterFn?(requester: TrackRequester): Awaitable<any>;
+    requesterFn?<T extends TrackRequester = TrackRequester>(requester: TrackRequester): Awaitable<T>;
     /**
      * The options for handling errors.
      * @type {ErrorPlayerActions | undefined}

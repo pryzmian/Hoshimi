@@ -1,5 +1,7 @@
-import { Events, Track } from "hoshimi";
+import { Events } from "hoshimi";
 import { createLavalinkEvent } from "../../manager/events";
+import { Sessions } from "../../manager/sessions";
+import type { SessionJson } from "../../manager/types";
 
 export default createLavalinkEvent({
     name: Events.NodeResumed,
@@ -7,10 +9,18 @@ export default createLavalinkEvent({
         client.logger.debug(`[Hoshimi] Node resumed: ${node.id} with ${players.length} players. | Payload: ${JSON.stringify(payload)}`);
 
         for (const data of players) {
+            const session: SessionJson | undefined = Sessions.get<SessionJson>(data.guildId);
+            if (!session) continue;
+
+            if (!data.state.connected) {
+                Sessions.delete(data.guildId);
+                continue;
+            }
+
             const player = client.manager.createPlayer({
                 guildId: data.guildId,
-                voiceId: "1222873458778570814",
-                textId: "1228578969184632882",
+                voiceId: session.voiceId!,
+                textId: session.textId!,
                 node: node.id,
                 selfDeaf: true,
                 selfMute: false,
@@ -20,9 +30,11 @@ export default createLavalinkEvent({
             player.voice = data.voice;
 
             await player.connect();
-            //await player.queue.utils.sync(true, false);
+            await player.queue.utils.sync(true, false);
 
-            if (data.track) player.queue.current = new Track(data.track);
+            if (data.track) player.queue.current = await player.queue.build(data.track, session.requester);
+
+            player.filterManager.data = data.filters;
 
             player.connected = data.state.connected;
             player.paused = data.paused;
@@ -31,7 +43,9 @@ export default createLavalinkEvent({
             player.playing = !data.paused && !!data.track;
             player.ping = data.state.ping;
 
-            if (!player.playing) await player.play();
+            if (!player.playing && player.queue.current) await player.play();
+
+            await player.queue.utils.save();
         }
     },
 });

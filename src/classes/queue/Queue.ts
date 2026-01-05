@@ -1,7 +1,9 @@
 import { DebugLevels, Events } from "../../types/Manager";
+import type { LavalinkTrack, UnresolvedLavalinkTrack } from "../../types/Node";
 import type { QueueJson } from "../../types/Queue";
 import type { PlayerStructure } from "../../types/Structures";
-import type { HoshimiTrack, Track } from "../Track";
+import { isTrack, isUnresolvedTrack } from "../../util/functions/utils";
+import { type HoshimiTrack, Track, type TrackRequester, UnresolvedTrack } from "../Track";
 import { QueueUtils } from "./Utils";
 
 /**
@@ -138,23 +140,53 @@ export class Queue {
 
     /**
      *
+     * Build a track from a Lavalink track or unresolved Lavalink track.
+     * @param {LavalinkTrack | UnresolvedLavalinkTrack} track The track to build.
+     * @param {TrackRequester} requester The requester of the track.
+     * @returns {Promise<Track>} The built track.
+     * @example
+     * ```ts
+     * const queue = player.queue;
+     * const lavalinkTrack = {...} // some lavalink track
+     * const track = await queue.build(lavalinkTrack, author);
+     *
+     * console.log(track.info.title); // The title of the track
+     * ```
+     */
+    public async build(track: LavalinkTrack | UnresolvedLavalinkTrack | HoshimiTrack, requester: TrackRequester): Promise<Track> {
+        const requesterFn = this.player.manager.options.playerOptions.requesterFn;
+
+        if (isUnresolvedTrack(track)) return new UnresolvedTrack(track, requesterFn(requester)).resolve(this.player);
+        if (isTrack(track)) return new Track(track, requesterFn(requester));
+
+        return track;
+    }
+
+    /**
+     *
      * Get the previous track of the queue.
      * @param {boolean} [remove=false] Whether to remove the track from the previous queue.
-     * @returns {Track | null} The previous track of the queue.
+     * @returns {Promise<Track | null>} The previous track of the queue.
      * @example
      * ```ts
      * const queue = player.queue;
      *
-     * console.log(queue.previous()); // null
+     * console.log(await queue.previous()); // null
      * queue.add(track);
      * queue.add(track2);
      *
-     * console.log(queue.previous()); // track
-     * console.log(queue.previous(true)); // track and remove it from the previous tracks
+     * console.log(await queue.previous()); // track
+     * console.log(await queue.previous(true)); // track and remove it from the previous tracks
      * ```
      */
-    public previous(remove: boolean = false): Track | null {
-        if (remove) return this.history.shift() ?? null;
+    public async previous(remove: boolean = false): Promise<Track | null> {
+        if (remove) {
+            const track = this.history.shift() ?? null;
+            if (track) await this.utils.save();
+
+            return track;
+        }
+
         return this.history[0] ?? null;
     }
 
@@ -163,25 +195,25 @@ export class Queue {
      * Add a track or tracks to the queue.
      * @param {Track | Track[]} track The track or tracks to add.
      * @param {number} [position] The position to add the track or tracks.
-     * @returns {this} The queue instance.
+     * @returns {Promise<this>} The queue instance.
      * @example
      * ```ts
      * const queue = player.queue;
      *
      * console.log(queue.size); // 0
      *
-     * queue.add(track);
+     * await queue.add(track);
      * console.log(queue.size); // 1
      *
-     * queue.add([track1, track2]);
+     * await queue.add([track1, track2]);
      * console.log(queue.size); // 3
      *
-     * queue.add(track3, 1);
+     * await queue.add(track3, 1);
      * console.log(queue.size); // 4
      * console.log(queue.tracks); // [track1, track3, track2, track]
      * ```
      */
-    public add(track: HoshimiTrack | HoshimiTrack[], position?: number): this {
+    public async add(track: HoshimiTrack | HoshimiTrack[], position?: number): Promise<this> {
         const tracks = Array.isArray(track) ? track : [track];
 
         if (typeof position === "number" && position >= 0 && position < this.tracks.length) return this.splice(position, 0, ...tracks);
@@ -190,51 +222,57 @@ export class Queue {
         this.player.manager.emit(Events.QueueUpdate, this.player, this);
         this.player.manager.emit(Events.Debug, DebugLevels.Queue, `[Queue] -> [Add] Added ${this.tracks.length} tracks to the queue.`);
 
+        await this.utils.save();
+
         return this;
     }
 
     /**
      *
      * Get the first track of the queue.
-     * @returns {HoshimiTrack | null} The first track of the queue.
+     * @returns {Promise<HoshimiTrack | null>} The first track of the queue.
      * @example
      * ```ts
      * const queue = player.queue;
      *
-     * console.log(queue.shift()); // null
-     * queue.add(track);
+     * console.log(await queue.shift()); // null
+     * await queue.add(track);
      *
-     * console.log(queue.shift()); // track
-     * queue.add(track2);
+     * console.log(await queue.shift()); // track
+     * await queue.add(track2);
      * ```
      */
-    public shift(): HoshimiTrack | null {
-        return this.tracks.shift() ?? null;
+    public async shift(): Promise<HoshimiTrack | null> {
+        const track = this.tracks.shift() ?? null;
+        if (track) await this.utils.save();
+        return track;
     }
 
     /**
      *
      * Add tracks to the beginning of the queue.
      * @param {Track[]} tracks The tracks to add.
-     * @returns {this} The queue instance.
+     * @returns {Promise<this>} The queue instance.
      * @example
      * ```ts
      * const queue = player.queue;
      *
      * console.log(queue.size); // 0
-     * queue.unshift(track);
+     * await queue.unshift(track);
      *
      * console.log(queue.size); // 1
-     * queue.unshift([track1, track2]);
+     * await queue.unshift(track1, track2);
      *
      * console.log(queue.size); // 3
      * console.log(queue.tracks); // [track1, track2, track]
      * ```
      */
-    public unshift(...tracks: Track[]): this {
+    public async unshift(...tracks: Track[]): Promise<this> {
         this.tracks.unshift(...tracks);
 
         this.player.manager.emit(Events.Debug, DebugLevels.Queue, `[Queue] -> [Unshift] Added ${this.tracks.length} tracks to the queue.`);
+
+        await this.utils.save();
 
         return this;
     }
@@ -242,23 +280,23 @@ export class Queue {
     /**
      *
      * Shuffle the queue.
-     * @returns {this} The queue instance.
+     * @returns {Promise<this>} The queue instance.
      * @example
      * ```ts
      * const queue = player.queue;
      *
      * console.log(queue.size); // 0
-     * queue.add(track);
-     * queue.add([track1, track2]);
+     * await queue.add(track);
+     * await queue.add(track1, track2);
      *
      * console.log(queue.size); // 3
      * console.log(queue.tracks); // [track, track1, track2]
      *
-     * queue.shuffle();
+     * await queue.shuffle();
      * console.log(queue.tracks); // [track2, track, track1]
      * ```
      */
-    public shuffle(): this {
+    public async shuffle(): Promise<this> {
         if (this.size <= 1) return this;
         if (this.size === 2) [this.tracks[0], this.tracks[1]] = [this.tracks[1]!, this.tracks[0]!];
         else {
@@ -271,27 +309,29 @@ export class Queue {
         this.player.manager.emit(Events.QueueUpdate, this.player, this);
         this.player.manager.emit(Events.Debug, DebugLevels.Queue, "[Queue] -> [Shuffle] Shuffled the queue.");
 
+        await this.utils.save();
+
         return this;
     }
 
     /**
      *
      * Clear the queue.
-     * @returns {this} The queue instance.
+     * @returns {Promise<this>} The queue instance.
      * @example
      * ```ts
      * const queue = player.queue;
      *
      * console.log(queue.size); // 0
-     * queue.add(track);
-     * queue.add([track1, track2]);
+     * await queue.add(track);
+     * await queue.add(track1, track2);
      *
      * console.log(queue.size); // 3
-     * queue.clear();
+     * await queue.clear();
      * console.log(queue.size); // 0
      * ```
      */
-    public clear(): this {
+    public async clear(): Promise<this> {
         this.tracks = [];
         this.history = [];
 
@@ -299,6 +339,8 @@ export class Queue {
 
         this.player.manager.emit(Events.QueueUpdate, this.player, this);
         this.player.manager.emit(Events.Debug, DebugLevels.Queue, "[Queue] -> [Clear] Cleared the queue.");
+
+        await this.utils.save();
 
         return this;
     }
@@ -308,17 +350,19 @@ export class Queue {
      * Move a track to a specific position in the queue.
      * @param {Track} track The track to move.
      * @param {number} to The position to move.
-     * @returns {this} The queue instance.
+     * @returns {Promise<this>} The queue instance.
      */
-    public move(track: Track, to: number): this {
+    public async move(track: Track, to: number): Promise<this> {
         const index = this.tracks.indexOf(track);
         if (index === -1) return this;
 
-        this.splice(index, 1);
-        this.add(track, to - 1);
+        await this.splice(index, 1);
+        await this.add(track, to - 1);
 
         this.player.manager.emit(Events.QueueUpdate, this.player, this);
         this.player.manager.emit(Events.Debug, DebugLevels.Queue, `[Queue] -> [Move] Moved track ${track.info.title} to position ${to}.`);
+
+        await this.utils.save();
 
         return this;
     }
@@ -329,16 +373,18 @@ export class Queue {
      * @param {number} start The start index.
      * @param {number} deleteCount The number of tracks to delete.
      * @param {Track | Track[]} [tracks] The tracks to add.
-     * @returns {this} The queue instance.
+     * @returns {Promise<this>} The queue instance.
      */
-    public splice(start: number, deleteCount: number, tracks?: HoshimiTrack | HoshimiTrack[]): this {
-        if (!this.size && tracks) this.add(tracks);
+    public async splice(start: number, deleteCount: number, tracks?: HoshimiTrack | HoshimiTrack[]): Promise<this> {
+        if (!this.size && tracks) await this.add(tracks);
 
         if (tracks) this.tracks.splice(start, deleteCount, ...(Array.isArray(tracks) ? tracks : [tracks]));
         else this.tracks.splice(start, deleteCount);
 
         this.player.manager.emit(Events.QueueUpdate, this.player, this);
         this.player.manager.emit(Events.Debug, DebugLevels.Queue, `[Queue] -> [Splice] Removed ${deleteCount} tracks from the queue.`);
+
+        await this.utils.save();
 
         return this;
     }

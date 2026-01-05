@@ -61,17 +61,16 @@ export class QueueUtils {
     public save(): Awaitable<void> {
         const max: number = this.options.maxHistory;
         const length: number = this.queue.tracks.length;
-        const json: QueueJson = this.queue.toJSON();
 
         if (length > max) this.queue.history.splice(0, length - max);
 
         this.queue.player.manager.emit(
             Events.Debug,
             DebugLevels.Queue,
-            `[Queue] -> [Adapter] Saving queue for ${this.queue.player.guildId} | Object: ${stringify(json)}`,
+            `[Queue] -> [Adapter] Saving queue for ${this.queue.player.guildId} | Object: ${stringify(this.queue.toJSON())}`,
         );
 
-        return this.store.set(this.queue.player.guildId, json);
+        return this.store.set(this.queue.player.guildId, this.queue.toJSON());
     }
 
     /**

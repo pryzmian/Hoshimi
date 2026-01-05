@@ -18,6 +18,8 @@
     "dependencies": {
         "dotenv": "^17.2.3",
         "hoshimi": "link:..",
+        "meowdb": "^2.2.3",
+        "redis": "^5.10.0",
         "seyfert": "github:tiramisulabs/seyfert",
         "yunaforseyfert": "github:SagiriIkeda/yunaforseyfert"
     },

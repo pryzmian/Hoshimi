@@ -1,4 +1,4 @@
-import { inspect } from "node:util";
+import { inspect as nodeInspect } from "node:util";
 
 //const base64 = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
 const base64 = /^[a-zA-Z0-9+/]*={0,2}$/;
@@ -28,7 +28,7 @@ export const isBase64 = (str: string): boolean => base64.test(str);
  * @param {number} [depth=0] The depth to inspect the object.
  * @returns {string} The inspected object as a string.
  */
-export const getInspect = (obj: any, depth: number = 0): string => inspect(obj, { depth });
+export const inspect = (obj: any, depth: number = 0): string => nodeInspect(obj, { depth });
 
 /**
  *
@@ -37,4 +37,4 @@ export const getInspect = (obj: any, depth: number = 0): string => inspect(obj, 
  * @param {number} length The length to slice.
  * @returns {string} The sliced text.
  */
-export const sliceText = (text: string, length: number = 240): string => (text.length > length ? `${text.slice(0, length - 3)}...` : text);
+export const truncate = (text: string, length: number = 240): string => (text.length > length ? `${text.slice(0, length - 3)}...` : text);

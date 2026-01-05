@@ -1,3 +1,4 @@
+import type { TrackUserData } from "../classes/Track";
 import type { FilterType } from "./Filters";
 import type { PickRequired, SearchEngines } from "./Manager";
 import type {
@@ -597,9 +598,9 @@ export interface LavalinkTrack {
     info: TrackInfo;
     /**
      * The user data of the track.
-     * @type {Record<string, unknown> | undefined}
+     * @type {TrackUserData | undefined}
      */
-    userData?: Record<string, unknown>;
+    userData?: TrackUserData;
 }
 
 export interface UnresolvedLavalinkTrack {
@@ -620,9 +621,9 @@ export interface UnresolvedLavalinkTrack {
     pluginInfo?: Partial<PluginInfo>;
     /**
      * The user data of the track.
-     * @type {Record<string, unknown> | undefined}
+     * @type {TrackUserData | undefined}
      */
-    userData?: Record<string, unknown>;
+    userData?: TrackUserData;
 }
 
 /**
