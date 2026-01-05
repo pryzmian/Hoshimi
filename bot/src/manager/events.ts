@@ -1,5 +1,5 @@
 import type { HoshimiEvents } from "hoshimi";
-import type { LavalinkEvent, LavalinkEventRun } from "./types";
+import type { LavalinkEvent, LavalinkEventRun } from "./types.js";
 
 /**
  * Class representing a lavalink event.

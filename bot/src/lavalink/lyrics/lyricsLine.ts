@@ -1,5 +1,5 @@
 import { Events } from "hoshimi";
-import { createLavalinkEvent } from "../../manager/events";
+import { createLavalinkEvent } from "../../manager/events.js";
 
 export default createLavalinkEvent({
     name: Events.LyricsLine,

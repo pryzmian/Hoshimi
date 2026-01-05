@@ -1,7 +1,7 @@
 import type { HoshimiEvents, Omit, PlayerJson } from "hoshimi";
 import type { UsingClient } from "seyfert";
-import type { Awaitable } from "seyfert/lib/common";
-import type { APIUser } from "seyfert/lib/types";
+import type { Awaitable } from "seyfert/lib/common/index.js";
+import type { APIUser } from "seyfert/lib/types/index.js";
 
 /**
  * The interface of the session json.

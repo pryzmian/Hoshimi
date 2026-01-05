@@ -1,4 +1,4 @@
-import { Declare, SubCommand, type GuildCommandContext } from "seyfert";
+import { Declare, type GuildCommandContext, SubCommand } from "seyfert";
 
 @Declare({
     name: "clear",

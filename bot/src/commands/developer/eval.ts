@@ -9,10 +9,10 @@ import {
     Options,
     type WebhookMessage,
 } from "seyfert";
-import { EmbedColors, Formatter } from "seyfert/lib/common";
+import { EmbedColors, Formatter } from "seyfert/lib/common/index.js";
 import { DeclareParserConfig, ParserRecommendedConfig, Watch, Yuna } from "yunaforseyfert";
-import { ms } from "../../time";
-import { inspect, truncate } from "../../utils";
+import { ms } from "../../time.js";
+import { inspect, truncate } from "../../utils.js";
 
 const secretsRegex = /\b(?:client\.(?:config)|config|env|process\.(?:env|exit)|eval|atob|btoa)\b/;
 const concatRegex = /".*?"\s*\+\s*".*?"(?:\s*\+\s*".*?")*/;

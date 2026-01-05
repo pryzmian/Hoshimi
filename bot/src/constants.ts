@@ -17,6 +17,12 @@ export const Constants = {
      */
     SessionsFile: "sessions.json",
     /**
+     * The name of the cache file.
+     * @type {string}
+     * @default "cache.json"
+     */
+    CacheFile: "cache.json",
+    /**
      *
      * Whether debug mode is enabled.
      * @type {boolean}
@@ -31,5 +37,14 @@ export const Constants = {
      */
     SessionsPath(): string {
         return resolve(process.cwd(), this.CacheDirectory);
+    },
+    /**
+     *
+     * Get the full path to the cache file.
+     * @type {string}
+     * @returns {string} The full path to the cache file.
+     */
+    CachePath(): string {
+        return resolve(process.cwd(), this.CacheDirectory, this.CacheFile);
     },
 };

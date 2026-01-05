@@ -1,9 +1,9 @@
 import { Events, SourceNames } from "hoshimi";
-import { createLavalinkEvent } from "../../manager/events";
+import { createLavalinkEvent } from "../../manager/events.js";
 
 export default createLavalinkEvent({
     name: Events.TrackEnd,
-    async run(client, player, track, _payload) {
+    async run(client, player, track) {
         if (!track) return;
 
         if (track.info.sourceName === SourceNames.FloweryTTS) return;

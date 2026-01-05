@@ -1,4 +1,4 @@
-import { Command, createIntegerOption, Declare, Options, type GuildCommandContext } from "seyfert";
+import { Command, createIntegerOption, Declare, type GuildCommandContext, Options } from "seyfert";
 
 const options = {
     to: createIntegerOption({

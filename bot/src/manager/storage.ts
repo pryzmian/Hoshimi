@@ -1,5 +1,5 @@
 import { type QueueJson, StorageAdapter } from "hoshimi";
-import type { RedisClient } from "../redis";
+import type { RedisClient } from "../redis.js";
 
 /**
  *

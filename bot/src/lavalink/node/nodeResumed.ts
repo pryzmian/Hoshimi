@@ -1,7 +1,7 @@
 import { Events } from "hoshimi";
-import { createLavalinkEvent } from "../../manager/events";
-import { Sessions } from "../../manager/sessions";
-import type { SessionJson } from "../../manager/types";
+import { createLavalinkEvent } from "../../manager/events.js";
+import { Sessions } from "../../manager/sessions.js";
+import type { SessionJson } from "../../manager/types.js";
 
 export default createLavalinkEvent({
     name: Events.NodeResumed,
@@ -18,12 +18,12 @@ export default createLavalinkEvent({
             }
 
             const player = client.manager.createPlayer({
+                node,
                 guildId: data.guildId,
                 voiceId: session.voiceId!,
                 textId: session.textId!,
-                node: node.id,
-                selfDeaf: true,
-                selfMute: false,
+                selfDeaf: session.selfDeaf,
+                selfMute: session.selfMute,
                 volume: data.volume,
             });
 
@@ -34,8 +34,9 @@ export default createLavalinkEvent({
 
             if (data.track) player.queue.current = await player.queue.build(data.track, session.requester);
 
-            player.filterManager.data = data.filters;
+            player.loop = session.loop;
 
+            player.filterManager.data = data.filters;
             player.connected = data.state.connected;
             player.paused = data.paused;
             player.lastPosition = data.state.position;

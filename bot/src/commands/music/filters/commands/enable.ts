@@ -1,4 +1,4 @@
-import { createStringOption, Declare, Options, SubCommand, type GuildCommandContext } from "seyfert";
+import { createStringOption, Declare, type GuildCommandContext, Options, SubCommand } from "seyfert";
 
 const options = {
     type: createStringOption({

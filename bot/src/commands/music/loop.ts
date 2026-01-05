@@ -1,14 +1,13 @@
 import { LoopMode } from "hoshimi";
-import { Command, createStringOption, Declare, type GuildCommandContext, type OKFunction, Options } from "seyfert";
+import { Command, createNumberOption, Declare, type GuildCommandContext, Options } from "seyfert";
 
 const options = {
-    mode: createStringOption({
+    mode: createNumberOption({
         description: "Loop mode to set.",
-        value: ({ value }, ok: OKFunction<number>): void => ok(Number.parseInt(value, 10)),
         choices: [
-            { name: "off", value: "1" },
-            { name: "track", value: "2" },
-            { name: "queue", value: "3" },
+            { name: "Off", value: 1 },
+            { name: "Track", value: 2 },
+            { name: "Queue", value: 3 },
         ] as const,
     }),
 };

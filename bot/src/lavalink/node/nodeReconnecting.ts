@@ -1,5 +1,5 @@
 import { Events } from "hoshimi";
-import { createLavalinkEvent } from "../../manager/events";
+import { createLavalinkEvent } from "../../manager/events.js";
 import { TimeFormat } from "../../time";
 
 export default createLavalinkEvent({

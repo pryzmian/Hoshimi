@@ -1,6 +1,6 @@
 import { UnresolvedTrack } from "hoshimi";
-import { Command, createStringOption, Declare, Options, type GuildCommandContext, type Message, type WebhookMessage } from "seyfert";
-import { omitKeys } from "../../utils";
+import { Command, createStringOption, Declare, type GuildCommandContext, type Message, Options, type WebhookMessage } from "seyfert";
+import { omitKeys } from "../../utils.js";
 
 const options = {
     title: createStringOption({

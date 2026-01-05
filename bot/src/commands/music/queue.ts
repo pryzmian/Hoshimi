@@ -1,5 +1,5 @@
 import { Command, Declare, Embed, type GuildCommandContext } from "seyfert";
-import { EmbedColors } from "seyfert/lib/common";
+import { EmbedColors } from "seyfert/lib/common/index.js";
 
 @Declare({
     name: "queue",

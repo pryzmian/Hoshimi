@@ -9,9 +9,9 @@ import { autoplayFn } from "./autoplay.js";
 import { Constants } from "./constants.js";
 import { LavalinkHandler } from "./manager/handler.js";
 import { Sessions } from "./manager/sessions.js";
+import { RedisStorage } from "./manager/storage.js";
 import type { HoshimiUser } from "./manager/types.js";
 import { RedisClient } from "./redis.js";
-import { RedisStorage } from "./manager/storage.js";
 
 /**
  * The path to the sessions directory.

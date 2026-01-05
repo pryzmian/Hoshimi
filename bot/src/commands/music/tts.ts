@@ -1,6 +1,6 @@
 import { SearchEngines } from "hoshimi";
-import { Command, createStringOption, Declare, Options, type GuildCommandContext } from "seyfert";
-import { omitKeys } from "../../utils";
+import { Command, createStringOption, Declare, type GuildCommandContext, Options } from "seyfert";
+import { omitKeys } from "../../utils.js";
 
 const options = {
     text: createStringOption({

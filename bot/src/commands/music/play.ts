@@ -1,7 +1,7 @@
 import { LoadType } from "hoshimi";
-import { Command, createStringOption, Declare, Options, type GuildCommandContext } from "seyfert";
-import { TimeFormat } from "../../time";
-import { omitKeys } from "../../utils";
+import { Command, createStringOption, Declare, type GuildCommandContext, Options } from "seyfert";
+import { TimeFormat } from "../../time.js";
+import { omitKeys } from "../../utils.js";
 
 const options = {
     query: createStringOption({

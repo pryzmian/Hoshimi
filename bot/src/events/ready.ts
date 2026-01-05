@@ -1,4 +1,5 @@
 import { createEvent } from "seyfert";
+import { Constants } from "../constants";
 
 export default createEvent({
     data: { name: "ready", once: true },
@@ -6,6 +7,6 @@ export default createEvent({
         client.logger.info(`Logged in as ${user.username}`);
         client.manager.init({ ...user, username: user.username });
 
-        await client.uploadCommands({ cachePath: "./cache/commands.json" });
+        await client.uploadCommands({ cachePath: Constants.CachePath() });
     },
 });
