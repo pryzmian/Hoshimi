@@ -242,6 +242,15 @@ export class Player {
 
     /**
      *
+     * Check if the player is currently playing a track.
+     * @returns {boolean} Whether the player is currently playing a track.
+     */
+    public isPlaying(): boolean {
+        return this.playing && !this.paused;
+    }
+
+    /**
+     *
      * Search for a track or playlist.
      * @param {SearchOptions} options The options for the search.
      * @returns {Promise<QueryResult>} The search result.

@@ -632,7 +632,7 @@ export interface LyricsMethods {
      * @example
      * ```ts
      * const player = manager.getPlayer("guildId");
-     * const lyrics = await player.lyricsManager.current();
+     * const lyrics = await player.lyrics.current();
      * ```
      */
     current(skipSource?: boolean): Promise<LyricsResult | null>;
