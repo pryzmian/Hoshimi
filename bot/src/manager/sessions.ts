@@ -1,3 +1,4 @@
+import { mkdir } from "node:fs/promises";
 import type { NodeOptions, Omit, PlayerJson } from "hoshimi";
 import MeowDB from "meowdb";
 import type { MakeRequired, RestOrArray } from "seyfert/lib/common/index.js";
@@ -20,6 +21,9 @@ type RequiredPlayerJson = MakeRequired<PlayerJson>;
  * @type {string}
  */
 const dir: string = Constants.SessionsPath();
+
+// Create the directory if it doesn't exist
+await mkdir(dir, { recursive: true });
 
 /**
  * The name of the sessions file without the `.json` extension.

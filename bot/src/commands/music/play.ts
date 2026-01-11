@@ -1,7 +1,6 @@
 import { LoadType } from "hoshimi";
 import { Command, createStringOption, Declare, type GuildCommandContext, Options } from "seyfert";
 import { TimeFormat } from "../../time.js";
-import { omitKeys } from "../../utils.js";
 
 const options = {
     query: createStringOption({
@@ -49,8 +48,8 @@ export default class PlayCommand extends Command {
         const { loadType, tracks, playlist } = await player.search({
             query: options.query,
             requester: {
-                ...omitKeys(ctx.author, ["client"]),
-                global_name: ctx.author.username,
+                id: ctx.author.id,
+                username: ctx.author.username,
                 tag: ctx.author.tag,
             },
         });
@@ -91,7 +90,8 @@ export default class PlayCommand extends Command {
 
                     player.queue.add(tracks);
 
-                    await player.play({ noReplace: true });
+                    if (!player.isPlaying()) await player.play();
+
                     await ctx.editOrReply({
                         content: `Added ${tracks.length} tracks to the queue. (${playlist.info.name})`,
                     });

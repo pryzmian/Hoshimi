@@ -19,9 +19,9 @@ export const Constants = {
     /**
      * The name of the cache file.
      * @type {string}
-     * @default "cache.json"
+     * @default "commands.json"
      */
-    CacheFile: "cache.json",
+    CacheFile: "commands.json",
     /**
      *
      * Whether debug mode is enabled.

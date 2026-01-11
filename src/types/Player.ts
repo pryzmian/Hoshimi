@@ -1,3 +1,4 @@
+import type { PlayerStorageAdapter } from "../classes/player/storage/Adapter";
 import type { Track, TrackRequester, UnresolvedTrack } from "../classes/Track";
 import type { FilterSettings } from "./Filters";
 import type { Awaitable, NodeIdentifier, Nullable } from "./Manager";
@@ -189,6 +190,12 @@ export interface HoshimiPlayerOptions {
      * @type {DisconnectPlayerActions | undefined}
      */
     onDisconnect?: DisconnectPlayerActions;
+    /**
+     * The customizable player storage adapter.
+     * @type {PlayerStorageAdapter | undefined}
+     * @default {PlayerMemoryStorage}
+     */
+    playerStorage?: PlayerStorageAdapter;
 }
 
 /**

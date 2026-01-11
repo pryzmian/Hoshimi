@@ -1,5 +1,6 @@
+import type { RestOrArray } from "../../../types/Manager";
 import type { QueueJson } from "../../../types/Queue";
-import { StorageAdapter } from "./adapter";
+import { StorageAdapter } from "./Adapter";
 
 /**
  * Class representing a memory storage manager.
@@ -16,31 +17,36 @@ export class MemoryAdapter<T extends QueueJson = QueueJson> extends StorageAdapt
      */
     private readonly storage: Map<string, QueueJson> = new Map();
 
-    public override get(key: string): T | undefined {
+    public get(key: string): T | undefined {
         return this.parse(this.storage.get(key));
     }
 
-    public override set(key: string, value: T): void {
-        this.storage.set(key, this.stringify<QueueJson>(value));
+    public set(key: string, value: T): void {
+        this.storage.set(this.buildKey(this.namespace, key), this.stringify<QueueJson>(value));
     }
 
-    public override delete(key: string): boolean {
-        return this.storage.delete(key);
+    public delete(key: string): boolean {
+        return this.storage.delete(this.buildKey(this.namespace, key));
     }
 
-    public override clear(): void {
+    public clear(): void {
         this.storage.clear();
     }
 
-    public override has(key: string): boolean {
-        return this.storage.has(key);
+    public has(key: string): boolean {
+        return this.storage.has(this.buildKey(this.namespace, key));
     }
 
-    public override parse(value: unknown): T {
+    public parse(value: unknown): T {
         return value as T;
     }
 
-    public override stringify<R = string>(value: unknown): R {
+    public stringify<R = string>(value: unknown): R {
         return value as R;
+    }
+
+    public buildKey(...parts: RestOrArray<string>): string {
+        const flattern = parts.flat();
+        return flattern.join(":");
     }
 }

@@ -1,23 +1,15 @@
 import "dotenv/config";
 
-import { mkdir } from "node:fs/promises";
 import { createHoshimi, type Hoshimi, type LyricsResult, Player, SearchEngines, Structures } from "hoshimi";
 import { Client, type ParseClient, type UsingClient } from "seyfert";
 import { HandleCommand } from "seyfert/lib/commands/handle.js";
 import { Yuna } from "yunaforseyfert";
 import { autoplayFn } from "./autoplay.js";
-import { Constants } from "./constants.js";
 import { LavalinkHandler } from "./manager/handler.js";
 import { Sessions } from "./manager/sessions.js";
 import { RedisStorage } from "./manager/storage.js";
 import type { HoshimiUser } from "./manager/types.js";
 import { RedisClient } from "./redis.js";
-
-/**
- * The path to the sessions directory.
- * @type {string}
- */
-const path: string = Constants.SessionsPath();
 
 /**
  * The main client of the bot.
@@ -87,9 +79,6 @@ const handler: LavalinkHandler = new LavalinkHandler(client);
 
 // The main process of the bot.
 (async (): Promise<void> => {
-    // Create the cache directory if it doesn't exist.
-    await mkdir(path, { recursive: true });
-
     // Start the lavalink handler, redis and the client.
     await redis.start();
     await handler.start();

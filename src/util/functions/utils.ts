@@ -1,6 +1,6 @@
 import { NodeError, OptionError, ResolveError } from "../../classes/Errors";
 import type { Node } from "../../classes/node/Node";
-import { StorageAdapter } from "../../classes/queue/adapters/adapter";
+import { StorageAdapter } from "../../classes/queue/adapters/Adapter";
 import { Track, type TrackRequester, UnresolvedTrack } from "../../classes/Track";
 import { type HoshimiOptions, SearchEngines } from "../../types/Manager";
 import type { LavalinkTrack, NodeOptions, PluginNames, SearchQuery, SourceNames, UnresolvedLavalinkTrack } from "../../types/Node";

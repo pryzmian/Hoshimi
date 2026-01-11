@@ -17,7 +17,7 @@ const max: number = 10;
 export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrack | null): Promise<void> {
     if (!lastTrack) return;
 
-    const isEnabled = !!player.data.get("enabledAutoplay") || player.manager.options.queueOptions.autoPlay;
+    const isEnabled = !!(await player.data.get("enabledAutoplay")) || player.manager.options.queueOptions.autoPlay;
     if (!isEnabled) return;
 
     /**

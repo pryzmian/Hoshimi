@@ -15,7 +15,7 @@ export default createLavalinkEvent({
             content: `Finished playing: ${track.toHyperlink()}`,
         });
 
-        const lyricsId = player.data.get("lyricsId");
+        const lyricsId = await player.data.get("lyricsId");
         if (lyricsId) {
             await client.messages.delete(lyricsId, textId).catch(() => null);
 

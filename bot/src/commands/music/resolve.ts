@@ -31,9 +31,9 @@ export default class ResolveCommand extends Command {
         // the most funnier code i've ever written in this thing.
         if (isBase64(ctx.options.query)) {
             const decode = await node.decode.single(ctx.options.query, {
-                ...omitKeys(ctx.author, ["client"]),
-                global_name: ctx.author.username,
+                id: ctx.author.id,
                 tag: ctx.author.tag,
+                username: ctx.author.username,
             });
 
             const stringified = JSON.stringify(omitKeys(decode, ["requester"]), null, 2);

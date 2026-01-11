@@ -19,7 +19,7 @@ export default class LyricsCommand extends Command {
         if (!player) return ctx.editOrReply({ content: "No player found." });
 
         const lyrics =
-            player.data.get("lyrics") ??
+            (await player.data.get("lyrics")) ??
             (await player.lyrics.current().then((l) => {
                 if (!l) return null;
 

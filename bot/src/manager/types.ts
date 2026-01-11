@@ -1,23 +1,31 @@
 import type { HoshimiEvents, Omit, PlayerJson } from "hoshimi";
 import type { UsingClient } from "seyfert";
 import type { Awaitable } from "seyfert/lib/common/index.js";
-import type { APIUser } from "seyfert/lib/types/index.js";
+
+interface HoshimiNode extends Omit<PlayerJson["node"], "options"> {}
 
 /**
  * The interface of the session json.
  * @extends {PlayerJson}
  */
 export interface SessionJson
-    extends Omit<PlayerJson, "ping" | "createdTimestamp" | "lastPositionUpdate" | "paused" | "playing" | "queue" | "filters"> {
+    extends Omit<PlayerJson, "ping" | "createdTimestamp" | "lastPositionUpdate" | "paused" | "playing" | "queue" | "filters" | "node"> {
     requester: HoshimiUser;
+    node: HoshimiNode;
+    enabledAutoplay?: boolean;
+    enabledLyrics?: boolean;
+    lyricsId?: string;
+    messageId?: string;
 }
 
 /**
  * The interface of the Hoshimi user.
  */
-export type HoshimiUser = APIUser & {
+export interface HoshimiUser {
+    id: string;
+    username: string;
     tag: string;
-};
+}
 
 /**
  * The interface of the lavalink event.

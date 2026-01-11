@@ -1,4 +1,4 @@
-import type { Awaitable } from "../../../types/Manager";
+import type { Awaitable, RestOrArray } from "../../../types/Manager";
 import type { QueueJson } from "../../../types/Queue";
 
 /**
@@ -17,6 +17,17 @@ import type { QueueJson } from "../../../types/Queue";
  * ```
  */
 export abstract class StorageAdapter<T extends QueueJson = QueueJson> {
+    /**
+     * The namespace of the storage.
+     * @type {string}
+     * @default "hoshimiqueue"
+     * @example
+     * ```ts
+     * console.log(storage.namespace); // "hoshimiqueue"
+     * ```
+     */
+    public namespace: string = "hoshimiqueue";
+
     /**
      *
      * Get the value using the key.
@@ -103,4 +114,16 @@ export abstract class StorageAdapter<T extends QueueJson = QueueJson> {
      * ```
      */
     abstract stringify<R = string>(value: unknown): Awaitable<R>;
+
+    /**
+     *
+     * Build a key from the given parts.
+     * @param {string[]} parts The parts to build the key from.
+     * @returns {string} The built key.
+     * @example
+     * ```ts
+     * const key = storage.buildKey("part1", "part2", "part3");
+     * ```
+     */
+    abstract buildKey(...parts: RestOrArray<string>): string;
 }

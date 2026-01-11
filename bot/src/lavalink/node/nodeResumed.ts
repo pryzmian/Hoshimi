@@ -34,8 +34,11 @@ export default createLavalinkEvent({
 
             if (data.track) player.queue.current = await player.queue.build(data.track, session.requester);
 
-            player.loop = session.loop;
+            if (session.enabledAutoplay) await player.data.set("enabledAutoplay", session.enabledAutoplay);
+            if (session.enabledLyrics) await player.data.set("enabledLyrics", session.enabledLyrics);
+            if (session.lyricsId) await player.data.set("lyricsId", session.lyricsId);
 
+            player.loop = session.loop;
             player.filterManager.data = data.filters;
             player.connected = data.state.connected;
             player.paused = data.paused;

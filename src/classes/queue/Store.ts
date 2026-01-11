@@ -1,7 +1,7 @@
 import type { Awaitable } from "../../types/Manager";
 import type { QueueJson } from "../../types/Queue";
 
-import type { StorageAdapter } from "./adapters/adapter";
+import type { StorageAdapter } from "./adapters/Adapter";
 
 /**
  * Class representing a queue store.

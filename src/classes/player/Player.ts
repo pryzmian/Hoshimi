@@ -25,7 +25,7 @@ import { PlayerError } from "../Errors";
 import type { Hoshimi } from "../Hoshimi";
 import type { HoshimiTrack } from "../Track";
 import type { FilterManager } from "./filters/Manager";
-import { PlayerStorage } from "./Storage";
+import type { PlayerStorageAdapter } from "./storage/Adapter";
 
 /**
  * Type representing a nullable voice channel update.
@@ -39,10 +39,10 @@ type NullableVoiceChannelUpdate = Partial<Nullable<VoiceChannelUpdate>>;
 export class Player {
     /**
      * The data for the player.
-     * @type {PlayerStorage}
+     * @type {PlayerStorageAdapter}
      * @readonly
      */
-    readonly data: PlayerStorage = new PlayerStorage();
+    readonly data: PlayerStorageAdapter;
 
     /**
      * The options for the player.
@@ -221,6 +221,8 @@ export class Player {
         this.node =
             (typeof this.options.node === "string" ? this.manager.nodeManager.get(this.options.node) : this.options.node) ??
             this.manager.nodeManager.getLeastUsed();
+
+        this.data = this.manager.options.playerOptions.playerStorage;
 
         validatePlayerOptions(this.options);
 

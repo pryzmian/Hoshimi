@@ -1,6 +1,5 @@
 import { UnresolvedTrack } from "hoshimi";
 import { Command, createStringOption, Declare, type GuildCommandContext, type Message, Options, type WebhookMessage } from "seyfert";
-import { omitKeys } from "../../utils.js";
 
 const options = {
     title: createStringOption({
@@ -45,15 +44,15 @@ export default class UnresolveCommand extends Command {
         const unresolved = new UnresolvedTrack(
             { info: { title, uri, author } },
             {
-                ...omitKeys(ctx.author, ["client"]),
-                global_name: ctx.author.username,
+                id: ctx.author.id,
                 tag: ctx.author.tag,
+                username: ctx.author.username,
             },
         );
 
         player.queue.add(unresolved);
 
-        if (!player.playing) await player.play();
+        if (!player.isPlaying()) await player.play();
 
         return ctx.editOrReply({
             content: `The unresolved track **${unresolved.info.title}** has been added to the queue.`,

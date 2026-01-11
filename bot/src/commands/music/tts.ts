@@ -1,6 +1,5 @@
 import { SearchEngines } from "hoshimi";
 import { Command, createStringOption, Declare, type GuildCommandContext, Options } from "seyfert";
-import { omitKeys } from "../../utils.js";
 
 const options = {
     text: createStringOption({
@@ -51,9 +50,9 @@ export default class TtsCommand extends Command {
                 voice: options.voice ?? "Andrea",
             },
             requester: {
-                ...omitKeys(ctx.author, ["client"]),
-                global_name: ctx.author.username,
+                id: ctx.author.id,
                 tag: ctx.author.tag,
+                username: ctx.author.username,
             },
         });
 

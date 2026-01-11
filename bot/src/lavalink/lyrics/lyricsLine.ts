@@ -9,13 +9,13 @@ export default createLavalinkEvent({
         if (!player.data.has("enabledLyrics")) return;
         if (!player.textId) return;
 
-        const lyricsId = player.data.get("lyricsId");
+        const lyricsId = await player.data.get("lyricsId");
         if (!lyricsId) return;
 
         const message = await client.messages.fetch(lyricsId, player.textId).catch(() => null);
         if (!message) return;
 
-        const lyrics = player.data.get("lyrics");
+        const lyrics = await player.data.get("lyrics");
         if (!lyrics) {
             await message.delete().catch(() => null);
 

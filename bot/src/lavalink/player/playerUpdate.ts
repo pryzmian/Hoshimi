@@ -32,10 +32,21 @@ export default createLavalinkEvent({
             ]);
 
             const requester = newPlayer.queue.current?.requester ?? ({} as HoshimiUser);
+            const autoplay = await newPlayer.data.get("enabledAutoplay");
+            const lyrics = await newPlayer.data.get("enabledLyrics");
+            const lyricsId = await newPlayer.data.get("lyricsId");
 
             Sessions.set<SessionJson>(newPlayer.guildId, {
                 ...newJson,
                 requester,
+                enabledAutoplay: autoplay,
+                enabledLyrics: lyrics,
+                lyricsId: lyricsId,
+                messageId: newPlayer.textId,
+                node: {
+                    id: newPlayer.node.id,
+                    sessionId: newPlayer.node.sessionId,
+                },
             });
         }
 

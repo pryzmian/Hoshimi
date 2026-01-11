@@ -13,10 +13,12 @@ export * from "./classes/player/filters/Manager";
 
 // Exports related to player.
 export * from "./classes/player/Player";
+export * from "./classes/player/storage/Adapter";
+export * from "./classes/player/storage/Storage";
 
 // Exports related to queue adapters.
-export * from "./classes/queue/adapters/adapter";
-export * from "./classes/queue/adapters/memory";
+export * from "./classes/queue/adapters/Adapter";
+export * from "./classes/queue/adapters/Memory";
 
 // Exports related to queue and the store.
 export * from "./classes/queue/Queue";

@@ -24,8 +24,9 @@ import { HoshimiAgent } from "../util/constants";
 import { autoplayFn } from "../util/functions/autoplay";
 import { requesterFn, stringify, validateManagerOptions } from "../util/functions/utils";
 import { ManagerError, OptionError } from "./Errors";
-import { MemoryAdapter } from "./queue/adapters/memory";
+import { MemoryAdapter } from "./queue/adapters/Memory";
 import { Track } from "./Track";
+import { PlayerMemoryStorage } from "./player/storage/Storage";
 
 /**
  * The packet type for the manager.
@@ -154,6 +155,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
             },
             playerOptions: {
                 requesterFn: options.playerOptions?.requesterFn ?? requesterFn,
+                playerStorage: options.playerOptions?.playerStorage ?? new PlayerMemoryStorage(),
                 onDisconnect: {
                     autoDestroy: options.playerOptions?.onDisconnect?.autoDestroy ?? false,
                     autoReconnect: options.playerOptions?.onDisconnect?.autoReconnect ?? true,
