@@ -44,7 +44,7 @@ export default createLavalinkEvent({
             player.playing = !data.paused && !!data.track;
             player.ping = data.state.ping;
 
-            if (!player.playing && player.queue.current) await player.play();
+            if (!player.isPlaying() && player.queue.current) await player.play();
 
             await player.queue.utils.save();
         }
