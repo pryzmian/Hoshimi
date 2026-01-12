@@ -1,4 +1,4 @@
-import { type QueueJson, type RestOrArray, StorageAdapter } from "hoshimi";
+import { type QueueJson, QueueStorageAdapter, type RestOrArray } from "hoshimi";
 import type { RedisClient } from "../redis.js";
 
 /**
@@ -6,7 +6,7 @@ import type { RedisClient } from "../redis.js";
  * @class RedisStorage
  * @extends {StorageAdapter}
  */
-export class RedisStorage extends StorageAdapter {
+export class RedisStorage extends QueueStorageAdapter {
     constructor(readonly redis: RedisClient) {
         super();
     }
