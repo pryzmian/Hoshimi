@@ -1,7 +1,7 @@
 import type { Awaitable } from "../../types/Manager";
 import type { QueueJson } from "../../types/Queue";
 
-import type { StorageAdapter } from "./adapters/Adapter";
+import type { QueueStorageAdapter } from "../storage/adapters/QueueAdapter";
 
 /**
  * Class representing a queue store.
@@ -10,17 +10,17 @@ import type { StorageAdapter } from "./adapters/Adapter";
 export class QueueStore {
     /**
      * Storage manager instance.
-     * @type {StorageAdapter}
+     * @type {QueueStorageAdapter}
      * @private
      * @readonly
      * @internal
      */
-    private readonly storage: StorageAdapter;
+    private readonly storage: QueueStorageAdapter;
 
     /**
      *
      * Constructor of the queue store.
-     * @param {StorageAdapter} storage Storage manager instance.
+     * @param {QueueStorageAdapter} storage Storage manager instance.
      * @example
      * ```ts
      * const storage = new CustomStorage();
@@ -29,7 +29,7 @@ export class QueueStore {
      * console.log(queueStore);
      * ```
      */
-    constructor(storage: StorageAdapter) {
+    constructor(storage: QueueStorageAdapter) {
         this.storage = storage;
     }
 

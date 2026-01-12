@@ -1,13 +1,13 @@
-import type { RestOrArray } from "../../../types/Manager";
-import type { QueueJson } from "../../../types/Queue";
-import { StorageAdapter } from "./Adapter";
+import type { RestOrArray } from "../../types/Manager";
+import type { QueueJson } from "../../types/Queue";
+import { QueueStorageAdapter } from "./adapters/QueueAdapter";
 
 /**
  * Class representing a memory storage manager.
  * @class MemoryAdapter
- * @extends {StorageAdapter}
+ * @extends {QueueStorageAdapter}
  */
-export class MemoryAdapter<T extends QueueJson = QueueJson> extends StorageAdapter<T> {
+export class QueueMemoryStorage<T extends QueueJson = QueueJson> extends QueueStorageAdapter<T> {
     /**
      * Memory storage.
      * @type {Map<string, QueueJson>}

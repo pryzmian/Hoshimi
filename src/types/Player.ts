@@ -1,4 +1,4 @@
-import type { PlayerStorageAdapter } from "../classes/player/storage/Adapter";
+import type { PlayerStorageAdapter } from "../classes/storage/adapters/PlayerAdapter";
 import type { Track, TrackRequester, UnresolvedTrack } from "../classes/Track";
 import type { FilterSettings } from "./Filters";
 import type { Awaitable, NodeIdentifier, Nullable } from "./Manager";

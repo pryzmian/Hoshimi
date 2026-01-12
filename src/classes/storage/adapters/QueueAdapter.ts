@@ -16,7 +16,7 @@ import type { QueueJson } from "../../../types/Queue";
  * console.log(value); // "value"
  * ```
  */
-export abstract class StorageAdapter<T extends QueueJson = QueueJson> {
+export abstract class QueueStorageAdapter<T extends QueueJson = QueueJson> {
     /**
      * The namespace of the storage.
      * @type {string}

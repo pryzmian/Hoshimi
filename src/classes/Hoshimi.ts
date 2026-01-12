@@ -1,5 +1,4 @@
 import { EventEmitter } from "node:events";
-
 import {
     type ChannelDeletePacket,
     type ClientData,
@@ -24,9 +23,9 @@ import { HoshimiAgent } from "../util/constants";
 import { autoplayFn } from "../util/functions/autoplay";
 import { requesterFn, stringify, validateManagerOptions } from "../util/functions/utils";
 import { ManagerError, OptionError } from "./Errors";
-import { MemoryAdapter } from "./queue/adapters/Memory";
+import { PlayerMemoryStorage } from "./storage/PlayerMemory";
+import { QueueMemoryStorage } from "./storage/QueueMemory";
 import { Track } from "./Track";
-import { PlayerMemoryStorage } from "./player/storage/Storage";
 
 /**
  * The packet type for the manager.
@@ -151,7 +150,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
                 maxHistory: options.queueOptions?.maxHistory ?? 25,
                 autoplayFn: options.queueOptions?.autoplayFn ?? autoplayFn,
                 autoPlay: options.queueOptions?.autoPlay ?? false,
-                storage: options.queueOptions?.storage ?? new MemoryAdapter(),
+                storage: options.queueOptions?.storage ?? new QueueMemoryStorage(),
             },
             playerOptions: {
                 requesterFn: options.playerOptions?.requesterFn ?? requesterFn,

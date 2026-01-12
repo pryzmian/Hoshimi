@@ -1,4 +1,4 @@
-import type { StorageAdapter } from "../classes/queue/adapters/Adapter";
+import type { QueueStorageAdapter } from "../classes/storage/adapters/QueueAdapter";
 import type { HoshimiTrack, Track } from "../classes/Track";
 import type { Awaitable } from "./Manager";
 import type { PlayerStructure } from "./Structures";
@@ -28,10 +28,10 @@ export interface HoshimiQueueOptions {
     autoPlay?: boolean;
     /**
      * The storage manager to use for the queue.
-     * @type {StorageAdapter}
+     * @type {QueueStorageAdapter}
      * @default {MemoryAdapter}
      */
-    storage?: StorageAdapter;
+    storage?: QueueStorageAdapter;
 }
 
 /**

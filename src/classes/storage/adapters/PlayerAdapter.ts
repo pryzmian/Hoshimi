@@ -1,5 +1,5 @@
 import type { Awaitable, RestOrArray } from "../../../types/Manager";
-import type { CustomizablePlayerStorage } from "../Player";
+import type { CustomizablePlayerStorage } from "../../player/Player";
 
 /**
  * Type representing the customizable player storage.

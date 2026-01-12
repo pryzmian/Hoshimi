@@ -1,6 +1,6 @@
 import { NodeError, OptionError, ResolveError } from "../../classes/Errors";
 import type { Node } from "../../classes/node/Node";
-import { StorageAdapter } from "../../classes/queue/adapters/Adapter";
+import { QueueStorageAdapter } from "../../classes/storage/adapters/QueueAdapter";
 import { Track, type TrackRequester, UnresolvedTrack } from "../../classes/Track";
 import { type HoshimiOptions, SearchEngines } from "../../types/Manager";
 import type { LavalinkTrack, NodeOptions, PluginNames, SearchQuery, SourceNames, UnresolvedLavalinkTrack } from "../../types/Node";
@@ -26,7 +26,7 @@ export function validateManagerOptions(options: HoshimiOptions): void {
     if (typeof options.queueOptions !== "undefined" && typeof options.queueOptions.autoplayFn !== "function")
         throw new OptionError("The manager option 'options.queueOptions.autoplayFn' must be a function.");
 
-    if (typeof options.queueOptions?.storage !== "undefined" && !(options.queueOptions.storage instanceof StorageAdapter))
+    if (typeof options.queueOptions?.storage !== "undefined" && !(options.queueOptions.storage instanceof QueueStorageAdapter))
         throw new OptionError("The manager option 'options.queueOptions.storage' must be a valid storage manager.");
 
     if (typeof options.defaultSearchEngine !== "undefined" && !ValidEngines.includes(options.defaultSearchEngine))

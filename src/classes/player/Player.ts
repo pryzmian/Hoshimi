@@ -23,9 +23,9 @@ import { type NodeStructure, type QueueStructure, Structures } from "../../types
 import { isTrack, isUnresolvedTrack, validatePlayerOptions, validateTrack } from "../../util/functions/utils";
 import { PlayerError } from "../Errors";
 import type { Hoshimi } from "../Hoshimi";
+import type { PlayerStorageAdapter } from "../storage/adapters/PlayerAdapter";
 import type { HoshimiTrack } from "../Track";
 import type { FilterManager } from "./filters/Manager";
-import type { PlayerStorageAdapter } from "./storage/Adapter";
 
 /**
  * Type representing a nullable voice channel update.

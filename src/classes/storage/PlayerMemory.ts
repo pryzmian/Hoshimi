@@ -1,5 +1,5 @@
-import type { Awaitable, RestOrArray } from "../../../types/Manager";
-import { PlayerStorageAdapter, type StorageKeys, type StorageValues } from "./Adapter";
+import type { Awaitable, RestOrArray } from "../../types/Manager";
+import { PlayerStorageAdapter, type StorageKeys, type StorageValues } from "./adapters/PlayerAdapter";
 
 /**
  * Class representing a player storage.
