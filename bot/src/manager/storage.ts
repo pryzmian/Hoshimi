@@ -4,7 +4,7 @@ import type { RedisClient } from "../redis.js";
 /**
  * Class representing a Redis storage adapter for Hoshimi.
  * @class RedisStorage
- * @extends {StorageAdapter}
+ * @extends {QueueStorageAdapter}
  */
 export class RedisStorage extends QueueStorageAdapter {
     constructor(readonly redis: RedisClient) {
