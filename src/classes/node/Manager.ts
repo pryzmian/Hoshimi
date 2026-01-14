@@ -2,6 +2,7 @@ import { Events, type NodeIdentifier } from "../../types/Manager";
 import { type NodeOptions, NodeSortTypes, State } from "../../types/Node";
 import { type NodeStructure, Structures } from "../../types/Structures";
 import { Collection } from "../../util/collection";
+import { NodeManagerError } from "../Errors";
 import type { Hoshimi } from "../Hoshimi";
 
 /**
@@ -201,7 +202,7 @@ export class NodeManager {
      */
     public getLeastUsed(sortType: NodeSortTypes = NodeSortTypes.Penalties): NodeStructure {
         const nodes: NodeStructure[] = this.nodes.filter((node) => node.state === State.Connected);
-        if (!nodes.length) throw new Error("No connected nodes available.");
+        if (!nodes.length) throw new NodeManagerError("No connected nodes available.");
 
         switch (sortType) {
             case NodeSortTypes.Players:
