@@ -154,7 +154,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
             },
             playerOptions: {
                 requesterFn: options.playerOptions?.requesterFn ?? requesterFn,
-                playerStorage: options.playerOptions?.playerStorage ?? new PlayerMemoryStorage(),
+                storage: options.playerOptions?.storage ?? new PlayerMemoryStorage(),
                 onDisconnect: {
                     autoDestroy: options.playerOptions?.onDisconnect?.autoDestroy ?? false,
                     autoReconnect: options.playerOptions?.onDisconnect?.autoReconnect ?? true,

@@ -222,7 +222,7 @@ export class Player {
             (typeof this.options.node === "string" ? this.manager.nodeManager.get(this.options.node) : this.options.node) ??
             this.manager.nodeManager.getLeastUsed();
 
-        this.data = this.manager.options.playerOptions.playerStorage;
+        this.data = this.manager.options.playerOptions.storage;
 
         validatePlayerOptions(this.options);
 

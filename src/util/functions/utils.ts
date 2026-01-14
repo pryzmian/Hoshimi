@@ -1,5 +1,6 @@
 import { NodeError, OptionError, ResolveError } from "../../classes/Errors";
 import type { Node } from "../../classes/node/Node";
+import { PlayerStorageAdapter } from "../../classes/storage/adapters/PlayerAdapter";
 import { QueueStorageAdapter } from "../../classes/storage/adapters/QueueAdapter";
 import { Track, type TrackRequester, UnresolvedTrack } from "../../classes/Track";
 import { type HoshimiOptions, SearchEngines } from "../../types/Manager";
@@ -20,23 +21,59 @@ export function validateManagerOptions(options: HoshimiOptions): void {
         throw new OptionError("The manager option 'options.nodes' must be a valid array of nodes and atleast one valid node.");
     if (typeof options.sendPayload !== "function")
         throw new OptionError("The manager option 'options.sendPayload' must be a vaid function.");
-
-    if (typeof options.queueOptions !== "undefined" && typeof options.queueOptions.maxHistory !== "number")
-        throw new OptionError("The manager option 'options.queueOptions.maxPreviousTracks' must be a number.");
-    if (typeof options.queueOptions !== "undefined" && typeof options.queueOptions.autoplayFn !== "function")
-        throw new OptionError("The manager option 'options.queueOptions.autoplayFn' must be a function.");
-
-    if (typeof options.queueOptions?.storage !== "undefined" && !(options.queueOptions.storage instanceof QueueStorageAdapter))
-        throw new OptionError("The manager option 'options.queueOptions.storage' must be a valid storage manager.");
-
     if (typeof options.defaultSearchEngine !== "undefined" && !ValidEngines.includes(options.defaultSearchEngine))
         throw new OptionError("The manager option 'options.defaultSearchEngine' Must be a valid search engine.");
-    if (typeof options.client !== "undefined" && typeof options.client !== "object")
-        throw new OptionError("The manager option 'options.client' Must be a valid object.");
-    if (typeof options.client !== "undefined" && typeof options.client.id !== "undefined" && typeof options.client.id !== "string")
-        throw new OptionError("The manager option 'options.client.id' Must be a valid string.");
-    if (typeof options.client !== "undefined" && typeof options.client.id !== "undefined" && typeof options.client.username !== "string")
-        throw new OptionError("The manager option 'options.client.username' must be a valid string.");
+
+    if (typeof options.queueOptions !== "undefined") {
+        if (typeof options.queueOptions.maxHistory !== "number")
+            throw new OptionError("The manager option 'options.queueOptions.maxPreviousTracks' must be a number.");
+        if (typeof options.queueOptions.autoplayFn !== "function")
+            throw new OptionError("The manager option 'options.queueOptions.autoplayFn' must be a function.");
+        if (typeof options.queueOptions.storage !== "undefined" && !(options.queueOptions.storage instanceof QueueStorageAdapter))
+            throw new OptionError("The manager option 'options.queueOptions.storage' must be a valid storage manager.");
+        if (typeof options.queueOptions.autoPlay !== "undefined" && typeof options.queueOptions.autoPlay !== "boolean")
+            throw new OptionError("The manager option 'options.queueOptions.autoPlay' must be a boolean.");
+    }
+
+    if (typeof options.playerOptions !== "undefined") {
+        if (!(options.playerOptions.storage instanceof PlayerStorageAdapter))
+            throw new OptionError("The manager option 'options.playerOptions.storage' must be a valid storage manager.");
+        if (typeof options.playerOptions.requesterFn !== "function")
+            throw new OptionError("The manager option 'options.playerOptions.requesterFn' must be a valid function.");
+
+        if (typeof options.playerOptions.onError !== "undefined") {
+            if (typeof options.playerOptions.onError.autoDestroy !== "boolean")
+                throw new OptionError("The manager option 'options.playerOptions.onError.autoDestroy' must be a boolean.");
+            if (typeof options.playerOptions.onError.autoSkip !== "boolean")
+                throw new OptionError("The manager option 'options.playerOptions.onError.autoSkip' must be a boolean.");
+            if (typeof options.playerOptions.onError.autoStop !== "boolean")
+                throw new OptionError("The manager option 'options.playerOptions.onError.autoStop' must be a boolean.");
+        }
+    }
+
+    if (typeof options.client !== "undefined") {
+        if (typeof options.client !== "object") throw new OptionError("The manager option 'options.client' Must be a valid object.");
+        if (typeof options.client.id !== "undefined" && typeof options.client.id !== "string")
+            throw new OptionError("The manager option 'options.client.id' Must be a valid string.");
+        if (typeof options.client.username !== "undefined" && typeof options.client.username !== "string")
+            throw new OptionError("The manager option 'options.client.username' must be a valid string.");
+    }
+
+    if (typeof options.nodeOptions !== "undefined") {
+        if (typeof options.nodeOptions.resumable !== "undefined" && typeof options.nodeOptions.resumable !== "boolean")
+            throw new OptionError("The manager option 'options.nodeOptions.resumable' must be a boolean.");
+        if (typeof options.nodeOptions.resumeTimeout !== "undefined" && typeof options.nodeOptions.resumeTimeout !== "number")
+            throw new OptionError("The manager option 'options.nodeOptions.resumeTimeout' must be a number.");
+        if (typeof options.nodeOptions.resumeByLibrary !== "undefined" && typeof options.nodeOptions.resumeByLibrary !== "boolean")
+            throw new OptionError("The manager option 'options.nodeOptions.resumeByLibrary' must be a boolean.");
+        if (typeof options.nodeOptions.userAgent !== "undefined" && typeof options.nodeOptions.userAgent !== "string")
+            throw new OptionError("The manager option 'options.nodeOptions.userAgent' must be a string.");
+    }
+
+    if (typeof options.restOptions !== "undefined") {
+        if (typeof options.restOptions.resumeTimeout !== "undefined" && typeof options.restOptions.resumeTimeout !== "number")
+            throw new OptionError("The manager option 'options.restOptions.resumeTimeout' must be a number.");
+    }
 }
 
 /**

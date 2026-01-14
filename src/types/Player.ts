@@ -195,7 +195,7 @@ export interface HoshimiPlayerOptions {
      * @type {PlayerStorageAdapter | undefined}
      * @default {PlayerMemoryStorage}
      */
-    playerStorage?: PlayerStorageAdapter;
+    storage?: PlayerStorageAdapter;
 }
 
 /**
