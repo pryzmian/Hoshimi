@@ -1,4 +1,4 @@
-import { Events, type PlayerJson } from "hoshimi";
+import { EventNames, type PlayerJson } from "hoshimi";
 import { Constants } from "../../constants.js";
 import { createLavalinkEvent } from "../../manager/events.js";
 import { Sessions } from "../../manager/sessions.js";
@@ -6,7 +6,7 @@ import type { HoshimiUser, SessionJson } from "../../manager/types.js";
 import { omitKeys } from "../../utils.js";
 
 export default createLavalinkEvent({
-    name: Events.PlayerUpdate,
+    name: EventNames.PlayerUpdate,
     async run(client, newPlayer, oldPlayer) {
         const newPlayerJson: PlayerJson = newPlayer.toJSON();
 

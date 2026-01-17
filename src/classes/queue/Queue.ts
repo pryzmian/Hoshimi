@@ -1,4 +1,4 @@
-import { DebugLevels, Events } from "../../types/Manager";
+import { DebugLevels, EventNames } from "../../types/Manager";
 import type { LavalinkTrack, UnresolvedLavalinkTrack } from "../../types/Node";
 import type { QueueJson } from "../../types/Queue";
 import type { PlayerStructure } from "../../types/Structures";
@@ -219,8 +219,8 @@ export class Queue {
         if (typeof position === "number" && position >= 0 && position < this.tracks.length) return this.splice(position, 0, ...tracks);
 
         this.tracks.push(...tracks);
-        this.player.manager.emit(Events.QueueUpdate, this.player, this);
-        this.player.manager.emit(Events.Debug, DebugLevels.Queue, `[Queue] -> [Add] Added ${this.tracks.length} tracks to the queue.`);
+        this.player.manager.emit(EventNames.QueueUpdate, this.player, this);
+        this.player.manager.emit(EventNames.Debug, DebugLevels.Queue, `[Queue] -> [Add] Added ${this.tracks.length} tracks to the queue.`);
 
         await this.utils.save();
 
@@ -270,7 +270,11 @@ export class Queue {
     public async unshift(...tracks: Track[]): Promise<this> {
         this.tracks.unshift(...tracks);
 
-        this.player.manager.emit(Events.Debug, DebugLevels.Queue, `[Queue] -> [Unshift] Added ${this.tracks.length} tracks to the queue.`);
+        this.player.manager.emit(
+            EventNames.Debug,
+            DebugLevels.Queue,
+            `[Queue] -> [Unshift] Added ${this.tracks.length} tracks to the queue.`,
+        );
 
         await this.utils.save();
 
@@ -306,8 +310,8 @@ export class Queue {
             }
         }
 
-        this.player.manager.emit(Events.QueueUpdate, this.player, this);
-        this.player.manager.emit(Events.Debug, DebugLevels.Queue, "[Queue] -> [Shuffle] Shuffled the queue.");
+        this.player.manager.emit(EventNames.QueueUpdate, this.player, this);
+        this.player.manager.emit(EventNames.Debug, DebugLevels.Queue, "[Queue] -> [Shuffle] Shuffled the queue.");
 
         await this.utils.save();
 
@@ -337,8 +341,8 @@ export class Queue {
 
         this.current = null;
 
-        this.player.manager.emit(Events.QueueUpdate, this.player, this);
-        this.player.manager.emit(Events.Debug, DebugLevels.Queue, "[Queue] -> [Clear] Cleared the queue.");
+        this.player.manager.emit(EventNames.QueueUpdate, this.player, this);
+        this.player.manager.emit(EventNames.Debug, DebugLevels.Queue, "[Queue] -> [Clear] Cleared the queue.");
 
         await this.utils.save();
 
@@ -359,8 +363,12 @@ export class Queue {
         await this.splice(index, 1);
         await this.add(track, to - 1);
 
-        this.player.manager.emit(Events.QueueUpdate, this.player, this);
-        this.player.manager.emit(Events.Debug, DebugLevels.Queue, `[Queue] -> [Move] Moved track ${track.info.title} to position ${to}.`);
+        this.player.manager.emit(EventNames.QueueUpdate, this.player, this);
+        this.player.manager.emit(
+            EventNames.Debug,
+            DebugLevels.Queue,
+            `[Queue] -> [Move] Moved track ${track.info.title} to position ${to}.`,
+        );
 
         await this.utils.save();
 
@@ -381,8 +389,8 @@ export class Queue {
         if (tracks) this.tracks.splice(start, deleteCount, ...(Array.isArray(tracks) ? tracks : [tracks]));
         else this.tracks.splice(start, deleteCount);
 
-        this.player.manager.emit(Events.QueueUpdate, this.player, this);
-        this.player.manager.emit(Events.Debug, DebugLevels.Queue, `[Queue] -> [Splice] Removed ${deleteCount} tracks from the queue.`);
+        this.player.manager.emit(EventNames.QueueUpdate, this.player, this);
+        this.player.manager.emit(EventNames.Debug, DebugLevels.Queue, `[Queue] -> [Splice] Removed ${deleteCount} tracks from the queue.`);
 
         await this.utils.save();
 

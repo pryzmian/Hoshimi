@@ -1,4 +1,4 @@
-import { DebugLevels, Events, type Inferable } from "../types/Manager";
+import { DebugLevels, EventNames, type Inferable } from "../types/Manager";
 import {
     type LavalinkTrack,
     type PluginInfo,
@@ -179,7 +179,7 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
         if (!this.info.title && !this.encoded && !this.info.uri)
             throw new ResolveError("Track is missing required properties for resolution.");
 
-        player.manager.emit(Events.Debug, DebugLevels.Player, `[Unresolved] -> [Track] Resolving the track: ${this.info.title}`);
+        player.manager.emit(EventNames.Debug, DebugLevels.Player, `[Unresolved] -> [Track] Resolving the track: ${this.info.title}`);
 
         if (this.encoded) return player.node.decode.single(this.encoded, this.requester);
 
@@ -187,7 +187,11 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
             const track = await player.search({ query: this.info.uri, requester: this.requester }).then((result) => result.tracks[0]);
             if (!track) throw new ResolveError("Track could not be resolved from URI.");
 
-            player.manager.emit(Events.Debug, DebugLevels.Player, `[Unresolved] -> [Track] Resolved the track from URI: ${this.info.uri}`);
+            player.manager.emit(
+                EventNames.Debug,
+                DebugLevels.Player,
+                `[Unresolved] -> [Track] Resolved the track from URI: ${this.info.uri}`,
+            );
 
             return track;
         }
@@ -201,7 +205,7 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
                 : player.manager.options.defaultSearchEngine;
 
         player.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Player,
             `[Unresolved] -> [Track] Searching for track with query: ${query} using engine: ${engine}`,
         );
@@ -232,7 +236,7 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
             if (!track) throw new ResolveError("Track could not be resolved from search query.");
 
             player.manager.emit(
-                Events.Debug,
+                EventNames.Debug,
                 DebugLevels.Player,
                 `[Unresolved] -> [Track] Resolved the track ${track.info.title} from search query: ${query}`,
             );

@@ -1,5 +1,5 @@
 import type { Track } from "../../classes/Track";
-import { DebugLevels, Events } from "../../types/Manager";
+import { DebugLevels, EventNames } from "../../types/Manager";
 import {
     type LavalinkPlayerVoice,
     LoopMode,
@@ -38,7 +38,7 @@ async function onEnd(this: PlayerStructure): Promise<void> {
         await this.queue.utils.save();
 
         this.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Player,
             `[Player] -> [Previous] The track: ${this.queue.current.info.title} has been added to the previous track list.`,
         );
@@ -74,13 +74,13 @@ async function queueEnd(
     if (typeof this.manager.options.queueOptions.autoplayFn === "function") {
         await this.manager.options.queueOptions.autoplayFn(this, track);
 
-        this.manager.emit(Events.Debug, DebugLevels.Player, "[Queue] -> [Autoplay] Autoplay function executed.");
+        this.manager.emit(EventNames.Debug, DebugLevels.Player, "[Queue] -> [Autoplay] Autoplay function executed.");
 
         if (this.queue.size > 0) await onEnd.call(this);
         if (this.queue.current) {
-            if (payload.type === PlayerEventType.TrackEnd) this.manager.emit(Events.TrackEnd, this, track, payload);
+            if (payload.type === PlayerEventType.TrackEnd) this.manager.emit(EventNames.TrackEnd, this, track, payload);
 
-            this.manager.emit(Events.Debug, DebugLevels.Player, "[Queue] -> [Autoplay] Track(s) queued from autoplay function.");
+            this.manager.emit(EventNames.Debug, DebugLevels.Player, "[Queue] -> [Autoplay] Track(s) queued from autoplay function.");
 
             return this.play({ noReplace: true, paused: false });
         }
@@ -89,8 +89,8 @@ async function queueEnd(
     if (track) await this.queue.utils.save();
     if (payload.type === PlayerEventType.TrackEnd && payload.reason !== TrackEndReason.Stopped) await this.queue.utils.save();
 
-    this.manager.emit(Events.QueueEnd, this, this.queue);
-    this.manager.emit(Events.Debug, DebugLevels.Player, "[Player] -> [Queue] The queue has ended.");
+    this.manager.emit(EventNames.QueueEnd, this, this.queue);
+    this.manager.emit(EventNames.Debug, DebugLevels.Player, "[Player] -> [Queue] The queue has ended.");
 }
 
 /**
@@ -106,9 +106,9 @@ export async function trackStart(this: PlayerStructure, payload: TrackStartEvent
 
     if (this.queue.current) await this.queue.utils.save();
 
-    this.manager.emit(Events.TrackStart, this, this.queue.current, payload);
+    this.manager.emit(EventNames.TrackStart, this, this.queue.current, payload);
     this.manager.emit(
-        Events.Debug,
+        EventNames.Debug,
         DebugLevels.Player,
         `[Player] -> [Start] The track: ${this.queue.current?.info.title ?? "Unknown"} has started playing.`,
     );
@@ -132,7 +132,7 @@ export async function trackEnd(this: PlayerStructure, payload: TrackEndEvent): P
             break;
 
         case TrackEndReason.Replaced: {
-            this.manager.emit(Events.TrackEnd, this, current, payload);
+            this.manager.emit(EventNames.TrackEnd, this, current, payload);
             return;
         }
 
@@ -144,9 +144,9 @@ export async function trackEnd(this: PlayerStructure, payload: TrackEndEvent): P
 
             if (!this.queue.size || !this.queue.current) return queueEnd.call(this, current, payload);
 
-            this.manager.emit(Events.TrackEnd, this, current, payload);
+            this.manager.emit(EventNames.TrackEnd, this, current, payload);
             this.manager.emit(
-                Events.Debug,
+                EventNames.Debug,
                 DebugLevels.Player,
                 `[Player] -> [End] The track: ${current?.info.title ?? "Unknown"} has ended.`,
             );
@@ -168,8 +168,8 @@ export async function trackEnd(this: PlayerStructure, payload: TrackEndEvent): P
         return queueEnd.call(this, current, payload);
     }
 
-    this.manager.emit(Events.TrackEnd, this, current, payload);
-    this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [End] The track: ${current?.info.title ?? "Uhknown"} has ended.`);
+    this.manager.emit(EventNames.TrackEnd, this, current, payload);
+    this.manager.emit(EventNames.Debug, DebugLevels.Player, `[Player] -> [End] The track: ${current?.info.title ?? "Uhknown"} has ended.`);
 
     return this.play();
 }
@@ -182,10 +182,10 @@ export async function trackEnd(this: PlayerStructure, payload: TrackEndEvent): P
  * @returns {Promise<void>} The track stuck? Try to unstuck it!
  */
 export async function trackStuck(this: PlayerStructure, payload: TrackStuckEvent): Promise<void> {
-    this.manager.emit(Events.TrackStuck, this, this.queue.current, payload);
+    this.manager.emit(EventNames.TrackStuck, this, this.queue.current, payload);
 
     this.manager.emit(
-        Events.Debug,
+        EventNames.Debug,
         DebugLevels.Player,
         `[Player] -> [Stuck] The track: ${this.queue.current?.info.title ?? "Unknown"} has stuck.`,
     );
@@ -216,10 +216,10 @@ export async function trackStuck(this: PlayerStructure, payload: TrackStuckEvent
  * @returns {Promise<void>} Aww, the track has an error? That's sad.
  */
 export async function trackError(this: PlayerStructure, payload: TrackExceptionEvent): Promise<void> {
-    this.manager.emit(Events.TrackError, this, this.queue.current, payload);
+    this.manager.emit(EventNames.TrackError, this, this.queue.current, payload);
 
     this.manager.emit(
-        Events.Debug,
+        EventNames.Debug,
         DebugLevels.Player,
         `[Player] -> [Error] The track: ${this.queue.current?.info.title ?? "Unknown"} has error.`,
     );
@@ -244,9 +244,9 @@ export async function playerUpdate(this: NodeStructure, payload: PlayerUpdate): 
     player.lastPosition = payload.state.position || 0;
     player.lastPositionUpdate = Date.now();
 
-    this.nodeManager.manager.emit(Events.PlayerUpdate, player, oldPlayer, payload);
+    this.nodeManager.manager.emit(EventNames.PlayerUpdate, player, oldPlayer, payload);
     this.nodeManager.manager.emit(
-        Events.Debug,
+        EventNames.Debug,
         DebugLevels.Node,
         `[Player] -> [Update] Player updated: ${player.guildId} | Payload: ${stringify(payload)}`,
     );
@@ -260,9 +260,9 @@ export async function playerUpdate(this: NodeStructure, payload: PlayerUpdate): 
  * @returns {Promise<void>} Yay! Let's sing along!
  */
 export async function lyricsFound(this: PlayerStructure, track: Track | null, payload: LyricsFoundEvent): Promise<void> {
-    this.manager.emit(Events.LyricsFound, this, track, payload);
+    this.manager.emit(EventNames.LyricsFound, this, track, payload);
     this.manager.emit(
-        Events.Debug,
+        EventNames.Debug,
         DebugLevels.Player,
         `[Player] -> [Lyrics] The lyrics have been found: ${this.guildId} | Payload: ${stringify(payload)}`,
     );
@@ -276,9 +276,9 @@ export async function lyricsFound(this: PlayerStructure, track: Track | null, pa
  * @returns {Promise<void>} Let's be honest, you don't care about this.
  */
 export async function lyricsLine(this: PlayerStructure, track: Track | null, payload: LyricsLineEvent): Promise<void> {
-    this.manager.emit(Events.LyricsLine, this, track, payload);
+    this.manager.emit(EventNames.LyricsLine, this, track, payload);
     this.manager.emit(
-        Events.Debug,
+        EventNames.Debug,
         DebugLevels.Player,
         `[Player] -> [Lyrics] The lyrics line has been found: ${this.guildId} | Payload: ${stringify(payload)}`,
     );
@@ -292,9 +292,9 @@ export async function lyricsLine(this: PlayerStructure, track: Track | null, pay
  * @returns {Promise<void>} Awww, no lyrics? That's sad.
  */
 export async function lyricsNotFound(this: PlayerStructure, track: Track | null, payload: LyricsNotFoundEvent): Promise<void> {
-    this.manager.emit(Events.LyricsNotFound, this, track, payload);
+    this.manager.emit(EventNames.LyricsNotFound, this, track, payload);
     this.manager.emit(
-        Events.Debug,
+        EventNames.Debug,
         DebugLevels.Player,
         `[Player] -> [Lyrics] The lyrics were not found: ${this.guildId} | Payload: ${stringify(payload)}`,
     );
@@ -307,9 +307,9 @@ export async function lyricsNotFound(this: PlayerStructure, track: Track | null,
  * @returns {Promise<void>} Did you expect something new here?
  */
 export async function socketClosed(this: PlayerStructure, payload: WebSocketClosedEvent): Promise<void> {
-    this.manager.emit(Events.WebSocketClosed, this, payload);
+    this.manager.emit(EventNames.WebSocketClosed, this, payload);
     this.manager.emit(
-        Events.Debug,
+        EventNames.Debug,
         DebugLevels.Player,
         `[Player] -> [Socket] The socket has closed: ${this.guildId} | Payload: ${stringify(payload)}`,
     );
@@ -323,13 +323,13 @@ export async function socketClosed(this: PlayerStructure, payload: WebSocketClos
  * @returns {Promise<void>} Nothing.
  */
 export async function resumeByLibrary(this: NodeStructure, players: PlayerStructure[]): Promise<void> {
-    this.nodeManager.manager.emit(Events.Debug, DebugLevels.Node, `[Socket] -> [${this.id}]: Resuming session by library...`);
+    this.nodeManager.manager.emit(EventNames.Debug, DebugLevels.Node, `[Socket] -> [${this.id}]: Resuming session by library...`);
 
     for (const player of players) {
         try {
             if (!player.playing && !player.paused && !player.queue.totalSize) {
                 this.nodeManager.manager.emit(
-                    Events.Debug,
+                    EventNames.Debug,
                     DebugLevels.Node,
                     `[Player] -> [Resume] Destroyed player for guild ${player.guildId} due to empty queue.`,
                 );
@@ -355,11 +355,11 @@ export async function resumeByLibrary(this: NodeStructure, players: PlayerStruct
                     paused: player.paused,
                 });
         } catch (error) {
-            this.nodeManager.manager.emit(Events.NodeError, this, error);
+            this.nodeManager.manager.emit(EventNames.NodeError, this, error);
         }
 
         this.nodeManager.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Node,
             `[Player] -> [Resume] Resumed player for guild ${player.guildId} using the library.`,
         );

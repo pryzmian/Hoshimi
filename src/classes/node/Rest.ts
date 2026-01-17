@@ -1,4 +1,4 @@
-import { DebugLevels, Events } from "../../types/Manager";
+import { DebugLevels, EventNames } from "../../types/Manager";
 import type { UserAgent } from "../../types/Node";
 import {
     type FetchOptions,
@@ -193,7 +193,7 @@ export class Rest {
         }
 
         this.node.nodeManager.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Rest,
             `[Rest] -> [${this.node.id} : ${options.method}]: Url: ${this.restUrl} | Endpoint: ${options.endpoint} | Params: ${url.search} | Body: ${options.body ? stringify(options.body) : "None"} | Headers: ${stringify(headers)}`,
         );
@@ -241,7 +241,7 @@ export class Rest {
         if (!this.sessionId) return Promise.resolve(null);
 
         this.node.nodeManager.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Rest,
             `[Rest] -> [${this.node.id}]: Updated player data for guild: ${data.guildId} | Payload: ${stringify(data)}`,
         );
@@ -271,7 +271,7 @@ export class Rest {
         if (!this.sessionId) return Promise.resolve(null);
 
         this.node.nodeManager.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Rest,
             `[Rest] -> [${this.node.id}]: Stopped player for guild: ${guildId}`,
         );
@@ -300,7 +300,7 @@ export class Rest {
         if (!this.sessionId) return;
 
         this.node.nodeManager.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Rest,
             `[Rest] -> [${this.node.id}]: Destroyed player for guild: ${guildId}`,
         );
@@ -327,7 +327,7 @@ export class Rest {
         if (!this.sessionId) return Promise.resolve(null);
 
         this.node.nodeManager.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Rest,
             `[Rest] -> [${this.node.id}]: Updated session for resumed: ${resuming} | Timeout: ${timeout ?? "None"}`,
         );

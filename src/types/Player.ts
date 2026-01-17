@@ -201,14 +201,19 @@ export interface HoshimiPlayerOptions {
 /**
  * The base interface for player events.
  */
-export interface PlayerEvent {
+export interface PlayerEvent<E extends PlayerEventType> {
+    /**
+     * The type of the event.
+     * @type {E}
+     */
+    type: E;
     /**
      * The operation code for the event.
      * @type {OpCodes.Event}
      */
     op: OpCodes.Event;
     /**
-     * The guild ID associated with the event.
+     * The guild id associated with the event.
      * @type {string}
      */
     guildId: string;
@@ -217,12 +222,7 @@ export interface PlayerEvent {
 /**
  * The event for when a track starts playing.
  */
-export interface TrackStartEvent extends PlayerEvent {
-    /**
-     * The type of the event.
-     * @type {PlayerEventType.TrackStart}
-     */
-    type: PlayerEventType.TrackStart;
+export interface TrackStartEvent extends PlayerEvent<PlayerEventType.TrackStart> {
     /**
      * The track that started playing.
      * @type {LavalinkTrack}
@@ -233,12 +233,7 @@ export interface TrackStartEvent extends PlayerEvent {
 /**
  * The event for when a track ends.
  */
-export interface TrackEndEvent extends PlayerEvent {
-    /**
-     * The type of the event.
-     * @type {PlayerEventType.TrackEnd}
-     */
-    type: PlayerEventType.TrackEnd;
+export interface TrackEndEvent extends PlayerEvent<PlayerEventType.TrackEnd> {
     /**
      * The track that ended.
      * @type {LavalinkTrack}
@@ -254,12 +249,7 @@ export interface TrackEndEvent extends PlayerEvent {
 /**
  * The event for when a track gets stuck.
  */
-export interface TrackStuckEvent extends PlayerEvent {
-    /**
-     * The type of the event.
-     * @type {PlayerEventType.TrackStuck}
-     */
-    type: PlayerEventType.TrackStuck;
+export interface TrackStuckEvent extends PlayerEvent<PlayerEventType.TrackStuck> {
     /**
      * The track that got stuck.
      * @type {LavalinkTrack}
@@ -275,12 +265,7 @@ export interface TrackStuckEvent extends PlayerEvent {
 /**
  * The event for when a track encounters an exception.
  */
-export interface TrackExceptionEvent extends PlayerEvent {
-    /**
-     * The type of the event.
-     * @type {PlayerEventType.TrackException}
-     */
-    type: PlayerEventType.TrackException;
+export interface TrackExceptionEvent extends PlayerEvent<PlayerEventType.TrackException> {
     /**
      * The exception that occurred.
      * @type {Exception}
@@ -291,12 +276,7 @@ export interface TrackExceptionEvent extends PlayerEvent {
 /**
  * The event for when the WebSocket connection is closed.
  */
-export interface WebSocketClosedEvent extends PlayerEvent {
-    /**
-     * The type of the event.
-     * @type {PlayerEventType.WebsocketClosed}
-     */
-    type: PlayerEventType.WebsocketClosed;
+export interface WebSocketClosedEvent extends PlayerEvent<PlayerEventType.WebsocketClosed> {
     /**
      * The close code.
      * @type {number}
@@ -317,12 +297,7 @@ export interface WebSocketClosedEvent extends PlayerEvent {
 /**
  * The event for when lyrics are found.
  */
-export interface LyricsFoundEvent extends PlayerEvent {
-    /**
-     * The type of the event.
-     * @type {PlayerEventType.LyricsFound}
-     */
-    type: PlayerEventType.LyricsFound;
+export interface LyricsFoundEvent extends PlayerEvent<PlayerEventType.LyricsFound> {
     /**
      * The guild id associated with the event.
      * @type {string}
@@ -338,28 +313,12 @@ export interface LyricsFoundEvent extends PlayerEvent {
 /**
  * The event for when lyrics are not found.
  */
-export interface LyricsNotFoundEvent extends PlayerEvent {
-    /**
-     * The type of the event.
-     * @type {PlayerEventType.LyricsNotFound}
-     */
-    type: PlayerEventType.LyricsNotFound;
-    /**
-     * The guild id associated with the event.
-     * @type {string}
-     */
-    guildId: string;
-}
+export interface LyricsNotFoundEvent extends PlayerEvent<PlayerEventType.LyricsNotFound> {}
 
 /**
  * The event for when a lyrics line is sent.
  */
-export interface LyricsLineEvent extends PlayerEvent {
-    /**
-     * The type of the event.
-     * @type {PlayerEventType.LyricsLine}
-     */
-    type: PlayerEventType.LyricsLine;
+export interface LyricsLineEvent extends PlayerEvent<PlayerEventType.LyricsLine> {
     /**
      * The guild id associated with the event.
      * @type {string}

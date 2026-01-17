@@ -1,8 +1,8 @@
-import { Events } from "hoshimi";
+import { EventNames } from "hoshimi";
 import { createLavalinkEvent } from "../../manager/events.js";
 
 export default createLavalinkEvent({
-    name: Events.QueueEnd,
+    name: EventNames.QueueEnd,
     async run(client, player) {
         const textId = player.textId;
         if (!textId) return;

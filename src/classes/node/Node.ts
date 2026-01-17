@@ -1,5 +1,5 @@
 import { WebSocket } from "ws";
-import { DebugLevels, Events } from "../../types/Manager";
+import { DebugLevels, EventNames } from "../../types/Manager";
 import {
     type LavalinkSearchResponse,
     type LavalinkTrack,
@@ -316,7 +316,7 @@ export class Node {
             this.sessionId = this.options.sessionId;
 
             this.nodeManager.manager.emit(
-                Events.Debug,
+                EventNames.Debug,
                 DebugLevels.Node,
                 `[Socket] -> [${this.id}]: The session id is present. | Session: ${this.sessionId} | Resuming: ${this.session.resuming}`,
             );
@@ -330,7 +330,7 @@ export class Node {
         this.ws.on("message", onMessage.bind(this));
 
         this.nodeManager.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Node,
             `[Socket] -> [${this.id}]: Connecting to ${this.address} | State: ${this.state} | Session: ${this.sessionId} | Resumed: ${this.session.resuming} | Penalties: ${this.penalties} | Reconnects: ${this.retryAmount} | Headers: ${stringify(headers)}`,
         );
@@ -421,7 +421,7 @@ export class Node {
 
         if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
 
-        this.nodeManager.manager.emit(Events.NodeDisconnect, this);
+        this.nodeManager.manager.emit(EventNames.NodeDisconnect, this);
     }
 
     /**
@@ -450,7 +450,7 @@ export class Node {
 
         if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
 
-        this.nodeManager.manager.emit(Events.NodeDestroy, this, destroy);
+        this.nodeManager.manager.emit(EventNames.NodeDestroy, this, destroy);
         this.nodeManager.delete(this.id);
     }
 
@@ -494,7 +494,7 @@ export class Node {
 
         this.state = State.Idle;
 
-        this.nodeManager.manager.emit(Events.NodeReconnecting, this, this.retryAmount, this.retryDelay);
+        this.nodeManager.manager.emit(EventNames.NodeReconnecting, this, this.retryAmount, this.retryDelay);
 
         this.reconnectTimeout = setTimeout(() => {
             this.reconnectTimeout = null;
@@ -506,7 +506,7 @@ export class Node {
                 });
 
                 this.nodeManager.manager.emit(
-                    Events.NodeError,
+                    EventNames.NodeError,
                     this,
                     new NodeError({
                         message: `Failed to reconnect after ${this.options.retryAmount} retries.`,

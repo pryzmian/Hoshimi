@@ -1,7 +1,7 @@
 import {
     DebugLevels,
     DestroyReasons,
-    Events,
+    EventNames,
     type NodeIdentifier,
     type Nullable,
     type QueryResult,
@@ -291,7 +291,7 @@ export class Player {
      */
     public async skip(to: number = 0, throwError: boolean = true): Promise<void> {
         if (!this.queue.size) {
-            this.manager.emit(Events.Debug, DebugLevels.Player, "[Player] -> [Skip] No tracks to skip.");
+            this.manager.emit(EventNames.Debug, DebugLevels.Player, "[Player] -> [Skip] No tracks to skip.");
 
             if (throwError) throw new PlayerError("No tracks to skip.");
         }
@@ -305,7 +305,7 @@ export class Player {
 
         if (!this.playing && !this.queue.current) return this.play();
 
-        this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Skip] Skipping to next track for guild: ${this.guildId}`);
+        this.manager.emit(EventNames.Debug, DebugLevels.Player, `[Player] -> [Skip] Skipping to next track for guild: ${this.guildId}`);
 
         await this.node.stopPlayer(this.guildId);
     }
@@ -326,7 +326,7 @@ export class Player {
         if (typeof position !== "number" || Number.isNaN(position) || position < 0)
             throw new PlayerError("Position must be a positive number.");
 
-        this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Seek] Seeking to ${position} for guild: ${this.guildId}`);
+        this.manager.emit(EventNames.Debug, DebugLevels.Player, `[Player] -> [Seek] Seeking to ${position} for guild: ${this.guildId}`);
 
         this.lastPosition = position;
         this.lastPositionUpdate = Date.now();
@@ -349,7 +349,7 @@ export class Player {
 
         await this.setVoice({ voiceId: null });
 
-        this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Disconnect] Player disconnected for guild: ${this.guildId}`);
+        this.manager.emit(EventNames.Debug, DebugLevels.Player, `[Player] -> [Disconnect] Player disconnected for guild: ${this.guildId}`);
         this.connected = false;
 
         return this;
@@ -370,9 +370,9 @@ export class Player {
         await this.disconnect();
         await this.node.destroyPlayer(this.guildId);
 
-        this.manager.emit(Events.PlayerDestroy, this, reason);
+        this.manager.emit(EventNames.PlayerDestroy, this, reason);
         this.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Player,
             `[Player] -> [Destroy] Destroyed player for guild: ${this.guildId} | Reason: ${reason}`,
         );
@@ -406,7 +406,11 @@ export class Player {
         if (!isTrack(this.queue.current) && !isUnresolvedTrack(this.queue.current))
             throw new PlayerError("The track must be a valid Track or UnresolvedTrack instance.");
 
-        this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Play] A new track is playing: ${this.queue.current.info.title}`);
+        this.manager.emit(
+            EventNames.Debug,
+            DebugLevels.Player,
+            `[Player] -> [Play] A new track is playing: ${this.queue.current.info.title}`,
+        );
 
         // Reset position to start when playing a new track (unless a specific position is provided)
         const position: number = options.position ?? 0;
@@ -443,7 +447,7 @@ export class Player {
 
         await this.setVoice();
 
-        this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Connect] Player connected for guild: ${this.guildId}`);
+        this.manager.emit(EventNames.Debug, DebugLevels.Player, `[Player] -> [Connect] Player connected for guild: ${this.guildId}`);
         this.connected = true;
 
         return this;
@@ -465,7 +469,7 @@ export class Player {
 
         if (destroy) await this.destroy(DestroyReasons.Stop);
 
-        this.manager.emit(Events.Debug, DebugLevels.Player, `[Player] -> [Stop] Player stopped for guild: ${this.guildId}`);
+        this.manager.emit(EventNames.Debug, DebugLevels.Player, `[Player] -> [Stop] Player stopped for guild: ${this.guildId}`);
 
         this.playing = false;
         this.paused = false;
@@ -488,7 +492,7 @@ export class Player {
      */
     public async setPaused(paused: boolean = !this.paused): Promise<boolean> {
         this.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Player,
             `[Player] -> [Pause] Player is now ${paused ? "paused" : "resumed"} for guild: ${this.guildId}`,
         );
@@ -526,7 +530,7 @@ export class Player {
 
         this.volume = volume;
         this.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Player,
             `[Player] -> [Volume] Player volume set to ${volume}% for guild: ${this.guildId}`,
         );
@@ -551,7 +555,7 @@ export class Player {
 
         this.loop = mode;
         this.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Player,
             `[Player] -> [Loop] Player loop mode set to ${mode} for guild: ${this.guildId}`,
         );
@@ -585,7 +589,7 @@ export class Player {
         });
 
         this.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Player,
             `[Player] -> [VoiceState] Updated voice state for guild: ${this.guildId} with voiceId: ${this.voiceId}`,
         );
@@ -645,7 +649,7 @@ export class Player {
         await this.filterManager.apply();
 
         this.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Player,
             `[Player] -> [Move] Player moved to node: ${target.id} for guild: ${this.guildId}`,
         );

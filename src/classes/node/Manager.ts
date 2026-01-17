@@ -1,4 +1,4 @@
-import { Events, type NodeIdentifier } from "../../types/Manager";
+import { EventNames, type NodeIdentifier } from "../../types/Manager";
 import { type NodeOptions, NodeSortTypes, State } from "../../types/Node";
 import { type NodeStructure, Structures } from "../../types/Structures";
 import { Collection } from "../../util/collection";
@@ -98,10 +98,10 @@ export class NodeManager {
         const oldNode: NodeStructure | undefined = this.nodes.get(options.id);
         if (oldNode) return oldNode;
 
-        const node = Structures.Node(this, options);
+        const node: NodeStructure = Structures.Node(this, options);
 
         this.nodes.set(node.id, node);
-        this.manager.emit(Events.NodeCreate, node);
+        this.manager.emit(EventNames.NodeCreate, node);
 
         return node;
     }

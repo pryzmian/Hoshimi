@@ -1,4 +1,4 @@
-import { DebugLevels, Events, type Awaitable } from "../../types/Manager";
+import { DebugLevels, EventNames, type Awaitable } from "../../types/Manager";
 import type { HoshimiQueueOptions, QueueJson } from "../../types/Queue";
 import type { QueueStructure } from "../../types/Structures";
 
@@ -65,7 +65,7 @@ export class QueueUtils {
         if (length > max) this.queue.history.splice(0, length - max);
 
         this.queue.player.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Queue,
             `[Queue] -> [Adapter] Saving queue for ${this.queue.player.guildId} | Object: ${stringify(this.queue.toJSON())}`,
         );
@@ -84,7 +84,7 @@ export class QueueUtils {
      */
     public destroy(): Awaitable<boolean> {
         this.queue.player.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Queue,
             `[Queue] -> [Adapter] Destroying queue for ${this.queue.player.guildId}`,
         );
@@ -95,6 +95,8 @@ export class QueueUtils {
     /**
      *
      * Sync the queue.
+     * @param {boolean} [override=true] Whether to override the current queue or not.
+     * @param {boolean} [syncCurrent=false] Whether to sync the current track or not.
      * @returns {Awaitable<void>}
      * @example
      * ```ts
@@ -116,7 +118,7 @@ export class QueueUtils {
         if (history.length) this.queue.history.splice(0, override ? length : 0, ...history);
 
         this.queue.player.manager.emit(
-            Events.Debug,
+            EventNames.Debug,
             DebugLevels.Queue,
             `[Queue] -> [Adapter] Syncing queue for ${this.queue.player.guildId} | Object: ${stringify(data)}`,
         );

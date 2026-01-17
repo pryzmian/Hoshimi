@@ -1,8 +1,8 @@
-import { Events } from "hoshimi";
+import { EventNames } from "hoshimi";
 import { createLavalinkEvent } from "../../manager/events.js";
 
 export default createLavalinkEvent({
-    name: Events.LyricsLine,
+    name: EventNames.LyricsLine,
     async run(client, player, _$1, payload) {
         if (payload.skipped) return;
 

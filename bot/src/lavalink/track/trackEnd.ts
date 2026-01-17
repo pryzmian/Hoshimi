@@ -1,8 +1,8 @@
-import { Events, SourceNames } from "hoshimi";
+import { EventNames, SourceNames } from "hoshimi";
 import { createLavalinkEvent } from "../../manager/events.js";
 
 export default createLavalinkEvent({
-    name: Events.TrackEnd,
+    name: EventNames.TrackEnd,
     async run(client, player, track) {
         if (!track) return;
 

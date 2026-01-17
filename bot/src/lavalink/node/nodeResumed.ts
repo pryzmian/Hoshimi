@@ -1,10 +1,10 @@
-import { Events } from "hoshimi";
+import { EventNames } from "hoshimi";
 import { createLavalinkEvent } from "../../manager/events.js";
 import { Sessions } from "../../manager/sessions.js";
 import type { SessionJson } from "../../manager/types.js";
 
 export default createLavalinkEvent({
-    name: Events.NodeResumed,
+    name: EventNames.NodeResumed,
     async run(client, node, players, payload) {
         client.logger.debug(`[Hoshimi] Node resumed: ${node.id} with ${players.length} players. | Payload: ${JSON.stringify(payload)}`);
 

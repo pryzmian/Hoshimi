@@ -236,7 +236,7 @@ export enum DebugLevels {
 /**
  * The events for the manager.
  */
-export enum Events {
+export enum EventNames {
     /**
      * Emitted when the manager emits a debug message.
      */
