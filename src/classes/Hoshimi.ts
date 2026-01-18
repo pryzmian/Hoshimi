@@ -16,7 +16,7 @@ import {
     type VoiceState,
 } from "../types/Manager";
 import { type LavalinkSearchResponse, LoadType, State } from "../types/Node";
-import type { LavalinkPlayerVoice, PlayerOptions } from "../types/Player";
+import type { PlayerOptions } from "../types/Player";
 import { type NodeManagerStructure, type NodeStructure, type PlayerStructure, Structures } from "../types/Structures";
 import { Collection } from "../util/collection";
 import { HoshimiAgent } from "../util/constants";
@@ -157,7 +157,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
                 storage: options.playerOptions?.storage ?? new PlayerMemoryStorage(),
                 onDisconnect: {
                     autoDestroy: options.playerOptions?.onDisconnect?.autoDestroy ?? false,
-                    autoReconnect: options.playerOptions?.onDisconnect?.autoReconnect ?? true,
+                    autoReconnect: options.playerOptions?.onDisconnect?.autoReconnect ?? false,
                     autoQueue: options.playerOptions?.onDisconnect?.autoQueue ?? false,
                 },
                 onError: {
@@ -291,11 +291,6 @@ export class Hoshimi extends EventEmitter<RawEvents> {
                         return;
                     }
 
-                    if ("user_id" in data && data.user_id !== this.options.client?.id) {
-                        this.emit(EventNames.Debug, DebugLevels.Player, "[Player] -> [Voice] The user id does not match the client id.");
-                        return;
-                    }
-
                     const player = this.getPlayer(data.guild_id);
                     if (!player) {
                         this.emit(EventNames.Debug, DebugLevels.Player, "[Player] -> [Voice] The player is not found.");
@@ -304,32 +299,50 @@ export class Hoshimi extends EventEmitter<RawEvents> {
 
                     // this is the most funny thing i've ever made.
                     if ("session_id" in data) player.voice.sessionId = data.session_id;
-                    if ("token" in data) player.voice.token = data.token;
-                    if ("endpoint" in data) player.voice.endpoint = data.endpoint;
 
-                    if (player.voice.sessionId && player.voice.token && player.voice.endpoint) {
-                        await player.node.updatePlayer({
-                            guildId: data.guild_id,
+                    // And also includes some abstract code.
+                    if ("token" in data && "endpoint" in data) {
+                        if (!player.voice.sessionId) {
+                            this.emit(
+                                EventNames.Debug,
+                                DebugLevels.Player,
+                                `[Player] -> [Voice] The session id is missing for: ${data.guild_id}`,
+                            );
+
+                            return;
+                        }
+
+                        await player.updatePlayer({
                             playerOptions: {
-                                voice: player.voice as LavalinkPlayerVoice,
+                                voice: {
+                                    sessionId: player.voice.sessionId!,
+                                    token: data.token,
+                                    endpoint: data.endpoint,
+                                },
                             },
                         });
 
                         this.emit(
                             EventNames.Debug,
                             DebugLevels.Player,
-                            `[Player] -> [Voice] Updated the player voice for: ${data.guild_id} | Session: ${player.voice.sessionId} | Token: ${player.voice.token} | Endpoint: ${player.voice.endpoint}`,
+                            `[Player] -> [Voice] Updated the player voice for: ${data.guild_id} | Session: ${player.voice.sessionId} | Token: ${data.token} | Endpoint: ${data.endpoint}`,
                         );
 
                         return;
                     }
 
-                    if ("channel_id" in data && typeof data.channel_id === "string") {
-                        if (data.channel_id !== player.voiceId) {
+                    if (data.user_id !== this.options.client.id) {
+                        this.emit(EventNames.Debug, DebugLevels.Player, "[Player] -> [Voice] The user id does not match the client id.");
+                        return;
+                    }
+
+                    if (data.channel_id !== null) {
+                        const voiceId: string = player.voiceId ?? player.options.voiceId;
+                        if (data.channel_id !== voiceId) {
                             this.emit(
                                 EventNames.Debug,
                                 DebugLevels.Player,
-                                `[Player] -> [Voice] Updating the voice channel for: ${data.guild_id} | Old: ${player.voiceId} | New: ${data.channel_id}`,
+                                `[Player] -> [Voice] Updating the voice channel for: ${data.guild_id} | Old: ${voiceId} | New: ${data.channel_id}`,
                             );
 
                             player.voice.sessionId = data.session_id ?? player.voice.sessionId;
@@ -357,8 +370,8 @@ export class Hoshimi extends EventEmitter<RawEvents> {
 
                         if (autoReconnect) {
                             try {
-                                const position = player.position;
-                                const paused = player.paused;
+                                const position: number = player.position;
+                                const paused: boolean = player.paused;
 
                                 this.emit(
                                     EventNames.Debug,
@@ -391,16 +404,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
 
                         return;
                     }
-
-                    this.emit(
-                        EventNames.Debug,
-                        DebugLevels.Player,
-                        `[Player] -> [Voice] The player voice is missing for: ${data.guild_id}`,
-                    );
                 }
-                break;
-
-            default:
                 break;
         }
     }

@@ -133,13 +133,13 @@ export enum TrackEndReason {
  */
 interface ErrorPlayerActions {
     /**
-     * Whether to automatically destroy the player on error.
+     * Whether to automatically destroy the player on disconnect or error.
      * @type {boolean | undefined}
      * @default false
      */
     autoDestroy?: boolean;
     /**
-     * Whether to automatically skip the track on error.
+     * Whether to automatically skip the track on error
      * @type {boolean | undefined}
      * @default false
      */

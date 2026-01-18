@@ -47,6 +47,11 @@ client.manager = createHoshimi({
         autoplayFn,
         storage: new RedisStorage(redis),
     },
+    playerOptions: {
+        onDisconnect: {
+            autoDestroy: true,
+        },
+    },
     nodes: Sessions.resolve({
         host: "localhost",
         port: 2333,

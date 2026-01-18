@@ -347,7 +347,9 @@ export class Player {
     public async disconnect(): Promise<this> {
         if (!this.voiceId) return this;
 
-        await this.setVoice({ voiceId: null });
+        this.voiceId = undefined;
+
+        await this.setVoice({ voiceId: undefined });
 
         this.manager.emit(EventNames.Debug, DebugLevels.Player, `[Player] -> [Disconnect] Player disconnected for guild: ${this.guildId}`);
         this.connected = false;
