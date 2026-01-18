@@ -315,7 +315,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
                         await player.updatePlayer({
                             playerOptions: {
                                 voice: {
-                                    sessionId: player.voice.sessionId!,
+                                    sessionId: player.voice.sessionId,
                                     token: data.token,
                                     endpoint: data.endpoint,
                                 },
