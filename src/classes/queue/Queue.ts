@@ -355,9 +355,20 @@ export class Queue {
      * @param {Track} track The track to move.
      * @param {number} to The position to move.
      * @returns {Promise<this>} The queue instance.
+     * @example
+     * ```ts
+     * const queue = player.queue;
+     * await queue.add(track);
+     * await queue.add(track1);
+     * await queue.add(track2);
+     *
+     * console.log(queue.tracks); // [track, track1, track2]
+     * await queue.move(track1, 0);
+     * console.log(queue.tracks); // [track1, track, track2]
+     * ```
      */
     public async move(track: Track, to: number): Promise<this> {
-        const index = this.tracks.indexOf(track);
+        const index: number = this.tracks.indexOf(track);
         if (index === -1) return this;
 
         await this.splice(index, 1);
@@ -382,6 +393,17 @@ export class Queue {
      * @param {number} deleteCount The number of tracks to delete.
      * @param {Track | Track[]} [tracks] The tracks to add.
      * @returns {Promise<this>} The queue instance.
+     * @example
+     * ```ts
+     * const queue = player.queue;
+     * await queue.add(track);
+     * await queue.add(track1);
+     * await queue.add(track2);
+     *
+     * console.log(queue.tracks); // [track, track1, track2]
+     * await queue.splice(1, 1);
+     * console.log(queue.tracks); // [track, track2]
+     * ```
      */
     public async splice(start: number, deleteCount: number, tracks?: HoshimiTrack | HoshimiTrack[]): Promise<this> {
         if (!this.size && tracks) await this.add(tracks);
@@ -401,9 +423,16 @@ export class Queue {
      *
      * Convert the queue to a JSON object.
      * @returns {QueueJson} The queue JSON object.
+     * @example
+     * ```ts
+     * const queue = player.queue;
+     * await queue.add(track);
+     *
+     * console.log(queue.toJSON()); // { tracks: [track], history: [], current: null }
+     * ```
      */
     public toJSON(): QueueJson {
-        const max = this.player.manager.options.queueOptions.maxHistory;
+        const max: number = this.player.manager.options.queueOptions.maxHistory;
 
         if (this.history.length > max) this.history.splice(max, this.history.length);
 

@@ -21,6 +21,9 @@ export * from "./classes/queue/Queue";
 export * from "./classes/storage/adapters/QueueAdapter";
 export * from "./classes/storage/QueueMemory";
 
+// Exports related to constants.
+export * from "./util/constants";
+
 // Exports related to tracks.
 export * from "./classes/Track";
 

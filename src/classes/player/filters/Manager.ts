@@ -102,6 +102,11 @@ export class FilterManager {
     /**
      * Resets all filters to their default values.
      * @returns {Promise<this>} A promise that resolves to the instance of the filter manager.
+     * @example
+     * ```ts
+     * // Reset all filters
+     * await player.filterManager.reset();
+     * ```
      */
     public async reset(): Promise<this> {
         this.filters = {
@@ -138,6 +143,11 @@ export class FilterManager {
      *
      * Applies the current filters to the player.
      * @returns {Promise<this>} A promise that resolves to the instance of the filter manager.
+     * @example
+     * ```ts
+     * // Apply the current filters
+     * await player.filterManager.apply();
+     * ```
      */
     public async apply(): Promise<this> {
         if (!this.player.node.sessionId) return this;
@@ -188,6 +198,11 @@ export class FilterManager {
      * Checks if the current filters are active.
      * @param {TimescaleSettings} timescale The timescale settings to check against.
      * @returns {void} Nothing!
+     * @example
+     * ```ts
+     * // Check the current filters
+     * player.filterManager.check();
+     * ```
      */
     public check(timescale?: TimescaleSettings): void {
         this.filters.rotation = this.data.rotation?.rotationHz !== 0;
@@ -230,15 +245,22 @@ export class FilterManager {
      * Checks if a specific filter is active.
      * @param {FilterType} filter The filter type to check.
      * @returns {boolean} True if the filter is active, false otherwise.
+     * @example
+     * ```ts
+     * // Check if the nightcore filter is active
+     * const isNightcoreActive = player.filterManager.has(FilterType.Nightcore);
+     * console.log(isNightcoreActive); // true or false
+     * ```
      */
     public has(filter: FilterType): boolean {
-        const dspx = this.filters.lavalinkLavaDspxPlugin[filter as keyof typeof this.filters.lavalinkLavaDspxPlugin];
+        const dspx: boolean = this.filters.lavalinkLavaDspxPlugin[filter as keyof typeof this.filters.lavalinkLavaDspxPlugin];
         if (isValid(dspx)) return dspx;
 
-        const plugin = this.filters.lavalinkFilterPlugin[filter as keyof typeof this.filters.lavalinkFilterPlugin];
+        const plugin: boolean = this.filters.lavalinkFilterPlugin[filter as keyof typeof this.filters.lavalinkFilterPlugin];
         if (isValid(plugin)) return plugin;
 
-        const kind = this.filters[filter as keyof Omit<EnabledPlayerFilters, "lavalinkFilterPlugin" | "lavalinkLavaDspxPlugin">];
+        const kind: boolean | AudioOutput =
+            this.filters[filter as keyof Omit<EnabledPlayerFilters, "lavalinkFilterPlugin" | "lavalinkLavaDspxPlugin">];
 
         if (typeof kind === "boolean") return kind;
         if (typeof kind === "string") return kind !== AudioOutput.Stereo;
@@ -251,6 +273,12 @@ export class FilterManager {
      * Sets the volume for the player.
      * @param {number} volume The volume level to set (between 0 and 5).
      * @returns {Promise<this>} A promise that resolves to the player instance.
+     * @throws {PlayerError} If the volume is not a number between 0 and 5.
+     * @example
+     * ```ts
+     * // Set the volume to 2.5
+     * await player.filterManager.setVolume(2.5);
+     * ```
      */
     public async setVolume(volume: number): Promise<this> {
         if (typeof volume !== "number" || Number.isNaN(volume) || volume < 0 || volume > 5)
@@ -266,9 +294,15 @@ export class FilterManager {
      * Sets the audio output for the player.
      * @param {AudioOutput} output The audio output to set.
      * @returns {Promise<this>} A promise that resolves to the player instance.
+     * @throws {PlayerError} If the output is not a valid AudioOutput value.
+     * @example
+     * ```ts
+     * // Set the audio output to mono
+     * await player.filterManager.setAudioOutput(AudioOutput.Mono);
+     * ```
      */
     public async setAudioOutput(output: AudioOutput): Promise<this> {
-        const outputs = Object.values(AudioOutput);
+        const outputs: AudioOutput[] = Object.values(AudioOutput);
         if (!outputs.includes(output)) throw new PlayerError(`Audio output must be one of the following: ${outputs.join(", ")}.`);
 
         this.filters.audioOutput = output;
@@ -282,6 +316,12 @@ export class FilterManager {
      * Sets the speed for the player.
      * @param {number} speed The speed to set (default is 1).
      * @returns {Promise<this>} A promise that resolves to the player instance.
+     * @throws {PlayerError} If the node does not support the timescale filter.
+     * @example
+     * ```ts
+     * // Set the speed to 1.5
+     * await player.filterManager.setSpeed(1.5);
+     * ```
      */
     public async setSpeed(speed: number = 1): Promise<this> {
         if (!this.player.node.info?.filters?.includes(FilterType.Timescale))
@@ -308,6 +348,12 @@ export class FilterManager {
      * Sets the rate for the player.
      * @param {number} rate The rate to set (default is 1).
      * @returns {Promise<this>} A promise that resolves to the player instance.
+     * @throws {PlayerError} If the node does not support the timescale filter.
+     * @example
+     * ```ts
+     * // Set the rate to 1.2
+     * await player.filterManager.setRate(1.2);
+     * ```
      */
     public async setRate(rate: number = 1): Promise<this> {
         if (!this.player.node.info?.filters?.includes(FilterType.Timescale))
@@ -334,6 +380,12 @@ export class FilterManager {
      * Sets the pitch for the player.
      * @param {number} pitch The pitch
      * @returns {Promise<this>} A promise that resolves to the player instance.
+     * @throws {PlayerError} If the node does not support the timescale filter.
+     * @example
+     * ```ts
+     * // Set the pitch to 0.8
+     * await player.filterManager.setPitch(0.8);
+     * ```
      */
     public async setPitch(pitch: number = 1): Promise<this> {
         if (!this.player.node.info?.filters?.includes(FilterType.Timescale))
@@ -360,6 +412,15 @@ export class FilterManager {
      * Sets the EQ bands for the player.
      * @param {RestOrArray<EQBandSettings>} bands The EQ band settings to set.
      * @returns {Promise<this>} A promise that resolves to the instance of the manager.
+     * @throws {PlayerError} If the bands array is empty or contains invalid band settings.
+     * @example
+     * ```ts
+     * // Set multiple EQ bands
+     * await player.filterManager.setEQBand(
+     *   { band: 0, gain: 0.5 },
+     *   { band: 1, gain: -0.3 },
+     * );
+     * ```
      */
     public async setEQBand(...bands: RestOrArray<EQBandSettings>): Promise<this> {
         bands = bands.flat();
@@ -376,6 +437,11 @@ export class FilterManager {
      *
      * Clears all EQ bands for the player.
      * @returns {Promise<this>} A promise that resolves to the instance of the manager.
+     * @example
+     * ```ts
+     * // Clear all EQ bands
+     * await player.filterManager.clearEQBands();
+     * ```
      */
     public async clearEQBands(): Promise<this> {
         return this.setEQBand(Array.from({ length: 15 }, (_, i) => ({ band: i, gain: 0 })));
@@ -386,6 +452,12 @@ export class FilterManager {
      * Set the vibrato filter with the given settings.
      * @param {TremoloSettings} [settings=DefaultFilterPreset.Vibrato] The settings for the vibrato filter.
      * @returns {Promise<this>} The instance of the filter manager.
+     * @throws {PlayerError} If the node does not support the vibrato filter.
+     * @example
+     * ```ts
+     * // Set the vibrato filter
+     * await player.filterManager.setVibrato({ frequency: 4.0, depth: 0.5 });
+     * ```
      */
     public async setVibrato(settings: Partial<TremoloSettings> = DefaultFilterPreset.Vibrato): Promise<this> {
         if (!this.player.node.info?.filters?.includes(FilterType.Vibrato))
@@ -406,6 +478,12 @@ export class FilterManager {
      * Set the tremolo filter with the given settings.
      * @param {TremoloSettings} [settings=DefaultFilterPreset.Tremolo] The settings for the tremolo filter.
      * @returns {Promise<this>} The instance of the filter manager.
+     * @throws {PlayerError} If the node does not support the tremolo filter.
+     * @example
+     * ```ts
+     * // Set the tremolo filter
+     * await player.filterManager.setTremolo({ frequency: 4.0, depth: 0.5 });
+     * ```
      */
     public async setTremolo(settings: Partial<TremoloSettings> = DefaultFilterPreset.Tremolo): Promise<this> {
         if (!this.player.node.info?.filters?.includes(FilterType.Tremolo))
@@ -426,6 +504,12 @@ export class FilterManager {
      * Set the low-pass filter with the given settings.
      * @param {LowPassSettings} [settings=DefaultFilterPreset.Lowpass] The settings for the low-pass filter.
      * @returns {Promise<this>} The instance of the filter manager.
+     * @throws {PlayerError} If the node does not support the low-pass filter.
+     * @example
+     * ```ts
+     * // Set the low-pass filter
+     * await player.filterManager.setLowPass({ smoothing: 20.0 });
+     * ```
      */
     public async setLowPass(settings: Partial<LowPassSettings> = DefaultFilterPreset.Lowpass): Promise<this> {
         if (!this.player.node.info?.filters?.includes(FilterType.LowPass))
@@ -441,6 +525,12 @@ export class FilterManager {
      * Set the nightcore filter with the given settings.
      * @param {Partial<TimescaleSettings>} [settings=DefaultFilterPreset.Nightcore] The settings for the nightcore filter.
      * @returns {Promise<this>} The instance of the filter manager.
+     * @throws {PlayerError} If the node does not support the timescale filter.
+     * @example
+     * ```ts
+     * // Set the nightcore filter
+     * await player.filterManager.setNightcore();
+     * ```
      */
     public async setNightcore(settings: Partial<TimescaleSettings> = DefaultFilterPreset.Nightcore): Promise<this> {
         if (!this.player.node.info?.filters?.includes(FilterType.Timescale))
@@ -464,6 +554,12 @@ export class FilterManager {
      * Set the vaporwave filter with the given settings.
      * @param {Partial<TimescaleSettings>} [settings=DefaultFilterPreset.Vaporwave] The settings for the vaporwave filter.
      * @returns {Promise<this>} The instance of the filter manager.
+     * @throws {PlayerError} If the node does not support the timescale filter.
+     * @example
+     * ```ts
+     * // Set the vaporwave filter
+     * await player.filterManager.setVaporwave();
+     * ```
      */
     public async setVaporwave(settings: Partial<TimescaleSettings> = DefaultFilterPreset.Vaporwave): Promise<this> {
         if (!this.player.node.info?.filters?.includes(FilterType.Timescale))
@@ -487,6 +583,12 @@ export class FilterManager {
      * Set the karaoke filter with the given settings.
      * @param {KaraokeSettings} [settings=DefaultFilterPreset.Karaoke] The settings for the karaoke filter.
      * @returns {Promise<this>} The instance of the filter manager.
+     * @throws {PlayerError} If the node does not support the karaoke filter.
+     * @example
+     * ```ts
+     * // Set the karaoke filter
+     * await player.filterManager.setKaraoke({ level: -15.0, monoLevel: -20.0, filterBand: 220.0, filterWidth: 100.0 });
+     * ```
      */
     public async setKaraoke(settings: Partial<KaraokeSettings> = DefaultFilterPreset.Karaoke): Promise<this> {
         if (!this.player.node.info?.filters?.includes(FilterType.Karaoke))
@@ -509,6 +611,12 @@ export class FilterManager {
      * Set the distortion filter with the given settings.
      * @param {Partial<DistortionSettings>} [settings=DefaultFilterPreset.Distortion] The settings for the distortion filter.
      * @returns {Promise<this>} The instance of the filter manager.
+     * @throws {PlayerError} If the node does not support the distortion filter.
+     * @example
+     * ```ts
+     * // Set the distortion filter
+     * await player.filterManager.setDistortion({ sinOffset: 0.5, sinScale: 2.0 });
+     * ```
      */
     public async setDistortion(settings: Partial<DistortionSettings> = DefaultFilterPreset.Distortion): Promise<this> {
         if (!this.player.node.info?.filters?.includes(FilterType.Distortion))
@@ -533,6 +641,12 @@ export class FilterManager {
      * Set the timescale filter with the given settings.
      * @param {Partial<TimescaleSettings>} settings The timescale settings to set.
      * @returns {Promise<this>} The instance of the filter manager.
+     * @throws {PlayerError} If the node does not support the timescale filter.
+     * @example
+     * ```ts
+     * // Set the timescale filter
+     * await player.filterManager.setTimescale({ speed: 1.2, pitch: 0.8, rate: 1.0 });
+     * ```
      */
     public async setTimescale(settings: Partial<TimescaleSettings>): Promise<this> {
         if (!this.player.node.info?.filters?.includes(FilterType.Timescale))
@@ -552,6 +666,12 @@ export class FilterManager {
     /**
      * Convert the filter settings to a JSON object.
      * @returns {FilterSettings} The filter settings as a JSON object.
+     * @example
+     * ```ts
+     * // Convert filter settings to JSON
+     * const filterSettingsJSON = player.filterManager.toJSON();
+     * console.log(filterSettingsJSON); // { volume: 1, equalizer: [...], ... }
+     * ```
      */
     public toJSON(): FilterSettings {
         return { ...this.data };

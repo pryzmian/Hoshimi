@@ -30,6 +30,14 @@ export class DSPXPluginFilter {
      * Set the low-pass filter with the given settings.
      * @param {FilterPluginPassSettings} [settings=DefaultFilter.DSPXLowPass] The settings for the low-pass filter.
      * @returns {Promise<this>} The instance of the filter manager.
+     * @throws {PlayerError} If the node does not have the required plugin or filter enabled.
+     * @example
+     * ```ts
+     * // Set the low-pass filter with custom settings
+     * await player.filterManager.dspxPlugin.setLowPass({ cutoffFrequency: 500, boostFactor: 1.5 });
+     * // Disable the low-pass filter
+     * await player.filterManager.dspxPlugin.setLowPass();
+     * ```
      */
     public async setLowPass(settings: Partial<FilterPluginPassSettings> = DefaultFilterPreset.DSPXLowPass): Promise<this> {
         validateNodePlugins(this.manager.player.node, [PluginNames.LavaDspx]);
@@ -58,6 +66,14 @@ export class DSPXPluginFilter {
      * Set the high-pass filter with the given settings.
      * @param {FilterPluginPassSettings} [settings=DefaultFilter.DSPXHighPass] The settings for the high-pass filter.
      * @returns {Promise<this>} The instance of the filter manager.
+     * @throws {PlayerError} If the node does not have the required plugin or filter enabled.
+     * @example
+     * ```ts
+     * // Set the high-pass filter with custom settings
+     * await player.filterManager.dspxPlugin.setHighPass({ cutoffFrequency: 2000, boostFactor: 0.8 });
+     * // Disable the high-pass filter
+     * await player.filterManager.dspxPlugin.setHighPass();
+     * ```
      */
     public async setHighPass(settings: Partial<FilterPluginPassSettings> = DefaultFilterPreset.DSPXHighPass): Promise<this> {
         validateNodePlugins(this.manager.player.node, [PluginNames.LavaDspx]);
@@ -87,6 +103,14 @@ export class DSPXPluginFilter {
      * Set the normalization filter with the given settings.
      * @param {NormalizationSettings} [settings=DefaultFilter.DSPXNormalization] The settings for the normalization filter.
      * @returns {Promise<this>} The instance of the filter manager.
+     * @throws {PlayerError} If the node does not have the required plugin or filter enabled.
+     * @example
+     * ```ts
+     * // Set the normalization filter with custom settings
+     * await player.filterManager.dspxPlugin.setNormalization({ maxAmplitude: 0.9, adaptive: true });
+     * // Disable the normalization filter
+     * await player.filterManager.dspxPlugin.setNormalization();
+     * ```
      */
     public async setNormalization(settings: Partial<NormalizationSettings> = DefaultFilterPreset.DSPXNormalization): Promise<this> {
         validateNodePlugins(this.manager.player.node, [PluginNames.LavaDspx]);
@@ -116,6 +140,14 @@ export class DSPXPluginFilter {
      * Set the echo filter with the given settings.
      * @param {EchoSettings} [settings=DefaultFilter.DSPXEcho] The settings for the echo filter.
      * @returns {Promise<this>} The instance of the filter manager.
+     * @throws {PlayerError} If the node does not have the required plugin or filter enabled.
+     * @example
+     * ```ts
+     * // Set the echo filter with custom settings
+     * await player.filterManager.dspxPlugin.setEcho({ echoLength: 500, decay: 0.5, delay: 200 });
+     * // Disable the echo filter
+     * await player.filterManager.dspxPlugin.setEcho();
+     * ```
      */
     public async setEcho(settings: Partial<EchoSettings> = DefaultFilterPreset.DSPXEcho): Promise<this> {
         validateNodePlugins(this.manager.player.node, [PluginNames.LavaDspx]);

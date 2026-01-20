@@ -34,6 +34,14 @@ export class LavalinkPluginFilter {
      * Set the echo filter with the given settings.
      * @param {Omit<EchoSettings, "echoLength">} [settings=DefaultFilter.PluginEcho] The settings for the echo filter.
      * @returns {Promise<this>} The instance of the filter manager.
+     * @throws {PlayerError} If the node does not have the required plugin or filter enabled.
+     * @example
+     * ```ts
+     * // Set the echo filter with custom settings
+     * await player.filterManager.lavalinkPlugin.setEcho({ decay: 0.5, delay: 200 });
+     * // Disable the echo filter
+     * await player.filterManager.lavalinkPlugin.setEcho();
+     * ```
      */
     public async setEcho(settings: Partial<NonLengthEchoSettings> = DefaultFilterPreset.PluginEcho): Promise<this> {
         validateNodePlugins(this.manager.player.node, [PluginNames.FilterPlugin]);
@@ -67,6 +75,14 @@ export class LavalinkPluginFilter {
      * Set the reverb filter with the given settings.
      * @param {Partial<LavalinkFilterPluginReverbSettings>} [settings=DefaultFilter.PluginReverb] The settings for the reverb filter.
      * @returns {Promise<this>} The instance of the filter manager.
+     * @throws {PlayerError} If the node does not have the required plugin or filter enabled.
+     * @example
+     * ```ts
+     * // Set the reverb filter with custom settings
+     * await player.filterManager.lavalinkPlugin.setReverb({ delays: [50, 100, 150], gains: [0.5, 0.3, 0.2] });
+     * // Disable the reverb filter
+     * await player.filterManager.lavalinkPlugin.setReverb();
+     * ```
      */
     public async setReverb(settings: Partial<LavalinkFilterPluginReverbSettings> = DefaultFilterPreset.PluginReverb): Promise<this> {
         validateNodePlugins(this.manager.player.node, [PluginNames.FilterPlugin]);

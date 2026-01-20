@@ -10,6 +10,27 @@ import { SourceNames, type UserAgent } from "../types/Node";
 type AutoOutputRecord = Record<AudioOutput, Required<ChannelMixSettings>>;
 
 /**
+ * The excluded source names, which do not have a corresponding search engine.
+ * Why? I checked the plugin's code, and these sources doesn't have a valid search prefix.
+ */
+type ExcludedSourceNames =
+    | SourceNames.HTTP
+    | SourceNames.Clypit
+    | SourceNames.StreamDeckAudio
+    | SourceNames.GetYarn
+    | SourceNames.MixCloud
+    | SourceNames.OCRemix
+    | SourceNames.PixelDrain
+    | SourceNames.Reddit
+    | SourceNames.SoundGasm
+    | SourceNames.TikTok;
+
+/**
+ * The valid source names.
+ */
+type ValidSourceNames = Exclude<SourceNames, ExcludedSourceNames>;
+
+/**
  * The user agent for Hoshimi.
  * @type {UserAgent}
  */
@@ -50,7 +71,7 @@ export const ValidSources: Map<SourceNames, SearchEngines> = new Map<SourceNames
         [SourceNames.Tidal]: SearchEngines.Tidal,
         [SourceNames.TextToSpeech]: SearchEngines.TextToSpeech,
         [SourceNames.PornHub]: SearchEngines.PornHub,
-    }) as [SourceNames, SearchEngines][],
+    } satisfies Record<ValidSourceNames, SearchEngines>) as [SourceNames, SearchEngines][],
 );
 
 /**

@@ -24,7 +24,7 @@ import { isTrack, isUnresolvedTrack, validatePlayerOptions, validateTrack } from
 import { PlayerError } from "../Errors";
 import type { Hoshimi } from "../Hoshimi";
 import type { PlayerStorageAdapter } from "../storage/adapters/PlayerAdapter";
-import type { HoshimiTrack } from "../Track";
+import type { HoshimiTrack, Track } from "../Track";
 import type { FilterManager } from "./filters/Manager";
 
 /**
@@ -610,8 +610,8 @@ export class Player {
      * ```
      */
     public async move(node: NodeIdentifier): Promise<void> {
-        const id = typeof node === "string" ? node : node.id;
-        const target = this.manager.nodeManager.get(id);
+        const id: string = typeof node === "string" ? node : node.id;
+        const target: NodeStructure | undefined = this.manager.nodeManager.get(id);
 
         if (!target) throw new PlayerError("Target node not found.");
         if (!target.info) throw new PlayerError("Target node info not available.");
@@ -620,16 +620,16 @@ export class Player {
         if (target.id === this.node.id) return;
 
         if (this.queue.current || this.queue.size) {
-            const sources = [this.queue.current, ...this.queue.tracks]
+            const sources: SourceNames[] = [this.queue.current, ...this.queue.tracks]
                 .filter((t): t is HoshimiTrack => t != null || typeof t !== "undefined")
-                .map((t) => t.info.sourceName)
+                .map((t): SourceNames | undefined => t.info.sourceName)
                 .filter((s): s is SourceNames => s != null || typeof s !== "undefined");
 
-            const missings = [...new Set(sources)].filter((s) => !target.info!.sourceManagers.includes(s));
+            const missings: SourceNames[] = [...new Set(sources)].filter((s) => !target.info!.sourceManagers.includes(s));
             if (missings.length) throw new PlayerError(`Target node is missing source managers for: ${missings.join(", ")}`);
         }
 
-        const current = this.queue.current;
+        const current: Track | null = this.queue.current;
 
         if (!this.voice.endpoint || !this.voice.sessionId || !this.voice.token)
             throw new PlayerError("Player voice connection data is incomplete.");
@@ -661,6 +661,12 @@ export class Player {
      * Update the player with new data.
      * @param {NonGuildUpdatePlayerInfo} data The data to update the player with.
      * @returns {Promise<LavalinkPlayer | null>} The updated player data.
+     * @example
+     * ```ts
+     * const player = manager.getPlayer("guildId");
+     * const updatedPlayer = await player.updatePlayer({ volume: 50 });
+     * console.log(updatedPlayer); // the updated player data
+     * ```
      */
     public async updatePlayer(data: NonGuildUpdatePlayerInfo): Promise<LavalinkPlayer | null> {
         return this.node.updatePlayer({
