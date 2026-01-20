@@ -9,6 +9,7 @@ import {
     type LavalinkSession,
     type RestOptions,
     RestPathType,
+    type SessionResumingOptions,
     type UpdatePlayerInfo,
 } from "../../types/Rest";
 import type { NodeStructure } from "../../types/Structures";
@@ -314,17 +315,18 @@ export class Rest {
     /**
      *
      * Update the session for the node
-     * @param {boolean} resuming Enable resuming for the session.
-     * @param {number | null} timeout The timeout for the session.
+     * @param {SessionResumingOptions} options The session resuming options.
      * @returns {Promise<LavalinkSession | null>} The updated session data.
      * @example
      * ```ts
-     * const session = await node.rest.updateSession(true, 10000);
+     * const session = await node.rest.updateSession({ resuming: true, timeout: 30000 });
      * if (session) console.log(session); // The lavalink session data
      * ```
      */
-    public updateSession(resuming: boolean, timeout: number | null = null): Promise<LavalinkSession | null> {
+    public updateSession(options: SessionResumingOptions): Promise<LavalinkSession | null> {
         if (!this.sessionId) return Promise.resolve(null);
+
+        const { resuming, timeout } = options;
 
         this.node.nodeManager.manager.emit(
             EventNames.Debug,
@@ -337,5 +339,42 @@ export class Rest {
             endpoint: `/sessions/${this.sessionId}`,
             body: { resuming, timeout },
         });
+    }
+
+    /**
+     *
+     * Get all players for the current session.
+     * @returns {Promise<LavalinkPlayer[]>} The players for the current session.
+     * @example
+     * ```ts
+     * const players = await node.rest.getPlayers();
+     * console.log(players); // The lavalink players for the current session
+     * ```
+     */
+    public async getPlayers(): Promise<LavalinkPlayer[]> {
+        if (!this.sessionId) return [];
+
+        this.node.nodeManager.manager.emit(
+            EventNames.Debug,
+            DebugLevels.Rest,
+            `[Rest] -> [${this.node.id}]: Fetching all players for session id: ${this.sessionId}`,
+        );
+
+        const players: LavalinkPlayer[] =
+            (await this.request<LavalinkPlayer[]>({
+                endpoint: `/sessions/${this.sessionId}/players`,
+            })) ?? [];
+
+        if (!players.length) {
+            this.node.nodeManager.manager.emit(
+                EventNames.Debug,
+                DebugLevels.Rest,
+                `[Rest] <- [${this.node.id}]: No players found for session id: ${this.sessionId}`,
+            );
+
+            return [];
+        }
+
+        return players;
     }
 }

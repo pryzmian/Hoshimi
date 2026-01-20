@@ -21,6 +21,7 @@ import {
     type LavalinkPlayer,
     type LavalinkSession,
     type NullableLavalinkSession,
+    type SessionResumingOptions,
     type UpdatePlayerInfo,
 } from "../../types/Rest";
 import { type LyricsManagerStructure, type NodeManagerStructure, type RestStructure, Structures } from "../../types/Structures";
@@ -457,22 +458,21 @@ export class Node {
     /**
      *
      * Update the session for the node
-     * @param {boolean} resuming Enable resuming for the session.
-     * @param {number | null} timeout The timeout for the session.
+     * @param {SessionResumingOptions} options The session resuming options.
      * @returns {Promise<LavalinkSession | null>}
      * @example
      * ```ts
      * const node = manager.nodeManager.get("node1");
      * if (node) {
-     * 	const session = await node.updateSession(true, 60);
+     * 	const session = await node.updateSession({ resuming: true, timeout: 30000 });
      * 	console.log(session); // the lavalink session
      * }
      * ```
      */
-    public async updateSession(resuming: boolean, timeout: number | null = null): Promise<LavalinkSession | null> {
+    public async updateSession(options: SessionResumingOptions): Promise<LavalinkSession | null> {
         if (!this.sessionId) return null;
 
-        const session = await this.rest.updateSession(resuming, timeout);
+        const session: LavalinkSession | null = await this.rest.updateSession(options);
         if (session) this.session = session;
 
         return session;

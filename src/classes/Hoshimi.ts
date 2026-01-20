@@ -38,19 +38,42 @@ type GatewayPackets = VoicePacket | VoiceServer | VoiceState | ChannelDeletePack
 type RequiredOptions = DeepRequired<HoshimiOptions>;
 
 /**
- * The events for the manager.
- * This allows to extend the events.
- */
-type RawEvents = {
-    [K in keyof HoshimiEvents]: HoshimiEvents[K];
-};
-
-/**
  * Class representing the Hoshimi manager.
  * @class Hoshimi
- * @extends {EventEmitter<RawEvents>}
+ * @extends {EventEmitter<HoshimiEvents>}
+ * @example
+ * ```ts
+ * import { Hoshimi, SearchEngines } from "hoshimi";
+ *
+ * const manager = new Hoshimi({ // or via createHoshimi() function
+ *  sendPayload: async (guildId, payload) => {
+ *      const guild = await <Client>.guilds.fetch(guildId);
+ *      if (!guild) return;
+ *
+ *      guild.shard.send(payload); // Adjust this line based on your library's method to send payloads
+ *  },
+ * 	nodes: [
+ * 		{
+ * 			host: "localhost",
+ * 			port: 2333,
+ *          password: "youshallnotpass",
+ * 			secure: false,
+ * 		},
+ *     ],
+ * });
+ *
+ * manager.on("nodeReady", (node) => console.log(`Node ${node.id} is ready.`));
+ * manager.on("playerCreate", (player) => console.log(`Player created for guild ${player.guildId}.`));
+ * manager.on("error", (error) => console.error("An error occurred:", error));
+ *
+ * <Client>.on("ready", () => {
+ *   manager.init({ id: <Client>.user.id, username: <Client>.user.username });
+ * });
+ *
+ * console.log(manager); // The manager instance
+ * ```
  */
-export class Hoshimi extends EventEmitter<RawEvents> {
+export class Hoshimi extends EventEmitter<HoshimiEvents> {
     /**
      * The options for the manager.
      * @type {HoshimiOptions}
@@ -81,6 +104,7 @@ export class Hoshimi extends EventEmitter<RawEvents> {
      * The constructor for the manager.
      * @param {HoshimiOptions} options The options for the manager.
      * @throws {ManagerError} If the options are not provided.
+     * @throws {OptionError} If the options are invalid.
      * @example
      * ```ts
      * const manager = new Hoshimi({

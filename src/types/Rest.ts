@@ -409,6 +409,22 @@ export interface DecodeMethods {
 }
 
 /**
+ * The options for resuming a session.
+ */
+export interface SessionResumingOptions {
+    /**
+     * Whether the session is resuming.
+     * @type {boolean}
+     */
+    resuming: boolean;
+    /**
+     * The timeout for resuming the session in milliseconds.
+     * @type {number | null | undefined}
+     */
+    timeout?: number | null;
+}
+
+/**
  * The session of the node.
  */
 export type NullableLavalinkSession = PickNullable<LavalinkSession, "timeout">;

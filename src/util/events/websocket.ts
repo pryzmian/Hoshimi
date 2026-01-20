@@ -1,4 +1,5 @@
 import type { IncomingMessage } from "node:http";
+import type { Player } from "../../classes/player/Player";
 import { DebugLevels, EventNames } from "../../types/Manager";
 import { type LavalinkPayload, NodeDestroyReasons, type NodeInfo, OpCodes, State, WebsocketCloseCodes } from "../../types/Node";
 import { PlayerEventType } from "../../types/Player";
@@ -134,11 +135,8 @@ export async function onMessage(this: NodeStructure, message: Buffer | string): 
                     this.session.resuming = payload.resumed;
 
                     if (payload.resumed) {
-                        const players: LavalinkPlayer[] =
-                            (await this.rest.request<LavalinkPlayer[]>({
-                                endpoint: `/sessions/${payload.sessionId}/players`,
-                            })) ?? [];
-                        const timeout = this.nodeManager.manager.options.nodeOptions.resumeTimeout;
+                        const players: LavalinkPlayer[] = await this.rest.getPlayers();
+                        const timeout: number = this.nodeManager.manager.options.nodeOptions.resumeTimeout;
 
                         this.nodeManager.manager.emit(EventNames.NodeResumed, this, players, payload);
                         this.nodeManager.manager.emit(
@@ -148,15 +146,15 @@ export async function onMessage(this: NodeStructure, message: Buffer | string): 
                         );
                     }
 
-                    const players = this.nodeManager.manager.players.filter((p) => p.node.id === this.id);
-                    const isLibrary = this.nodeManager.manager.options.nodeOptions.resumeByLibrary;
+                    const players: Player[] = this.nodeManager.manager.players.filter((p) => p.node.id === this.id);
+                    const isLibrary: boolean = this.nodeManager.manager.options.nodeOptions.resumeByLibrary;
 
                     if (!payload.resumed && isLibrary && players.length) await resumeByLibrary.call(this, players);
 
                     this.info = await this.rest.request<NodeInfo>({ endpoint: "/info" });
 
-                    const isResumable: boolean = this.nodeManager.manager.options.nodeOptions.resumable;
-                    if (isResumable) {
+                    const resuming: boolean = this.nodeManager.manager.options.nodeOptions.resumable;
+                    if (resuming) {
                         const timeout: number = this.nodeManager.manager.options.nodeOptions.resumeTimeout;
 
                         this.nodeManager.manager.emit(
@@ -165,7 +163,7 @@ export async function onMessage(this: NodeStructure, message: Buffer | string): 
                             `[Socket] -> [${this.id}]: Setting timeout to resume session. | Timeout: ${timeout}ms`,
                         );
 
-                        await this.updateSession(isResumable, timeout);
+                        await this.updateSession({ resuming, timeout });
                     }
 
                     this.nodeManager.manager.emit(
@@ -178,7 +176,7 @@ export async function onMessage(this: NodeStructure, message: Buffer | string): 
                 break;
 
             case OpCodes.Event: {
-                const player = this.nodeManager.manager.getPlayer(payload.guildId);
+                const player: Player | undefined = this.nodeManager.manager.getPlayer(payload.guildId);
                 if (!player) return;
 
                 switch (payload.type) {
