@@ -202,7 +202,7 @@ export function validateNodePlugins(node: Node, plugins: PluginNames[]): void {
  * @returns {SearchEngines} The validated engine type.
  */
 export function validateEngine(type: SearchEngines | SourceNames): SearchEngines {
-    const source = ValidEngines.find((engine) => engine === type) ?? ValidSources.get(type as SourceNames);
+    const source = ValidEngines.find((engine): boolean => engine === type) ?? ValidSources.get(type as SourceNames);
     if (!source) throw new OptionError(`The engine '${type}' is not a valid engine.`);
 
     return source;

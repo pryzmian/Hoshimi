@@ -1,4 +1,4 @@
-import { DebugLevels, EventNames, type Inferable } from "../types/Manager";
+import { DebugLevels, EventNames, type Inferable, type SearchEngines } from "../types/Manager";
 import {
     type LavalinkTrack,
     type PluginInfo,
@@ -184,7 +184,9 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
         if (this.encoded) return player.node.decode.single(this.encoded, this.requester);
 
         if (this.info.uri) {
-            const track = await player.search({ query: this.info.uri, requester: this.requester }).then((result) => result.tracks[0]);
+            const track: Track | undefined = await player
+                .search({ query: this.info.uri, requester: this.requester })
+                .then((result): Track | undefined => result.tracks[0]);
             if (!track) throw new ResolveError("Track could not be resolved from URI.");
 
             player.manager.emit(
@@ -196,10 +198,10 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
             return track;
         }
 
-        const query = [this.info.title, this.info.uri].filter(Boolean).join(" by ");
-        const excluded = [SourceNames.Twitch, SourceNames.FloweryTTS, SourceNames.Mixer, SourceNames.Vimeo];
+        const query: string = [this.info.title, this.info.author].filter(Boolean).join(" by ");
+        const excluded: SourceNames[] = [SourceNames.Twitch, SourceNames.FloweryTTS, SourceNames.Mixer, SourceNames.Vimeo];
 
-        const engine =
+        const engine: SearchEngines =
             this.info.sourceName && !excluded.includes(this.info.sourceName)
                 ? validateEngine(this.info.sourceName)
                 : player.manager.options.defaultSearchEngine;
@@ -210,28 +212,28 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
             `[Unresolved] -> [Track] Searching for track with query: ${query} using engine: ${engine}`,
         );
 
-        return player.search({ query, engine, requester: this.requester }).then((result) => {
+        return player.search({ query, engine, requester: this.requester }).then((result): Track => {
             let track: Track | null = result.tracks[0] ?? null;
 
             if (this.info.author && !track)
                 track =
                     result.tracks.find(
-                        (t) =>
-                            [this.info.author ?? "", `${this.info.author} - Topic`].some((name) =>
+                        (t): boolean =>
+                            [this.info.author ?? "", `${this.info.author} - Topic`].some((name): boolean =>
                                 new RegExp(`^${escapeRegExp(name)}$`, "i").test(t.info.author),
                             ) || new RegExp(`^${escapeRegExp(this.info.title)}$`, "i").test(t.info.title),
                     ) ?? null;
 
             if (this.info.length && !track)
                 track =
-                    result.tracks.find((t) => {
-                        const length = this.info.length;
+                    result.tracks.find((t): boolean => {
+                        const length: number | undefined = this.info.length;
                         if (!length) return false;
 
                         return t.info.length >= length - 1500 && t.info.length <= length + 1500;
                     }) ?? null;
 
-            if (this.info.isrc && !track) track = result.tracks.find((t) => t.info.isrc === this.info.isrc) ?? null;
+            if (this.info.isrc && !track) track = result.tracks.find((t): boolean => t.info.isrc === this.info.isrc) ?? null;
 
             if (!track) throw new ResolveError("Track could not be resolved from search query.");
 
