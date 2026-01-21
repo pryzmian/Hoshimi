@@ -22,6 +22,7 @@ export default class LyricsCommand extends Command {
             (await player.data.get("lyrics")) ??
             (await player.lyrics.current().then((l) => {
                 if (!l) return null;
+                if ("error" in l && "trace" in l) return null;
 
                 if (typeof l.provider !== "string") l.provider = "Unknown";
 
@@ -31,12 +32,12 @@ export default class LyricsCommand extends Command {
                 l.sourceName = l.sourceName.replace("Source: ", "").trim();
                 l.sourceName = l.sourceName.charAt(0).toUpperCase() + l.sourceName.slice(1);
 
+                player.data.set("lyrics", l);
+
                 return l;
             }));
 
         if (!lyrics) return ctx.editOrReply({ content: "No lyrics found." });
-
-        player.data.set("lyrics", lyrics);
 
         const current = player.queue.current;
         if (!current) return ctx.editOrReply({ content: "No track is currently playing." });
@@ -81,7 +82,9 @@ export default class LyricsCommand extends Command {
                 .slice(0, 11)
                 .join("\n");
 
-            embed.setDescription(`**Source:** ${sourceName}\n**Provider:** ${provider}\n\n${text}`);
+            embed
+                .setDescription(`**Source:** ${sourceName}\n**Provider:** ${provider}\n\n${text}`)
+                .setFooter({ text: `Lines: 0 / ${lyrics.lines.length}` });
 
             player.data.set("lyricsId", message.id);
             player.data.set("enabledLyrics", true);

@@ -5,9 +5,9 @@ const options = {
     mode: createNumberOption({
         description: "Loop mode to set.",
         choices: [
-            { name: "Off", value: 1 },
-            { name: "Track", value: 2 },
-            { name: "Queue", value: 3 },
+            { name: "Off", value: LoopMode.Off },
+            { name: "Track", value: LoopMode.Track },
+            { name: "Queue", value: LoopMode.Queue },
         ] as const,
     }),
 };
@@ -20,7 +20,7 @@ const options = {
     contexts: ["Guild"],
 })
 @Options(options)
-export default class SkipCommand extends Command {
+export default class LoopCommand extends Command {
     override async run(ctx: GuildCommandContext<typeof options>) {
         const { client, options } = ctx;
 

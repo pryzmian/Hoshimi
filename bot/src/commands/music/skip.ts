@@ -33,6 +33,8 @@ export default class SkipCommand extends Command {
         const player = client.manager.getPlayer(ctx.guildId);
         if (!player) return ctx.editOrReply({ content: "No player found." });
 
+        if (player.queue.isEmpty()) return ctx.editOrReply({ content: "The queue is empty." });
+
         await player.skip(options.to);
         await ctx.editOrReply({
             content: `Skipped ${options.to ?? 1} track(s).`,
