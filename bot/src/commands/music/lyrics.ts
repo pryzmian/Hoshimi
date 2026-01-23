@@ -21,23 +21,26 @@ export default class LyricsCommand extends Command {
 
         const lyrics =
             (await player.data.get("lyrics")) ??
-            (await player.lyrics.current().then(async (l) => {
-                if (!l) return null;
-                if ("error" in l && "trace" in l) return null;
+            (await player.lyrics
+                .current()
+                .then(async (l) => {
+                    if (!l) return null;
+                    if ("error" in l && "trace" in l) return null;
 
-                if (typeof l.provider !== "string") l.provider = "Unknown";
-                if (typeof l.sourceName !== "string") l.sourceName = "Unknown";
+                    if (typeof l.provider !== "string") l.provider = "Unknown";
+                    if (typeof l.sourceName !== "string") l.sourceName = "Unknown";
 
-                l.provider = l.provider.replace("Source: ", "").trim();
-                l.provider = capitalize(l.provider);
+                    l.provider = l.provider.replace("Source: ", "").trim();
+                    l.provider = capitalize(l.provider);
 
-                l.sourceName = l.sourceName.replace("Source: ", "").trim();
-                l.sourceName = capitalize(l.sourceName);
+                    l.sourceName = l.sourceName.replace("Source: ", "").trim();
+                    l.sourceName = capitalize(l.sourceName);
 
-                await player.data.set("lyrics", l);
+                    await player.data.set("lyrics", l);
 
-                return l;
-            }));
+                    return l;
+                })
+                .catch(() => null));
 
         if (!lyrics) return ctx.editOrReply({ content: "No lyrics found." });
 
