@@ -20,7 +20,7 @@ export default class LyricsCommand extends Command {
 
         const lyrics =
             (await player.data.get("lyrics")) ??
-            (await player.lyrics.current().then((l) => {
+            (await player.lyrics.current().then(async (l) => {
                 if (!l) return null;
                 if ("error" in l && "trace" in l) return null;
 
@@ -32,7 +32,7 @@ export default class LyricsCommand extends Command {
                 l.sourceName = l.sourceName.replace("Source: ", "").trim();
                 l.sourceName = l.sourceName.charAt(0).toUpperCase() + l.sourceName.slice(1);
 
-                player.data.set("lyrics", l);
+                await player.data.set("lyrics", l);
 
                 return l;
             }));
@@ -74,7 +74,7 @@ export default class LyricsCommand extends Command {
         });
 
         collector.run("lyrics-live", async (interaction) => {
-            const isEnabled = !!player.data.get("enabledLyrics");
+            const isEnabled = !!(await player.data.get("enabledLyrics"));
             if (!isEnabled) await player.lyrics.subscribe();
 
             const text = lines
@@ -86,8 +86,8 @@ export default class LyricsCommand extends Command {
                 .setDescription(`**Source:** ${sourceName}\n**Provider:** ${provider}\n\n${text}`)
                 .setFooter({ text: `Lines: 0 / ${lyrics.lines.length}` });
 
-            player.data.set("lyricsId", message.id);
-            player.data.set("enabledLyrics", true);
+            await player.data.set("lyricsId", message.id);
+            await player.data.set("enabledLyrics", true);
 
             await interaction.update({ embeds: [embed], components: [] }).catch(() => null);
         });

@@ -76,7 +76,7 @@ export abstract class PlayerStorageAdapter {
      * console.log(success); // true
      * ```
      */
-    abstract delete(key: string): Awaitable<boolean>;
+    abstract delete<K extends StorageKeys>(key: K): Awaitable<boolean>;
 
     /**
      * Clear the storage.
@@ -98,7 +98,7 @@ export abstract class PlayerStorageAdapter {
      * console.log(exists); // true
      * ```
      */
-    abstract has(key: string): Awaitable<boolean>;
+    abstract has<K extends StorageKeys>(key: K): Awaitable<boolean>;
 
     /**
      * Get all keys in the storage.

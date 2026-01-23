@@ -19,8 +19,8 @@ export default createLavalinkEvent({
         if (lyricsId) {
             await client.messages.delete(lyricsId, textId).catch(() => null);
 
-            player.data.delete("lyricsId");
-            player.data.delete("lyrics");
+            await player.data.delete("lyricsId");
+            await player.data.delete("lyrics");
         }
     },
 });

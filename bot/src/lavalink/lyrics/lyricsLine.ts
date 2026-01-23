@@ -6,7 +6,7 @@ export default createLavalinkEvent({
     async run(client, player, _$1, payload) {
         if (payload.skipped) return;
 
-        if (!player.data.has("enabledLyrics")) return;
+        if (!(await player.data.has("enabledLyrics"))) return;
         if (!player.textId) return;
 
         const lyricsId = await player.data.get("lyricsId");
@@ -19,8 +19,8 @@ export default createLavalinkEvent({
         if (!lyrics) {
             await message.delete().catch(() => null);
 
-            player.data.delete("lyricsId");
-            player.data.delete("lyrics");
+            await player.data.delete("lyricsId");
+            await player.data.delete("lyrics");
 
             return;
         }

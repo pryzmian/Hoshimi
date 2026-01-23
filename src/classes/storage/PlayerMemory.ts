@@ -27,11 +27,11 @@ export class PlayerMemoryStorage<
         this.internal.set(this.buildKey(this.namespace, key) as never, value as never);
     }
 
-    public has(key: K): Awaitable<boolean> {
+    public has<K extends StorageKeys>(key: K): Awaitable<boolean> {
         return this.internal.has(this.buildKey(this.namespace, key) as never);
     }
 
-    public delete(key: K): Awaitable<boolean> {
+    public delete<K extends StorageKeys>(key: K): Awaitable<boolean> {
         return this.internal.delete(this.buildKey(this.namespace, key) as never);
     }
 
