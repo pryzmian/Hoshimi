@@ -38,3 +38,11 @@ export const inspect = (obj: any, depth: number = 0): string => nodeInspect(obj,
  * @returns {string} The sliced text.
  */
 export const truncate = (text: string, length: number = 240): string => (text.length > length ? `${text.slice(0, length - 3)}...` : text);
+
+/**
+ *
+ * Capitalize the first letter of a string.
+ * @param {string} str The string to capitalize.
+ * @returns {string} The capitalized string.
+ */
+export const capitalize = (str: string): string => str.charAt(0).toUpperCase() + str.slice(1);

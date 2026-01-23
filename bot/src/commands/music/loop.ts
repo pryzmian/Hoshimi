@@ -5,9 +5,9 @@ const options = {
     mode: createNumberOption({
         description: "Loop mode to set.",
         choices: [
-            { name: "Off", value: LoopMode.Off },
             { name: "Track", value: LoopMode.Track },
             { name: "Queue", value: LoopMode.Queue },
+            { name: "Off", value: LoopMode.Off },
         ] as const,
     }),
 };

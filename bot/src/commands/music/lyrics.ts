@@ -2,6 +2,7 @@ import { ActionRow, Button, Command, Declare, Embed, type GuildCommandContext, t
 import { EmbedColors } from "seyfert/lib/common/index.js";
 import { ButtonStyle } from "seyfert/lib/types/index.js";
 import { ms } from "../../time.js";
+import { capitalize } from "../../utils.js";
 
 @Declare({
     name: "lyrics",
@@ -25,12 +26,13 @@ export default class LyricsCommand extends Command {
                 if ("error" in l && "trace" in l) return null;
 
                 if (typeof l.provider !== "string") l.provider = "Unknown";
+                if (typeof l.sourceName !== "string") l.sourceName = "Unknown";
 
                 l.provider = l.provider.replace("Source: ", "").trim();
-                l.provider = l.provider.charAt(0).toUpperCase() + l.provider.slice(1);
+                l.provider = capitalize(l.provider);
 
                 l.sourceName = l.sourceName.replace("Source: ", "").trim();
-                l.sourceName = l.sourceName.charAt(0).toUpperCase() + l.sourceName.slice(1);
+                l.sourceName = capitalize(l.sourceName);
 
                 await player.data.set("lyrics", l);
 
