@@ -91,7 +91,13 @@ export default class LyricsCommand extends Command {
             await player.data.set("lyricsId", message.id);
             await player.data.set("enabledLyrics", true);
 
-            await interaction.update({ embeds: [embed], components: [] }).catch(() => null);
+            await interaction
+                .update({
+                    content: "",
+                    embeds: [embed],
+                    components: [],
+                })
+                .catch(() => null);
         });
     }
 }
