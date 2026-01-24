@@ -24,7 +24,7 @@
         "yunaforseyfert": "github:SagiriIkeda/yunaforseyfert"
     },
     "devDependencies": {
-        "@biomejs/biome": "^2.3.11",
+        "@biomejs/biome": "^2.3.12",
         "@types/node": "^25.0.10",
         "tsx": "^4.21.0",
         "typescript": "^5.9.3"
