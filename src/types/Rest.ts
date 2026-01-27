@@ -182,8 +182,8 @@ export const RestRoutes = {
      * @param {string} guildId The guild id of the player.
      * @returns {RestEndpoint} The endpoint for updating the player.
      */
-    UpdatePlayer(sessionId: string, guildId: string): RestEndpoint {
-        return `/sessions/${sessionId}/players/${guildId}`;
+    UpdatePlayer(sessionId: string, guildId: string) {
+        return `/sessions/${sessionId}/players/${guildId}` as const;
     },
     /**
      *
@@ -191,8 +191,8 @@ export const RestRoutes = {
      * @param {string} sessionId The session id of the node.
      * @returns {RestEndpoint} The endpoint for updating the session.
      */
-    UpdateSession(sessionId: string): RestEndpoint {
-        return `/sessions/${sessionId}`;
+    UpdateSession(sessionId: string) {
+        return `/sessions/${sessionId}` as const;
     },
     /**
      *
@@ -200,8 +200,8 @@ export const RestRoutes = {
      * @param {string} sessionId The session id of the node.
      * @returns {RestEndpoint} The endpoint for getting the players.
      */
-    GetPlayers(sessionId: string): RestEndpoint {
-        return `/sessions/${sessionId}/players`;
+    GetPlayers(sessionId: string) {
+        return `/sessions/${sessionId}/players` as const;
     },
     /**
      *
@@ -210,8 +210,8 @@ export const RestRoutes = {
      * @param {string} guildId The guild id of the player.
      * @returns {RestEndpoint} The endpoint for getting the current lyrics.
      */
-    CurrentLyrics(sessionId: string, guildId: string): RestEndpoint {
-        return `/sessions/${sessionId}/players/${guildId}/track/lyrics`;
+    CurrentLyrics(sessionId: string, guildId: string) {
+        return `/sessions/${sessionId}/players/${guildId}/track/lyrics` as const;
     },
     /**
      *
@@ -220,47 +220,47 @@ export const RestRoutes = {
      * @param {string} guildId The guild id of the player.
      * @returns {RestEndpoint} The endpoint for subscribing to lyrics.
      */
-    SubscribeLyrics(sessionId: string, guildId: string): RestEndpoint {
-        return `/sessions/${sessionId}/players/${guildId}/lyrics/subscribe`;
+    SubscribeLyrics(sessionId: string, guildId: string) {
+        return `/sessions/${sessionId}/players/${guildId}/lyrics/subscribe` as const;
     },
     /**
      * Get the lyrics endpoint.
      * @type {RestEndpoint}
      */
-    GetLyrics: "/lyrics" as RestEndpoint,
+    GetLyrics: "/lyrics" as const,
     /**
      * Get the decode track endpoint.
      * @type {RestEndpoint}
      */
-    DecodeTrack: "/decodetrack" as RestEndpoint,
+    DecodeTrack: "/decodetrack" as const,
     /**
      * Get the decode tracks endpoint.
      * @type {RestEndpoint}
      */
-    DecodeTracks: "/decodetracks" as RestEndpoint,
+    DecodeTracks: "/decodetracks" as const,
     /**
      * Get the load tracks endpoint.
      * @type {RestEndpoint}
      */
-    LoadTracks: "/loadtracks" as RestEndpoint,
+    LoadTracks: "/loadtracks" as const,
     /**
      * Get the node info endpoint.
      * @type {RestEndpoint}
      */
-    NodeInfo: "/info" as RestEndpoint,
+    NodeInfo: "/info" as const,
 
     /**
      * Get the load lyrics endpoint.
      * @type {RestEndpoint}
      * @description Used in NodelinkLyricsManager, only for nodelink nodes.
      */
-    LoadLyrics: "/loadlyrics" as RestEndpoint,
+    LoadLyrics: "/loadlyrics" as const,
     /**
      * Get the connection endpoint.
      * @type {RestEndpoint}
      * @description Used for checking the connection status of the node, only for nodelink nodes.
      */
-    Connection: "/connection" as RestEndpoint,
+    Connection: "/connection" as const,
 };
 
 /**
