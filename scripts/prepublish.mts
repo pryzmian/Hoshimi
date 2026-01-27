@@ -2,7 +2,7 @@ import { cp, mkdir, rm, writeFile } from "node:fs/promises";
 import packageJson from "../package.json";
 
 await rm(".npm", { recursive: true, force: true });
-await mkdir(".npm").catch(() => null);
+await mkdir(".npm").catch((): null => null);
 
 const {
     scripts: _s,

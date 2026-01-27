@@ -3,7 +3,7 @@ import type { Player } from "../../classes/player/Player";
 import { DebugLevels, EventNames } from "../../types/Manager";
 import { type LavalinkPayload, NodeDestroyReasons, type NodeInfo, OpCodes, State, WebsocketCloseCodes } from "../../types/Node";
 import { PlayerEventType } from "../../types/Player";
-import type { LavalinkPlayer } from "../../types/Rest";
+import { RestRoutes, type LavalinkPlayer } from "../../types/Rest";
 import { type NodeStructure, Structures } from "../../types/Structures";
 import { stringify } from "../functions/utils";
 import { onNodelink } from "./nodelink";
@@ -154,16 +154,13 @@ export async function onMessage(this: NodeStructure, message: Buffer | string): 
 
                     if (!payload.resumed && isLibrary && players.length) await resumeByLibrary.call(this, players);
 
-                    this.info = await this.rest.request<NodeInfo>({ endpoint: "/info" });
+                    this.info = await this.rest.request<NodeInfo>({ endpoint: RestRoutes.NodeInfo });
 
                     if (this.info) this.info.isNodelink = !!this.info.isNodelink;
 
                     if (this.isNodelink()) {
-                        const nodelinkInstance = Structures.NodelinkNode(this.nodeManager, this.options);
-                        const nodelinkPrototype = Object.getPrototypeOf(nodelinkInstance);
-
-                        const lyricsManager = Structures.NodelinkLyricsManager(this);
-                        const lyricsPrototype = Object.getPrototypeOf(lyricsManager);
+                        const nodelinkPrototype = Object.getPrototypeOf(Structures.NodelinkNode(this.nodeManager, this.options));
+                        const lyricsPrototype = Object.getPrototypeOf(Structures.NodelinkLyricsManager(this));
 
                         Object.setPrototypeOf(this, nodelinkPrototype);
                         Object.setPrototypeOf(this.lyricsManager, lyricsPrototype);
@@ -176,11 +173,8 @@ export async function onMessage(this: NodeStructure, message: Buffer | string): 
                     }
 
                     if (this.isLavalink()) {
-                        const lavalinkInstance = Structures.Node(this.nodeManager, this.options);
-                        const lavalinkPrototype = Object.getPrototypeOf(lavalinkInstance);
-
-                        const lyricsManager = Structures.LyricsManager(this);
-                        const lyricsPrototype = Object.getPrototypeOf(lyricsManager);
+                        const lavalinkPrototype = Object.getPrototypeOf(Structures.Node(this.nodeManager, this.options));
+                        const lyricsPrototype = Object.getPrototypeOf(Structures.LyricsManager(this));
 
                         Object.setPrototypeOf(this, lavalinkPrototype);
                         Object.setPrototypeOf(this.lyricsManager, lyricsPrototype);

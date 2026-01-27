@@ -172,14 +172,106 @@ export enum HttpStatusCodes {
 }
 
 /**
+ * The REST routes.
+ */
+export const RestRoutes = {
+    /**
+     *
+     * Get the updated player endpoint.
+     * @param {string} sessionId The session id of the node.
+     * @param {string} guildId The guild id of the player.
+     * @returns {RestEndpoint} The endpoint for updating the player.
+     */
+    UpdatePlayer(sessionId: string, guildId: string): RestEndpoint {
+        return `/sessions/${sessionId}/players/${guildId}`;
+    },
+    /**
+     *
+     * Get the update session endpoint.
+     * @param {string} sessionId The session id of the node.
+     * @returns {RestEndpoint} The endpoint for updating the session.
+     */
+    UpdateSession(sessionId: string): RestEndpoint {
+        return `/sessions/${sessionId}`;
+    },
+    /**
+     *
+     * Get the get players endpoint.
+     * @param {string} sessionId The session id of the node.
+     * @returns {RestEndpoint} The endpoint for getting the players.
+     */
+    GetPlayers(sessionId: string): RestEndpoint {
+        return `/sessions/${sessionId}/players`;
+    },
+    /**
+     *
+     * Get the current lyrics endpoint.
+     * @param {string} sessionId The session id of the node.
+     * @param {string} guildId The guild id of the player.
+     * @returns {RestEndpoint} The endpoint for getting the current lyrics.
+     */
+    CurrentLyrics(sessionId: string, guildId: string): RestEndpoint {
+        return `/sessions/${sessionId}/players/${guildId}/track/lyrics`;
+    },
+    /**
+     *
+     * Subscribe to lyrics endpoint.
+     * @param {string} sessionId The session id of the node.
+     * @param {string} guildId The guild id of the player.
+     * @returns {RestEndpoint} The endpoint for subscribing to lyrics.
+     */
+    SubscribeLyrics(sessionId: string, guildId: string): RestEndpoint {
+        return `/sessions/${sessionId}/players/${guildId}/lyrics/subscribe`;
+    },
+    /**
+     * Get the lyrics endpoint.
+     * @type {RestEndpoint}
+     */
+    GetLyrics: "/lyrics" as RestEndpoint,
+    /**
+     * Get the decode track endpoint.
+     * @type {RestEndpoint}
+     */
+    DecodeTrack: "/decodetrack" as RestEndpoint,
+    /**
+     * Get the decode tracks endpoint.
+     * @type {RestEndpoint}
+     */
+    DecodeTracks: "/decodetracks" as RestEndpoint,
+    /**
+     * Get the load tracks endpoint.
+     * @type {RestEndpoint}
+     */
+    LoadTracks: "/loadtracks" as RestEndpoint,
+    /**
+     * Get the node info endpoint.
+     * @type {RestEndpoint}
+     */
+    NodeInfo: "/info" as RestEndpoint,
+
+    /**
+     * Get the load lyrics endpoint.
+     * @type {RestEndpoint}
+     * @description Used in NodelinkLyricsManager, only for nodelink nodes.
+     */
+    LoadLyrics: "/loadlyrics" as RestEndpoint,
+    /**
+     * Get the connection endpoint.
+     * @type {RestEndpoint}
+     * @description Used for checking the connection status of the node, only for nodelink nodes.
+     */
+    Connection: "/connection" as RestEndpoint,
+};
+
+/**
  * The options for the REST.
  */
 export interface RestOptions {
     /**
      * The endpoint for the REST.
-     * @type {string}
+     * @type {RestEndpoint}
      */
-    endpoint: `/${string}`;
+    endpoint: RestEndpoint;
     /**
      * The method for the REST.
      * @type {HttpMethods}
@@ -428,3 +520,8 @@ export interface SessionResumingOptions {
  * The session of the node.
  */
 export type NullableLavalinkSession = PickNullable<LavalinkSession, "timeout">;
+
+/**
+ * The REST endpoint type.
+ */
+export type RestEndpoint = `/${string}`;

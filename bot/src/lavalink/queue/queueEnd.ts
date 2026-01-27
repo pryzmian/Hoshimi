@@ -14,7 +14,7 @@ export default createLavalinkEvent({
             const isEnabled = !!(await player.data.get("enabledLyrics"));
             if (isEnabled) await player.lyrics.unsubscribe();
 
-            await client.messages.delete(lyricsId, textId).catch(() => null);
+            await client.messages.delete(lyricsId, textId).catch((): null => null);
 
             await player.data.delete("lyricsId");
             await player.data.delete("lyrics");

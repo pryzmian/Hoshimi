@@ -1,5 +1,5 @@
 import { type LyricsResult, PluginNames } from "../../types/Node";
-import { HttpMethods } from "../../types/Rest";
+import { HttpMethods, RestRoutes } from "../../types/Rest";
 import type { NodeStructure } from "../../types/Structures";
 import { validateNodePlugins } from "../../util/functions/utils";
 import type { Track } from "../Track";
@@ -46,7 +46,7 @@ export class LyricsManager {
         validateNodePlugins(this.node, [PluginNames.LavaLyrics, PluginNames.JavaLyrics, PluginNames.LavaSrc]);
 
         return this.node.rest.request<LyricsResult>({
-            endpoint: `/sessions/${this.node.sessionId}/players/${guildId}/track/lyrics`,
+            endpoint: RestRoutes.CurrentLyrics(this.node.sessionId, guildId),
             params: {
                 skipTrackSource: `${skipSource}`,
             },
@@ -71,7 +71,7 @@ export class LyricsManager {
         validateNodePlugins(this.node, [PluginNames.LavaLyrics, PluginNames.JavaLyrics, PluginNames.LavaSrc]);
 
         return this.node.rest.request<LyricsResult>({
-            endpoint: "/lyrics",
+            endpoint: RestRoutes.GetLyrics,
             params: {
                 track: track.encoded,
                 skipTrackSource: `${skipSource}`,
@@ -97,7 +97,7 @@ export class LyricsManager {
         validateNodePlugins(this.node, [PluginNames.LavaLyrics, PluginNames.JavaLyrics, PluginNames.LavaSrc]);
 
         await this.node.rest.request({
-            endpoint: `/sessions/${this.node.sessionId}/players/${guildId}/lyrics/subscribe`,
+            endpoint: RestRoutes.SubscribeLyrics(this.node.sessionId, guildId),
             method: HttpMethods.Post,
             params: {
                 skipTrackSource: `${skipSource}`,
@@ -122,7 +122,7 @@ export class LyricsManager {
         validateNodePlugins(this.node, [PluginNames.LavaLyrics, PluginNames.JavaLyrics, PluginNames.LavaSrc]);
 
         await this.node.rest.request({
-            endpoint: `/sessions/${this.node.sessionId}/players/${guildId}/lyrics/subscribe`,
+            endpoint: RestRoutes.SubscribeLyrics(this.node.sessionId, guildId),
             method: HttpMethods.Delete,
         });
     }

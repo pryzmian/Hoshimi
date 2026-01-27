@@ -26,7 +26,7 @@ export default class PlayCommand extends Command {
                 content: "The bot is not connected to any node. For now is not useable.",
             });
 
-        const state = await ctx.member.voice().catch(() => null);
+        const state = await ctx.member.voice().catch((): null => null);
         if (!state?.channelId)
             return ctx.editOrReply({
                 content: "You need to be in a voice channel to use this command.",
@@ -34,7 +34,7 @@ export default class PlayCommand extends Command {
 
         const me = await ctx.me();
 
-        const bot = await me.voice().catch(() => null);
+        const bot = await me.voice().catch((): null => null);
         if (bot && bot.channelId !== state.channelId) return ctx.editOrReply({ content: "I'm already in a voice channel." });
 
         const player = client.manager.createPlayer({

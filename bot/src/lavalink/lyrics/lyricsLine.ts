@@ -12,12 +12,12 @@ export default createLavalinkEvent({
         const lyricsId = await player.data.get("lyricsId");
         if (!lyricsId) return;
 
-        const message = await client.messages.fetch(lyricsId, player.textId).catch(() => null);
+        const message = await client.messages.fetch(lyricsId, player.textId).catch((): null => null);
         if (!message) return;
 
         const lyrics = await player.data.get("lyrics");
         if (!lyrics) {
-            await message.delete().catch(() => null);
+            await message.delete().catch((): null => null);
 
             await player.data.delete("lyricsId");
             await player.data.delete("lyrics");
@@ -50,6 +50,6 @@ export default createLavalinkEvent({
             .setDescription(`**Source:** ${sourceName}\n**Provider:** ${provider}\n\n${lines}`)
             .setFooter({ text: `Lines: ${index + 1} / ${lyrics.lines.length}` });
 
-        await message.edit({ embeds: [embed] }).catch(() => null);
+        await message.edit({ embeds: [embed] }).catch((): null => null);
     },
 });

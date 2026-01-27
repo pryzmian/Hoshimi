@@ -9,6 +9,7 @@ import {
     type LavalinkSession,
     type RestOptions,
     RestPathType,
+    RestRoutes,
     type SessionResumingOptions,
     type UpdatePlayerInfo,
 } from "../../types/Rest";
@@ -201,7 +202,7 @@ export class Rest {
 
         const response = await fetch(url.toString(), fetchOptions).finally(() => clearTimeout(timeout));
         if (!response.ok) {
-            const restError = (await response.json().catch(() => null)) as LavalinkRestError | null;
+            const restError = (await response.json().catch((): null => null)) as LavalinkRestError | null;
 
             throw new RestError(
                 restError ?? {
@@ -216,7 +217,7 @@ export class Rest {
 
         if (response.status === HttpStatusCodes.NoContent) return null;
 
-        return response.json().catch(() => null) as Promise<T | null>;
+        return response.json().catch((): null => null) as Promise<T | null>;
     }
 
     /**
@@ -251,7 +252,7 @@ export class Rest {
 
         return this.request<LavalinkPlayer>({
             method: HttpMethods.Patch,
-            endpoint: `/sessions/${this.sessionId}/players/${data.guildId}`,
+            endpoint: RestRoutes.UpdatePlayer(this.sessionId, data.guildId!),
             body: { ...data.playerOptions },
             params: { noReplace: `${data.noReplace ?? false}` },
         });
@@ -308,7 +309,7 @@ export class Rest {
 
         await this.request({
             method: HttpMethods.Delete,
-            endpoint: `/sessions/${this.sessionId}/players/${guildId}`,
+            endpoint: RestRoutes.UpdatePlayer(this.sessionId, guildId),
         });
     }
 
@@ -336,7 +337,7 @@ export class Rest {
 
         return this.request<LavalinkSession>({
             method: HttpMethods.Patch,
-            endpoint: `/sessions/${this.sessionId}`,
+            endpoint: RestRoutes.UpdateSession(this.sessionId),
             body: { resuming, timeout },
         });
     }
@@ -362,7 +363,7 @@ export class Rest {
 
         const players: LavalinkPlayer[] =
             (await this.request<LavalinkPlayer[]>({
-                endpoint: `/sessions/${this.sessionId}/players`,
+                endpoint: RestRoutes.GetPlayers(this.sessionId),
             })) ?? [];
 
         if (!players.length) {

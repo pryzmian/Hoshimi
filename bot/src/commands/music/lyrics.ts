@@ -40,7 +40,7 @@ export default class LyricsCommand extends Command {
 
                     return l;
                 })
-                .catch(() => null));
+                .catch((): null => null));
 
         if (!lyrics) return ctx.editOrReply({ content: "No lyrics found." });
 
@@ -100,7 +100,7 @@ export default class LyricsCommand extends Command {
                     embeds: [embed],
                     components: [],
                 })
-                .catch(() => null);
+                .catch((): null => null);
         });
     }
 }

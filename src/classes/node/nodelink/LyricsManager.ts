@@ -1,13 +1,13 @@
 import type { LyricsLine, LyricsResult } from "../../../types/Node";
 import type { NodelinkLyrics } from "../../../types/Nodelink";
-import { HttpMethods } from "../../../types/Rest";
+import { HttpMethods, RestRoutes } from "../../../types/Rest";
 import type { Track } from "../../Track";
 import { LyricsManager } from "../Lyrics";
 
 export class NodelinkLyricsManager extends LyricsManager {
     public override async get(track: Track, skipSource?: boolean): Promise<LyricsResult | null> {
         const lyrics = await this.node.rest.request<NodelinkLyrics>({
-            endpoint: "/loadlyrics",
+            endpoint: RestRoutes.LoadLyrics,
             params: {
                 encodedTrack: track.encoded,
                 skipSource: `${skipSource ?? false}`,
@@ -46,7 +46,7 @@ export class NodelinkLyricsManager extends LyricsManager {
         if (!this.node.sessionId) return;
 
         await this.node.rest.request({
-            endpoint: `/sessions/${this.node.sessionId}/players/${guildId}/lyrics/subscribe`,
+            endpoint: RestRoutes.SubscribeLyrics(this.node.sessionId, guildId),
             method: HttpMethods.Post,
             params: {
                 skipTrackSource: `${skipSource}`,
@@ -58,7 +58,7 @@ export class NodelinkLyricsManager extends LyricsManager {
         if (!this.node.sessionId) return;
 
         await this.node.rest.request({
-            endpoint: `/sessions/${this.node.sessionId}/players/${guildId}/lyrics/subscribe`,
+            endpoint: RestRoutes.SubscribeLyrics(this.node.sessionId, guildId),
             method: HttpMethods.Delete,
         });
     }

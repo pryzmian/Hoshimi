@@ -21,6 +21,7 @@ import {
     type LavalinkPlayer,
     type LavalinkSession,
     type NullableLavalinkSession,
+    RestRoutes,
     type SessionResumingOptions,
     type UpdatePlayerInfo,
 } from "../../types/Rest";
@@ -177,7 +178,7 @@ export class Node {
     readonly decode: DecodeMethods = {
         single: async (track, requester): Promise<Track> => {
             const raw = await this.rest.request<LavalinkTrack>({
-                endpoint: "/decodetrack",
+                endpoint: RestRoutes.DecodeTrack,
                 params: { encodedTrack: track },
             });
 
@@ -186,7 +187,7 @@ export class Node {
         multiple: async (tracks, requester): Promise<Track[]> => {
             const raw =
                 (await this.rest.request<LavalinkTrack[]>({
-                    endpoint: "/decodetracks",
+                    endpoint: RestRoutes.DecodeTracks,
                     method: HttpMethods.Post,
                     body: stringify(tracks),
                 })) ?? [];
@@ -211,10 +212,42 @@ export class Node {
         return this.options.id;
     }
 
+    /**
+     *
+     * Check if the node is a Nodelink node.
+     * @returns {this is NodelinkNodeStructure} True if the node is a Nodelink node, false otherwise.
+     * @example
+     * ```ts
+     * const node = manager.nodeManager.get("node1");
+     * if (node) {
+     * 	 if (node.isNodelink()) {
+     * 		console.log("The node is a Nodelink node");
+     *   } else {
+     *       console.log("The node is a Lavalink node");
+     *   }
+     * }
+     * ```
+     */
     public isNodelink(): this is NodelinkNodeStructure {
         return this.info?.isNodelink ?? false;
     }
 
+    /**
+     *
+     * Check if the node is a Lavalink node.
+     * @returns {this is NodeStructure} True if the node is a Lavalink node, false otherwise.
+     * @example
+     * ```ts
+     * const node = manager.nodeManager.get("node1");
+     * if (node) {
+     * 	 if (node.isLavalink()) {
+     * 		console.log("The node is a Lavalink node");
+     *   } else {
+     *      console.log("The node is a Nodelink node");
+     *  }
+     * }
+     * ```
+     */
     public isLavalink(): this is NodeStructure {
         return !this.isNodelink();
     }
@@ -285,7 +318,7 @@ export class Node {
         const identifier = validateQuery(search);
 
         return this.rest.request<LavalinkSearchResponse>({
-            endpoint: "/loadtracks",
+            endpoint: RestRoutes.LoadTracks,
             params: {
                 identifier,
                 ...search.params,

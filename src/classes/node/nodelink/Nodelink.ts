@@ -1,4 +1,5 @@
 import type { NodelinkConnectionStatus } from "../../../types/Nodelink";
+import { RestRoutes } from "../../../types/Rest";
 import { Node } from "../Node";
 
 /**
@@ -18,6 +19,6 @@ export class NodelinkNode extends Node {
      * ```
      */
     public connection(): Promise<NodelinkConnectionStatus | null> {
-        return this.rest.request<NodelinkConnectionStatus>({ endpoint: "/connection" });
+        return this.rest.request<NodelinkConnectionStatus>({ endpoint: RestRoutes.Connection });
     }
 }

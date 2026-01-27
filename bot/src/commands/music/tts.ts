@@ -23,7 +23,7 @@ export default class TtsCommand extends Command {
     override async run(ctx: GuildCommandContext<typeof options>) {
         const { client, options } = ctx;
 
-        const state = await ctx.member.voice().catch(() => null);
+        const state = await ctx.member.voice().catch((): null => null);
         if (!state?.channelId)
             return ctx.editOrReply({
                 content: "You need to be in a voice channel to use this command.",
@@ -31,7 +31,7 @@ export default class TtsCommand extends Command {
 
         const me = await ctx.me();
 
-        const bot = await me.voice().catch(() => null);
+        const bot = await me.voice().catch((): null => null);
         if (bot && bot.channelId !== state.channelId)
             return ctx.editOrReply({
                 content: "I'm already in a voice channel.",

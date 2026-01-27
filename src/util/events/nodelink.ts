@@ -12,9 +12,16 @@ import type { NodeStructure } from "../../types/Structures";
 export function onNodelink(this: NodeStructure, payload: NodelinkPayload): void {
     if (payload.op === OpCodes.Event) {
         switch (payload.type) {
+            //
+            // Events related to workers
+            //
             case NodelinkEventType.WorkerFailed:
                 this.nodeManager.manager.emit(NodelinkEventNames.WorkerFailed, payload);
                 break;
+
+            //
+            // Events related to players
+            //
             case NodelinkEventType.PlayerCreated:
                 this.nodeManager.manager.emit(NodelinkEventNames.PlayerCreated, payload);
                 break;
@@ -27,6 +34,10 @@ export function onNodelink(this: NodeStructure, payload: NodelinkPayload): void 
             case NodelinkEventType.PlayerReconnecting:
                 this.nodeManager.manager.emit(NodelinkEventNames.PlayerReconnecting, payload);
                 break;
+
+            //
+            // Events related to playback
+            //
             case NodelinkEventType.VolumeChanged:
                 this.nodeManager.manager.emit(NodelinkEventNames.VolumeChanged, payload);
                 break;
@@ -39,9 +50,17 @@ export function onNodelink(this: NodeStructure, payload: NodelinkPayload): void 
             case NodelinkEventType.Pause:
                 this.nodeManager.manager.emit(NodelinkEventNames.Pause, payload);
                 break;
+
+            //
+            // Events related to connection status
+            //
             case NodelinkEventType.ConnectionStatus:
                 this.nodeManager.manager.emit(NodelinkEventNames.ConnectionStatus, payload);
                 break;
+
+            //
+            // Events related to mixes
+            //
             case NodelinkEventType.MixStarted:
                 this.nodeManager.manager.emit(NodelinkEventNames.MixStarted, payload);
                 break;
