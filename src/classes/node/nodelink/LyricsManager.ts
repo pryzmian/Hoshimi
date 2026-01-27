@@ -4,6 +4,11 @@ import { HttpMethods, RestRoutes } from "../../../types/Rest";
 import type { Track } from "../../Track";
 import { LyricsManager } from "../Lyrics";
 
+/**
+ * Class representing a NodelinkLyricsManager.
+ * @class NodelinkLyricsManager
+ * @extends {LyricsManager}
+ */
 export class NodelinkLyricsManager extends LyricsManager {
     public override async get(track: Track, skipSource?: boolean): Promise<LyricsResult | null> {
         const lyrics = await this.node.rest.request<NodelinkLyrics>({
