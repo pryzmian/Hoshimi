@@ -3,7 +3,7 @@ import type { Player } from "../../classes/player/Player";
 import { DebugLevels, EventNames } from "../../types/Manager";
 import { type LavalinkPayload, NodeDestroyReasons, type NodeInfo, OpCodes, State, WebsocketCloseCodes } from "../../types/Node";
 import { PlayerEventType } from "../../types/Player";
-import { RestRoutes, type LavalinkPlayer } from "../../types/Rest";
+import { type LavalinkPlayer, RestRoutes } from "../../types/Rest";
 import { type NodeStructure, Structures } from "../../types/Structures";
 import { stringify } from "../functions/utils";
 import { onNodelink } from "./nodelink";
@@ -170,9 +170,7 @@ export async function onMessage(this: NodeStructure, message: Buffer | string): 
                             DebugLevels.Node,
                             `[Socket] -> [${this.id}]: Switched to NodelinkNode structure.`,
                         );
-                    }
-
-                    if (this.isLavalink()) {
+                    } else {
                         const lavalinkPrototype = Object.getPrototypeOf(Structures.Node(this.nodeManager, this.options));
                         const lyricsPrototype = Object.getPrototypeOf(Structures.LyricsManager(this));
 
