@@ -13,7 +13,6 @@ import type {
     Ready,
     SearchQuery,
 } from "./Node";
-import type { NodelinkEvents, NodelinkSupport } from "./Nodelink";
 import type {
     HoshimiPlayerOptions,
     LyricsFoundEvent,
@@ -489,7 +488,7 @@ export interface HoshimiOptions {
 /**
  * The events for the manager.
  */
-export interface HoshimiEvents extends If<NodelinkSupport, NodelinkEvents, object> {
+export interface HoshimiEvents {
     /**
      * Emitted when the manager emits a debug message.
      * @param {DebugLevels} level The debug level of the message.
@@ -913,8 +912,3 @@ export type NodeIdentifier = string | NodeStructure;
  * Custom structures for Hoshimi.
  */
 export interface CustomizableStructures {}
-
-/**
- * Customizable options for Hoshimi.
- */
-export interface CustomizableOptions {}

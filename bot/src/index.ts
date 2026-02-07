@@ -9,6 +9,7 @@ import { LavalinkHandler } from "./manager/handler.js";
 import { Sessions } from "./manager/sessions.js";
 import { RedisStorage } from "./manager/storage.js";
 import type { HoshimiUser } from "./manager/types.js";
+import { HoshimiNode } from "./nodelink.js";
 import { RedisClient } from "./redis.js";
 
 /**
@@ -76,6 +77,9 @@ class HoshimiPlayer extends Player {}
 // Override the player structure.
 Structures.Player = (...args) => new HoshimiPlayer(...args);
 
+// Extend the node with whatever you want.
+Structures.Node = (...args) => new HoshimiNode(...args);
+
 /**
  * The lavalink handler of the bot.
  * @type {LavalinkHandler}
@@ -120,9 +124,6 @@ declare module "hoshimi" {
 
     interface CustomizableStructures {
         Player: HoshimiPlayer;
-    }
-
-    interface CustomizableOptions {
-        supportNodelink: true;
+        Node: HoshimiNode;
     }
 }

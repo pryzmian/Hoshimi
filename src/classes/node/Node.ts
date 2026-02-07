@@ -25,14 +25,7 @@ import {
     type SessionResumingOptions,
     type UpdatePlayerInfo,
 } from "../../types/Rest";
-import {
-    type LyricsManagerStructure,
-    type NodelinkNodeStructure,
-    type NodeManagerStructure,
-    type NodeStructure,
-    type RestStructure,
-    Structures,
-} from "../../types/Structures";
+import { type LyricsManagerStructure, type NodeManagerStructure, type RestStructure, Structures } from "../../types/Structures";
 import { onClose, onError, onMessage, onOpen } from "../../util/events/websocket";
 import { stringify, validateQuery } from "../../util/functions/utils";
 import { NodeError } from "../Errors";
@@ -63,7 +56,7 @@ export class Node {
 
     /**
      * The lyrics manager for the node.
-     * @type {LyricsManager}
+     * @type {LyricsManagerStructure}
      */
     readonly lyricsManager: LyricsManagerStructure;
 
@@ -215,7 +208,7 @@ export class Node {
     /**
      *
      * Check if the node is a Nodelink node.
-     * @returns {this is NodelinkNodeStructure} True if the node is a Nodelink node, false otherwise.
+     * @returns {boolean} True if the node is a Nodelink node, false otherwise.
      * @example
      * ```ts
      * const node = manager.nodeManager.get("node1");
@@ -228,28 +221,8 @@ export class Node {
      * }
      * ```
      */
-    public isNodelink(): this is NodelinkNodeStructure {
+    public isNodelink(): boolean {
         return this.info?.isNodelink ?? false;
-    }
-
-    /**
-     *
-     * Check if the node is a Lavalink node.
-     * @returns {this is NodeStructure} True if the node is a Lavalink node, false otherwise.
-     * @example
-     * ```ts
-     * const node = manager.nodeManager.get("node1");
-     * if (node) {
-     * 	 if (node.isLavalink()) {
-     * 		console.log("The node is a Lavalink node");
-     *   } else {
-     *      console.log("The node is a Nodelink node");
-     *  }
-     * }
-     * ```
-     */
-    public isLavalink(): this is NodeStructure {
-        return !this.isNodelink();
     }
 
     /**
