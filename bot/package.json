@@ -16,7 +16,7 @@
         "format": "biome format --write ."
     },
     "dependencies": {
-        "dotenv": "^17.2.3",
+        "dotenv": "^17.2.4",
         "hoshimi": "link:..",
         "meowdb": "^2.2.3",
         "redis": "^5.10.0",
@@ -25,7 +25,7 @@
     },
     "devDependencies": {
         "@biomejs/biome": "^2.3.14",
-        "@types/node": "^25.2.0",
+        "@types/node": "^25.2.1",
         "tsx": "^4.21.0",
         "typescript": "^5.9.3"
     },
