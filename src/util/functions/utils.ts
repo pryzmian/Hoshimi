@@ -92,19 +92,19 @@ export function validateQuery(search: SearchQuery): string {
 
     if (!ValidEngines.includes(search.engine)) throw new OptionError(`The query option 'query.engine' must be a valid search engine.`);
 
-    const query = search.query.trim();
+    const query: string = search.query.trim();
 
-    const engineKey = Object.values(SearchEngines).find((key) => query.toLowerCase().startsWith(key));
+    const engineKey: SearchEngines | undefined = Object.values(SearchEngines).find((key): boolean => query.toLowerCase().startsWith(key));
     if (engineKey && query.toLowerCase().startsWith(`${engineKey}:`)) {
-        const sliced = query.slice(engineKey.length + 1).trim();
-        const isUrl = UrlRegex.test(sliced);
+        const sliced: string = query.slice(engineKey.length + 1).trim();
+        const isUrl: boolean = UrlRegex.test(sliced);
 
         if (isUrl) return sliced;
 
         return `${engineKey}:${sliced}`;
     }
 
-    const isUrl = UrlRegex.test(query);
+    const isUrl: boolean = UrlRegex.test(query);
     if (isUrl) return query;
 
     if (search.engine === SearchEngines.FloweryTTS) return `${search.engine}://${query}`;

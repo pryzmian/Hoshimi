@@ -201,6 +201,11 @@ export enum SearchEngines {
      * @description Provided by skybot-lavalink-plugin plugin.
      */
     TextToSpeech = "speak",
+    /**
+     * Search via http url.
+     * @description Provided by lavalink.
+     */
+    HTTP = "http",
 }
 
 /**
