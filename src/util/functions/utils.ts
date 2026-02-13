@@ -1,10 +1,19 @@
 import { NodeError, OptionError, ResolveError } from "../../classes/Errors";
 import type { Node } from "../../classes/node/Node";
+import type { Player } from "../../classes/player/Player";
 import { PlayerStorageAdapter } from "../../classes/storage/adapters/PlayerAdapter";
 import { QueueStorageAdapter } from "../../classes/storage/adapters/QueueAdapter";
 import { Track, type TrackRequester, UnresolvedTrack } from "../../classes/Track";
 import { type HoshimiOptions, SearchEngines } from "../../types/Manager";
-import type { LavalinkTrack, NodeOptions, PluginNames, SearchQuery, SourceNames, UnresolvedLavalinkTrack } from "../../types/Node";
+import type {
+    LavalinkTrack,
+    NodeInfo,
+    NodeOptions,
+    PluginNames,
+    SearchQuery,
+    SourceNames,
+    UnresolvedLavalinkTrack,
+} from "../../types/Node";
 import type { PlayerOptions } from "../../types/Player";
 import type { UpdatePlayerInfo } from "../../types/Rest";
 import type { NodeStructure, PlayerStructure } from "../../types/Structures";
@@ -147,7 +156,7 @@ export function validatePlayerData(this: NodeStructure, data: Partial<UpdatePlay
         typeof data.guildId === "string" &&
         Object.keys(data.playerOptions).length > 0
     ) {
-        const player = this.nodeManager.manager.getPlayer(data.guildId);
+        const player: Player | undefined = this.nodeManager.manager.getPlayer(data.guildId);
         if (!player) return;
 
         if (typeof data.playerOptions.voice === "object") player.voice = data.playerOptions.voice;
@@ -178,7 +187,7 @@ export function validatePlayerData(this: NodeStructure, data: Partial<UpdatePlay
  * @param {RestOrArray<string>} plugins The plugins to validate.
  */
 export function validateNodePlugins(node: Node, plugins: PluginNames[]): void {
-    const info = node.info;
+    const info: NodeInfo | null = node.info;
     if (!info) throw new NodeError({ id: node.id, message: "Node is not ready yet." });
 
     if (!info.plugins.length)
@@ -187,7 +196,7 @@ export function validateNodePlugins(node: Node, plugins: PluginNames[]): void {
             message: "No plugins found in the node.",
         });
 
-    const missings = plugins.filter((name) => !info.plugins.some((p) => p.name === name));
+    const missings: PluginNames[] = plugins.filter((name): boolean => !info.plugins.some((p): boolean => p.name === name));
     if (missings.length)
         throw new NodeError({
             id: node.id,
@@ -202,7 +211,8 @@ export function validateNodePlugins(node: Node, plugins: PluginNames[]): void {
  * @returns {SearchEngines} The validated engine type.
  */
 export function validateEngine(type: SearchEngines | SourceNames): SearchEngines {
-    const source = ValidEngines.find((engine): boolean => engine === type) ?? ValidSources.get(type as SourceNames);
+    const source: SearchEngines | undefined =
+        ValidEngines.find((engine): boolean => engine === type) ?? ValidSources.get(type as SourceNames);
     if (!source) throw new OptionError(`The engine '${type}' is not a valid engine.`);
 
     return source;
