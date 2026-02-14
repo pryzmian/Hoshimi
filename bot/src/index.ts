@@ -11,6 +11,7 @@ import { RedisStorage } from "./manager/storage.js";
 import type { HoshimiUser } from "./manager/types.js";
 import { HoshimiNode } from "./nodelink.js";
 import { RedisClient } from "./redis.js";
+import { ms } from "./time.js";
 
 /**
  * The main client of the bot.
@@ -43,6 +44,7 @@ client.manager = createHoshimi({
     nodeOptions: {
         resumable: true,
         resumeByLibrary: true,
+        resumeTimeout: ms("5min"),
     },
     queueOptions: {
         autoplayFn,
