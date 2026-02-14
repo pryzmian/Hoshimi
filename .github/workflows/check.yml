@@ -6,7 +6,8 @@ on:
 jobs:
   linter:
     runs-on: ubuntu-latest
-
+    permissions:
+        contents: write
     steps:
       - name: check out code
         uses: actions/checkout@v6
