@@ -1,6 +1,6 @@
 import type { Node } from "../classes/node/Node";
 import type { Queue } from "../classes/queue/Queue";
-import type { Track, TrackRequester } from "../classes/Track";
+import type { TrackRequester } from "../classes/Track";
 import type {
     Exception,
     HoshimiNodeOptions,
@@ -28,7 +28,7 @@ import type {
 } from "./Player";
 import type { HoshimiQueueOptions } from "./Queue";
 import type { HoshimiRestOptions, LavalinkPlayer } from "./Rest";
-import type { NodeStructure, PlayerStructure } from "./Structures";
+import type { NodeStructure, PlayerStructure, TrackStructure } from "./Structures";
 
 /**
  * The search engines to use.
@@ -583,53 +583,53 @@ export interface HoshimiEvents {
     /**
      * Emitted when a track starts playing.
      * @param {PlayerStructure} player The player that emitted the event.
-     * @param {Track | null} track The track that was started.
+     * @param {TrackStructure | null} track The track that was started.
      * @param {TrackStartEvent} payload The payload of the event.
      */
-    trackStart: [player: PlayerStructure, track: Track | null, payload: TrackStartEvent];
+    trackStart: [player: PlayerStructure, track: TrackStructure | null, payload: TrackStartEvent];
     /**
      * Emitted when a track ends.
      * @param {PlayerStructure} player The player that emitted the event.
-     * @param {Track | null} track The track that ended.
+     * @param {TrackStructure | null} track The track that ended.
      * @param {TrackEndEvent} payload The payload of the event.
      */
-    trackEnd: [player: PlayerStructure, track: Track | null, payload: TrackEndEvent];
+    trackEnd: [player: PlayerStructure, track: TrackStructure | null, payload: TrackEndEvent];
     /**
      * Emitted when the track is stuck.
      * @param {PlayerStructure} player The player that emitted the event.
-     * @param {Track | null} track The track that was stuck.
+     * @param {TrackStructure | null} track The track that was stuck.
      * @param {TrackEndEvent} payload The payload of the event.
      */
-    trackStuck: [player: PlayerStructure, track: Track | null, payload: TrackStuckEvent];
+    trackStuck: [player: PlayerStructure, track: TrackStructure | null, payload: TrackStuckEvent];
     /**
      * Emitted when a track is errored.
      * @param {PlayerStructure} player The player that emitted the event.
-     * @param {Track | null} track The track that was errored.
+     * @param {TrackStructure | null} track The track that was errored.
      * @param {TrackEndEvent} payload The payload of the event.
      */
-    trackError: [player: PlayerStructure, track: Track | null, payload: TrackExceptionEvent];
+    trackError: [player: PlayerStructure, track: TrackStructure | null, payload: TrackExceptionEvent];
 
     /**
      * Emitted when lyrics are found.
      * @param {PlayerStructure} player The player that emitted the event.
-     * @param {Track | null} track The track that was found.
+     * @param {TrackStructure | null} track The track that was found.
      * @param {LyricsFoundEvent} payload The lyrics that were found.
      */
-    lyricsFound: [player: PlayerStructure, track: Track | null, payload: LyricsFoundEvent];
+    lyricsFound: [player: PlayerStructure, track: TrackStructure | null, payload: LyricsFoundEvent];
     /**
      * Emitted when lyrics are not found.
      * @param {PlayerStructure} player The player that emitted the event.
-     * @param {Track | null} track The track that was not found.
-     * @param {LyricsFoundEvent} payload The lyrics that were not found.
+     * @param {TrackStructure | null} track The track that was not found.
+     * @param {LyricsNotFoundEvent} payload The lyrics that were not found.
      */
-    lyricsNotFound: [player: PlayerStructure, track: Track | null, payload: LyricsNotFoundEvent];
+    lyricsNotFound: [player: PlayerStructure, track: TrackStructure | null, payload: LyricsNotFoundEvent];
     /**
      * Emitted when a line of lyrics is updated.
      * @param {PlayerStructure} player The player that emitted the event.
-     * @param {Track | null} track The track that was updated.
+     * @param {TrackStructure | null} track The track that was updated.
      * @param {LyricsFoundEvent} payload The lyrics that were updated.
      */
-    lyricsLine: [player: PlayerStructure, track: Track | null, payload: LyricsLineEvent];
+    lyricsLine: [player: PlayerStructure, track: TrackStructure | null, payload: LyricsLineEvent];
 
     /**
      * Emitted when the queue ends.
@@ -673,9 +673,9 @@ export interface QueryResult {
     exception: Exception | null;
     /**
      * The tracks of the search result.
-     * @type {Track[]}
+     * @type {TrackStructure[]}
      */
-    tracks: Track[];
+    tracks: TrackStructure[];
     /**
      * The plugin info of the search result.
      * @type {PluginInfo}

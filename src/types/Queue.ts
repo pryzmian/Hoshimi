@@ -1,7 +1,7 @@
 import type { QueueStorageAdapter } from "../classes/storage/adapters/QueueAdapter";
-import type { HoshimiTrack, Track } from "../classes/Track";
+import type { HoshimiTrack } from "../classes/Track";
 import type { Awaitable } from "./Manager";
-import type { PlayerStructure } from "./Structures";
+import type { PlayerStructure, TrackStructure } from "./Structures";
 
 /**
  * The queue options.
@@ -45,12 +45,12 @@ export interface QueueJson {
     tracks: HoshimiTrack[];
     /**
      * The previous tracks of the queue.
-     * @type {Track[]}
+     * @type {TrackStructure[]}
      */
-    history: Track[];
+    history: TrackStructure[];
     /**
      * The current track of the queue.
-     * @type {Track | null}
+     * @type {TrackStructure | null}
      */
-    current: Track | null;
+    current: TrackStructure | null;
 }

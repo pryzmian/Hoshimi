@@ -7,7 +7,7 @@ import {
     type UnresolvedLavalinkTrack,
     type UnresolvedTrackInfo,
 } from "../types/Node";
-import type { PlayerStructure } from "../types/Structures";
+import { type PlayerStructure, Structures, type TrackStructure, type UnresolvedTrackStructure } from "../types/Structures";
 import { isTrack, isUnresolvedTrack, validateEngine } from "../util/functions/utils";
 import { ResolveError } from "./Errors";
 
@@ -61,7 +61,7 @@ export class Track implements LavalinkTrack {
      * @param {TrackRequester} requester The requester of the track.
      * @example
      * ```ts
-     * const track = new Track({
+     * const track = Structures.Track({
      * 	encoded: "base64",
      * 	info: {
      * 		title: "Track Title",
@@ -166,13 +166,13 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
     /**
      * Resolves the track to a playable track.
      * @param {PlayerStructure} player The player to resolve the track for.
-     * @returns {Promise<Track>} The resolved track.
+     * @returns {Promise<TrackStructure>} The resolved track.
      * @throws {ResolveError} If the track cannot be resolved.
      */
-    public async resolve(player: PlayerStructure): Promise<Track> {
+    public async resolve(player: PlayerStructure): Promise<TrackStructure> {
         if (!player) throw new ResolveError("Player is not defined for track resolution.");
 
-        if (isTrack(this)) return new Track(this, this.requester);
+        if (isTrack(this)) return Structures.Track(this, this.requester);
 
         if (!isUnresolvedTrack(this)) throw new ResolveError("Track is not an unresolved track.");
         if (!this.requester) throw new ResolveError("Requester is not defined for track resolution.");
@@ -184,9 +184,9 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
         if (this.encoded) return player.node.decode.single(this.encoded, this.requester);
 
         if (this.info.uri) {
-            const track: Track | undefined = await player
+            const track: TrackStructure | undefined = await player
                 .search({ query: this.info.uri, requester: this.requester })
-                .then((result): Track | undefined => result.tracks[0]);
+                .then((result): TrackStructure | undefined => result.tracks[0]);
             if (!track) throw new ResolveError("Track could not be resolved from URI.");
 
             player.manager.emit(
@@ -212,8 +212,8 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
             `[Unresolved] -> [Track] Searching for track with query: ${query} using engine: ${engine}`,
         );
 
-        return player.search({ query, engine, requester: this.requester }).then((result): Track => {
-            let track: Track | null = result.tracks[0] ?? null;
+        return player.search({ query, engine, requester: this.requester }).then((result): TrackStructure => {
+            let track: TrackStructure | null = result.tracks[0] ?? null;
 
             if (this.info.author && !track)
                 track =
@@ -251,7 +251,7 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
 /**
  * Type representing a Hoshimi track, which can be either a resolved or unresolved track.
  */
-export type HoshimiTrack = Track | UnresolvedTrack;
+export type HoshimiTrack = TrackStructure | UnresolvedTrackStructure;
 
 /**
  * Interface representing an extendable track.

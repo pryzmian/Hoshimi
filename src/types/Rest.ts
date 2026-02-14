@@ -1,8 +1,9 @@
-import type { Track, TrackRequester } from "../classes/Track";
+import type { TrackRequester } from "../classes/Track";
 import type { FilterSettings } from "./Filters";
 import type { PickNullable } from "./Manager";
 import type { LavalinkTrack } from "./Node";
 import type { LavalinkPlayerVoice, LavalinkPlayOptions } from "./Player";
+import type { TrackStructure } from "./Structures";
 
 /**
  * The methods for http requests
@@ -475,7 +476,7 @@ export interface DecodeMethods {
      * Decodes a single base64 encoded track.
      * @param {string} track The base64 encoded track.
      * @param {TrackRequester} requester The requester of the track.
-     * @return {Promise<Track>} The decoded track.
+     * @return {Promise<TrackStructure>} The decoded track.
      * @example
      * ```ts
      * const node = player.node;
@@ -483,12 +484,12 @@ export interface DecodeMethods {
      * console.log(track.info.title); // Track Title
      * ```
      */
-    single(track: string, requester: TrackRequester): Promise<Track>;
+    single(track: string, requester: TrackRequester): Promise<TrackStructure>;
     /**
      * Decodes multiple base64 encoded tracks.
      * @param {string[]} tracks The base64 encoded tracks.
      * @param {TrackRequester} requester The requester of the tracks.
-     * @return {Promise<Track[]>} The decoded tracks.
+     * @return {Promise<TrackStructure[]>} The decoded tracks.
      * @example
      * ```ts
      * const node = player.node;
@@ -497,7 +498,7 @@ export interface DecodeMethods {
      * console.log(tracks[1].info.title); // Track Title 2
      * ```
      */
-    multiple(tracks: string[], requester: TrackRequester): Promise<Track[]>;
+    multiple(tracks: string[], requester: TrackRequester): Promise<TrackStructure[]>;
 }
 
 /**

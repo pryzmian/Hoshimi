@@ -25,7 +25,6 @@ import { requesterFn, stringify, validateManagerOptions } from "../util/function
 import { ManagerError, OptionError } from "./Errors";
 import { PlayerMemoryStorage } from "./storage/PlayerMemory";
 import { QueueMemoryStorage } from "./storage/QueueMemory";
-import { Track } from "./Track";
 
 /**
  * The packet type for the manager.
@@ -581,7 +580,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
                     exception: null,
                     playlist: res.data,
                     pluginInfo: res.data.pluginInfo,
-                    tracks: res.data.tracks.map((t) => new Track(t, requesterFn(options.requester))),
+                    tracks: res.data.tracks.map((t) => Structures.Track(t, requesterFn(options.requester))),
                 };
             }
 
@@ -591,7 +590,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
                     exception: null,
                     playlist: null,
                     pluginInfo: null,
-                    tracks: res.data.map((t) => new Track(t, requesterFn(options.requester))),
+                    tracks: res.data.map((t) => Structures.Track(t, requesterFn(options.requester))),
                 };
             }
 
@@ -601,7 +600,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
                     exception: null,
                     playlist: null,
                     pluginInfo: res.data.pluginInfo,
-                    tracks: [new Track(res.data, requesterFn(options.requester))],
+                    tracks: [Structures.Track(res.data, requesterFn(options.requester))],
                 };
             }
         }

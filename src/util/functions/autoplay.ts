@@ -1,20 +1,20 @@
-import type { HoshimiTrack, Track } from "../../classes/Track";
+import type { HoshimiTrack } from "../../classes/Track";
 import { SearchEngines } from "../../types/Manager";
 import { SourceNames } from "../../types/Node";
-import type { PlayerStructure } from "../../types/Structures";
+import type { PlayerStructure, TrackStructure } from "../../types/Structures";
 
 /**
  * The maximum number of tracks to be added to the queue.
  * @type {number}
  * @default 10
  */
-const maxTracks: number = 10;
+const limit: number = 10;
 
 /**
  *
  * The autoplay function for the player.
  * @param {PlayerStructure} player The player for the autoplay function.
- * @param {Track | null} lastTrack The last track that was played.
+ * @param {HoshimiTrack | null} lastTrack The last track that was played.
  * @returns {Promise<void>} The promise for the autoplay function.
  */
 export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrack | null): Promise<void> {
@@ -26,10 +26,10 @@ export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrac
     /**
      *
      * Filter the tracks to remove the last track and the previous tracks.
-     * @param {Track[]} tracks The tracks to filter.
-     * @returns {Track[]} The filtered tracks.
+     * @param {TrackStructure[]} tracks The tracks to filter.
+     * @returns {TrackStructure[]} The filtered tracks.
      */
-    const filter = (tracks: Track[]): Track[] =>
+    const filter = (tracks: TrackStructure[]): TrackStructure[] =>
         tracks.filter(
             (track) =>
                 !(
@@ -41,7 +41,7 @@ export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrac
     switch (lastTrack.info.sourceName) {
         case SourceNames.Spotify: {
             const filtered = player.queue.history.filter(({ info }) => info.sourceName === SourceNames.Spotify).slice(0, 1);
-            if (!filtered.length) filtered.push(lastTrack as Track);
+            if (!filtered.length) filtered.push(lastTrack as TrackStructure);
 
             const ids = filtered.map(
                 ({ info }) => info.identifier ?? info.uri?.split("/").reverse()?.[0] ?? info.uri?.split("/").reverse()?.[1],
@@ -73,7 +73,7 @@ export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrac
 
             if (res.tracks.length) {
                 const random = Math.floor(Math.random() * res.tracks.length);
-                const tracks = filter(res.tracks).slice(random, random + maxTracks);
+                const tracks = filter(res.tracks).slice(random, random + limit);
 
                 player.queue.add(tracks);
             }

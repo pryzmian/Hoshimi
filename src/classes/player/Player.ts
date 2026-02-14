@@ -19,12 +19,12 @@ import {
     type VoiceChannelUpdate,
 } from "../../types/Player";
 import type { LavalinkPlayer, UpdatePlayerInfo } from "../../types/Rest";
-import { type NodeStructure, type QueueStructure, Structures } from "../../types/Structures";
+import { type NodeStructure, type QueueStructure, Structures, type TrackStructure } from "../../types/Structures";
 import { isTrack, isUnresolvedTrack, validatePlayerOptions, validateTrack } from "../../util/functions/utils";
 import { PlayerError } from "../Errors";
 import type { Hoshimi } from "../Hoshimi";
 import type { PlayerStorageAdapter } from "../storage/adapters/PlayerAdapter";
-import type { HoshimiTrack, Track } from "../Track";
+import type { HoshimiTrack } from "../Track";
 import type { FilterManager } from "./filters/Manager";
 
 /**
@@ -625,11 +625,11 @@ export class Player {
                 .map((t): SourceNames | undefined => t.info.sourceName)
                 .filter((s): s is SourceNames => s != null || typeof s !== "undefined");
 
-            const missings: SourceNames[] = [...new Set(sources)].filter((s) => !target.info!.sourceManagers.includes(s));
+            const missings: SourceNames[] = [...new Set(sources)].filter((s): boolean => !target.info!.sourceManagers.includes(s));
             if (missings.length) throw new PlayerError(`Target node is missing source managers for: ${missings.join(", ")}`);
         }
 
-        const current: Track | null = this.queue.current;
+        const current: TrackStructure | null = this.queue.current;
 
         if (!this.voice.endpoint || !this.voice.sessionId || !this.voice.token)
             throw new PlayerError("Player voice connection data is incomplete.");

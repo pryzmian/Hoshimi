@@ -1,4 +1,4 @@
-import { type HoshimiTrack, type PlayerStructure, SearchEngines, SourceNames, type Track } from "hoshimi";
+import { type HoshimiTrack, type PlayerStructure, SearchEngines, SourceNames, type TrackStructure } from "hoshimi";
 
 /**
  * The maximum number of tracks to be added to the queue.
@@ -11,7 +11,7 @@ const max: number = 10;
  *
  * The autoplay function for the player.
  * @param {PlayerStructure} player The player for the autoplay function.
- * @param {Track | null} lastTrack The last track that was played.
+ * @param {HoshimiTrack | null} lastTrack The last track that was played.
  * @returns {Promise<void>} The promise for the autoplay function.
  */
 export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrack | null): Promise<void> {
@@ -23,10 +23,10 @@ export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrac
     /**
      *
      * Filter the tracks to remove the last track and the previous tracks.
-     * @param {Track[]} tracks The tracks to filter.
-     * @returns {Track[]} The filtered tracks.
+     * @param {TrackStructure[]} tracks The tracks to filter.
+     * @returns {TrackStructure[]} The filtered tracks.
      */
-    const filter = (tracks: Track[]): Track[] =>
+    const filter = (tracks: TrackStructure[]): TrackStructure[] =>
         tracks.filter(
             (track) =>
                 !(

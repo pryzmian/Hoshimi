@@ -3,7 +3,7 @@ import type { Node } from "../../classes/node/Node";
 import type { Player } from "../../classes/player/Player";
 import { PlayerStorageAdapter } from "../../classes/storage/adapters/PlayerAdapter";
 import { QueueStorageAdapter } from "../../classes/storage/adapters/QueueAdapter";
-import { Track, type TrackRequester, UnresolvedTrack } from "../../classes/Track";
+import type { HoshimiTrack, TrackRequester, UnresolvedTrack } from "../../classes/Track";
 import { type HoshimiOptions, SearchEngines } from "../../types/Manager";
 import type {
     LavalinkTrack,
@@ -16,7 +16,7 @@ import type {
 } from "../../types/Node";
 import type { PlayerOptions } from "../../types/Player";
 import type { UpdatePlayerInfo } from "../../types/Rest";
-import type { NodeStructure, PlayerStructure } from "../../types/Structures";
+import { type NodeStructure, type PlayerStructure, Structures, type TrackStructure } from "../../types/Structures";
 import { UrlRegex, ValidEngines, ValidSources } from "../constants";
 
 /**
@@ -222,20 +222,20 @@ export function validateEngine(type: SearchEngines | SourceNames): SearchEngines
  *
  * Resolve a track to a valid track instance.
  * @param {Player} player The player to resolve the track for.
- * @param {Track | UnresolvedTrack | null} track The track to resolve.
- * @returns {Promise<Track | null>} The resolved track.
+ * @param {HoshimiTrack | null} track The track to resolve.
+ * @returns {Promise<TrackStructure | null>} The resolved track.
  * @throws {ResolveError} If the track is not a valid unresolved track.
  */
-export function validateTrack(player: PlayerStructure, track: Track | UnresolvedTrack | null): Promise<Track | null> {
+export function validateTrack(player: PlayerStructure, track: HoshimiTrack | null): Promise<TrackStructure | null> {
     if (!track) return Promise.resolve(null);
 
     const requesterFn = player.manager.options.playerOptions.requesterFn;
 
-    if (isTrack(track)) return Promise.resolve(new Track(track, requesterFn(track.requester)));
+    if (isTrack(track)) return Promise.resolve(Structures.Track(track, requesterFn(track.requester)));
 
     if (!isUnresolvedTrack(track)) throw new ResolveError("The track is not a valid unresolved track.");
     if (!track.resolve || typeof track.resolve !== "function")
-        return new UnresolvedTrack(track, requesterFn(track.requester)).resolve(player);
+        return Structures.UnresolvedTrack(track, requesterFn(track.requester)).resolve(player);
 
     return track.resolve(player);
 }
@@ -243,10 +243,10 @@ export function validateTrack(player: PlayerStructure, track: Track | Unresolved
 /**
  *
  * Check if the track is a Lavalink track.
- * @param {Track | LavalinkTrack | UnresolvedLavalinkTrack} track The track to check.
+ * @param {TrackStructure | LavalinkTrack | UnresolvedLavalinkTrack} track The track to check.
  * @returns {boolean} If the track is a Lavalink track.
  */
-export const isTrack = (track: Track | LavalinkTrack | UnresolvedLavalinkTrack): track is Track | LavalinkTrack => {
+export const isTrack = (track: TrackStructure | LavalinkTrack | UnresolvedLavalinkTrack): track is TrackStructure | LavalinkTrack => {
     if (!track) return false;
     return (
         typeof track.encoded === "string" && typeof track.info === "object" && !("resolve" in track && typeof track.resolve === "function")
@@ -256,11 +256,11 @@ export const isTrack = (track: Track | LavalinkTrack | UnresolvedLavalinkTrack):
 /**
  *
  * Check if the track is an unresolved track.
- * @param {Track | LavalinkTrack | UnresolvedLavalinkTrack} track The track to check.
+ * @param {TrackStructure | LavalinkTrack | UnresolvedLavalinkTrack} track The track to check.
  * @returns {boolean} If the track is an unresolved track.
  */
 export function isUnresolvedTrack(
-    track: Track | LavalinkTrack | UnresolvedLavalinkTrack,
+    track: TrackStructure | LavalinkTrack | UnresolvedLavalinkTrack,
 ): track is UnresolvedTrack | UnresolvedLavalinkTrack {
     if (!track) return false;
 

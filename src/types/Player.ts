@@ -1,9 +1,10 @@
 import type { PlayerStorageAdapter } from "../classes/storage/adapters/PlayerAdapter";
-import type { Track, TrackRequester, UnresolvedTrack } from "../classes/Track";
+import type { HoshimiTrack, TrackRequester } from "../classes/Track";
 import type { FilterSettings } from "./Filters";
 import type { Awaitable, NodeIdentifier, Nullable } from "./Manager";
 import type { Exception, LavalinkTrack, LyricsLine, LyricsResult, NodeJson, OpCodes } from "./Node";
 import type { QueueJson } from "./Queue";
+import type { TrackStructure } from "./Structures";
 
 /**
  * Partial Lavalink track type.
@@ -452,9 +453,9 @@ export interface PlayOptions extends BasePlayOptions {
     noReplace?: boolean;
     /**
      * Track to play.
-     * @type {Track | UnresolvedTrack | undefined}
+     * @type {HoshimiTrack | undefined}
      */
-    track?: Track | UnresolvedTrack;
+    track?: HoshimiTrack;
 }
 
 export interface PlayerVoice {
@@ -605,7 +606,7 @@ export interface LyricsMethods {
     /**
      *
      * Get the lyrics for a specific track.
-     * @param {Track} track The track to get the lyrics for.
+     * @param {TrackStructure} track The track to get the lyrics for.
      * @param {boolean} [skipSource=false] Whether to skip the source or not.
      * @returns {Promise<LyricsResult | null>} The lyrics result or null if not found.
      * @example
@@ -615,7 +616,7 @@ export interface LyricsMethods {
      * const lyrics = await player.lyrics.get(track);
      * ```
      */
-    get(track: Track, skipSource?: boolean): Promise<LyricsResult | null>;
+    get(track: TrackStructure, skipSource?: boolean): Promise<LyricsResult | null>;
     /**
      *
      * Subscribe to the lyrics for a specific guild.

@@ -1,9 +1,9 @@
 import { DebugLevels, EventNames } from "../../types/Manager";
 import type { LavalinkTrack, UnresolvedLavalinkTrack } from "../../types/Node";
 import type { QueueJson } from "../../types/Queue";
-import type { PlayerStructure } from "../../types/Structures";
+import { type PlayerStructure, Structures, type TrackStructure } from "../../types/Structures";
 import { isTrack, isUnresolvedTrack } from "../../util/functions/utils";
-import { type HoshimiTrack, Track, type TrackRequester, UnresolvedTrack } from "../Track";
+import { type HoshimiTrack, type TrackRequester, UnresolvedTrack } from "../Track";
 import { QueueUtils } from "./Utils";
 
 /**
@@ -19,15 +19,15 @@ export class Queue {
 
     /**
      * Previous tracks of the queue.
-     * @type {Track[]}
+     * @type {TrackStructure[]}
      */
-    public history: Track[] = [];
+    public history: TrackStructure[] = [];
 
     /**
      * Current track of the queue.
-     * @type {Track | null}
+     * @type {TrackStructure | null}
      */
-    public current: Track | null = null;
+    public current: TrackStructure | null = null;
 
     /**
      * The player instance.
@@ -143,7 +143,7 @@ export class Queue {
      * Build a track from a Lavalink track or unresolved Lavalink track.
      * @param {LavalinkTrack | UnresolvedLavalinkTrack} track The track to build.
      * @param {TrackRequester} requester The requester of the track.
-     * @returns {Promise<Track>} The built track.
+     * @returns {Promise<TrackStructure>} The built track.
      * @example
      * ```ts
      * const queue = player.queue;
@@ -153,11 +153,11 @@ export class Queue {
      * console.log(track.info.title); // The title of the track
      * ```
      */
-    public async build(track: LavalinkTrack | UnresolvedLavalinkTrack | HoshimiTrack, requester: TrackRequester): Promise<Track> {
+    public async build(track: LavalinkTrack | UnresolvedLavalinkTrack | HoshimiTrack, requester: TrackRequester): Promise<TrackStructure> {
         const requesterFn = this.player.manager.options.playerOptions.requesterFn;
 
         if (isUnresolvedTrack(track)) return new UnresolvedTrack(track, requesterFn(requester)).resolve(this.player);
-        if (isTrack(track)) return new Track(track, requesterFn(requester));
+        if (isTrack(track)) return Structures.Track(track, requesterFn(requester));
 
         return track;
     }
@@ -166,7 +166,7 @@ export class Queue {
      *
      * Get the previous track of the queue.
      * @param {boolean} [remove=false] Whether to remove the track from the previous queue.
-     * @returns {Promise<Track | null>} The previous track of the queue.
+     * @returns {Promise<TrackStructure | null>} The previous track of the queue.
      * @example
      * ```ts
      * const queue = player.queue;
@@ -179,9 +179,9 @@ export class Queue {
      * console.log(await queue.previous(true)); // track and remove it from the previous tracks
      * ```
      */
-    public async previous(remove: boolean = false): Promise<Track | null> {
+    public async previous(remove: boolean = false): Promise<TrackStructure | null> {
         if (remove) {
-            const track = this.history.shift() ?? null;
+            const track: TrackStructure | null = this.history.shift() ?? null;
             if (track) await this.utils.save();
 
             return track;
@@ -193,7 +193,7 @@ export class Queue {
     /**
      *
      * Add a track or tracks to the queue.
-     * @param {Track | Track[]} track The track or tracks to add.
+     * @param {HoshimiTrack | HoshimiTrack[]} track The track or tracks to add.
      * @param {number} [position] The position to add the track or tracks.
      * @returns {Promise<this>} The queue instance.
      * @example
@@ -214,7 +214,7 @@ export class Queue {
      * ```
      */
     public async add(track: HoshimiTrack | HoshimiTrack[], position?: number): Promise<this> {
-        const tracks = Array.isArray(track) ? track : [track];
+        const tracks: HoshimiTrack[] = Array.isArray(track) ? track : [track];
 
         if (typeof position === "number" && position >= 0 && position < this.tracks.length) return this.splice(position, 0, ...tracks);
 
@@ -243,7 +243,7 @@ export class Queue {
      * ```
      */
     public async shift(): Promise<HoshimiTrack | null> {
-        const track = this.tracks.shift() ?? null;
+        const track: HoshimiTrack | null = this.tracks.shift() ?? null;
         if (track) await this.utils.save();
         return track;
     }
@@ -251,7 +251,7 @@ export class Queue {
     /**
      *
      * Add tracks to the beginning of the queue.
-     * @param {Track[]} tracks The tracks to add.
+     * @param {TrackStructure[]} tracks The tracks to add.
      * @returns {Promise<this>} The queue instance.
      * @example
      * ```ts
@@ -267,7 +267,7 @@ export class Queue {
      * console.log(queue.tracks); // [track1, track2, track]
      * ```
      */
-    public async unshift(...tracks: Track[]): Promise<this> {
+    public async unshift(...tracks: TrackStructure[]): Promise<this> {
         this.tracks.unshift(...tracks);
 
         this.player.manager.emit(
@@ -304,8 +304,8 @@ export class Queue {
         if (this.size <= 1) return this;
         if (this.size === 2) [this.tracks[0], this.tracks[1]] = [this.tracks[1]!, this.tracks[0]!];
         else {
-            for (let i = this.tracks.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
+            for (let i: number = this.tracks.length - 1; i > 0; i--) {
+                const j: number = Math.floor(Math.random() * (i + 1));
                 [this.tracks[i], this.tracks[j]] = [this.tracks[j]!, this.tracks[i]!];
             }
         }
@@ -352,7 +352,7 @@ export class Queue {
     /**
      *
      * Move a track to a specific position in the queue.
-     * @param {Track} track The track to move.
+     * @param {TrackStructure} track The track to move.
      * @param {number} to The position to move.
      * @returns {Promise<this>} The queue instance.
      * @example
@@ -367,7 +367,7 @@ export class Queue {
      * console.log(queue.tracks); // [track1, track, track2]
      * ```
      */
-    public async move(track: Track, to: number): Promise<this> {
+    public async move(track: TrackStructure, to: number): Promise<this> {
         const index: number = this.tracks.indexOf(track);
         if (index === -1) return this;
 
@@ -391,7 +391,7 @@ export class Queue {
      * Delete tracks from the queue.
      * @param {number} start The start index.
      * @param {number} deleteCount The number of tracks to delete.
-     * @param {Track | Track[]} [tracks] The tracks to add.
+     * @param {HoshimiTrack | HoshimiTrack[]} [tracks] The tracks to add.
      * @returns {Promise<this>} The queue instance.
      * @example
      * ```ts

@@ -5,6 +5,7 @@ import { Rest } from "../classes/node/Rest";
 import { FilterManager } from "../classes/player/filters/Manager";
 import { Player } from "../classes/player/Player";
 import { Queue } from "../classes/queue/Queue";
+import { Track, UnresolvedTrack } from "../classes/Track";
 import type { CustomizableStructures } from "./Manager";
 
 /**
@@ -43,6 +44,16 @@ export type NodeManagerStructure = InferCustomStructure<NodeManager, "NodeManage
 export type FilterManagerStructure = InferCustomStructure<FilterManager, "FilterManager">;
 
 /**
+ * The structure for the Track class.
+ */
+export type TrackStructure = InferCustomStructure<Track, "Track">;
+
+/**
+ * The structure for the UnresolvedTrack class.
+ */
+export type UnresolvedTrackStructure = InferCustomStructure<UnresolvedTrack, "UnresolvedTrack">;
+
+/**
  * The structures of the Hoshimi classes.
  */
 export const Structures = {
@@ -66,6 +77,12 @@ export const Structures = {
     },
     FilterManager(...args: ConstructorParameters<typeof FilterManager>): FilterManagerStructure {
         return new FilterManager(...args);
+    },
+    Track(...args: ConstructorParameters<typeof Track>): TrackStructure {
+        return new Track(...args);
+    },
+    UnresolvedTrack(...args: ConstructorParameters<typeof UnresolvedTrack>): UnresolvedTrackStructure {
+        return new UnresolvedTrack(...args);
     },
 };
 

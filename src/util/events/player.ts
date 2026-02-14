@@ -1,4 +1,3 @@
-import type { Track } from "../../classes/Track";
 import { DebugLevels, EventNames } from "../../types/Manager";
 import {
     type LavalinkPlayerVoice,
@@ -15,7 +14,7 @@ import {
     type TrackStuckEvent,
     type WebSocketClosedEvent,
 } from "../../types/Player";
-import type { NodeStructure, PlayerStructure } from "../../types/Structures";
+import type { NodeStructure, PlayerStructure, TrackStructure } from "../../types/Structures";
 import { stringify, validateTrack } from "../functions/utils";
 
 /**
@@ -58,13 +57,13 @@ async function onEnd(this: PlayerStructure): Promise<void> {
  *
  * The queue end event.
  * @param {PlayerStructure} this The player that emitted the event.
- * @param {Track | null} track The track that ended.
+ * @param {TrackStructure | null} track The track that ended.
  * @param {TrackEndEvent | TrackStuckEvent | TrackExceptionEvent} payload The payload of the event.
  * @returns {Promise<void>} Let's start a new queue!
  */
 async function queueEnd(
     this: PlayerStructure,
-    track: Track | null,
+    track: TrackStructure | null,
     payload: TrackEndEvent | TrackStuckEvent | TrackExceptionEvent,
 ): Promise<void> {
     this.playing = false;
@@ -255,11 +254,11 @@ export async function playerUpdate(this: NodeStructure, payload: PlayerUpdate): 
 /**
  * The lyrics found event.
  * @param {PlayerStructure} this The player that emitted the event.
- * @param {Track | null} track The track that emitted the event.
+ * @param {TrackStructure | null} track The track that emitted the event.
  * @param {LyricsFoundEvent} payload The payload of the event.
  * @returns {Promise<void>} Yay! Let's sing along!
  */
-export async function lyricsFound(this: PlayerStructure, track: Track | null, payload: LyricsFoundEvent): Promise<void> {
+export async function lyricsFound(this: PlayerStructure, track: TrackStructure | null, payload: LyricsFoundEvent): Promise<void> {
     this.manager.emit(EventNames.LyricsFound, this, track, payload);
     this.manager.emit(
         EventNames.Debug,
@@ -271,11 +270,11 @@ export async function lyricsFound(this: PlayerStructure, track: Track | null, pa
 /**
  * The lyrics line event.
  * @param {PlayerStructure} this The player that emitted the event.
- * @param {Track | null} track The track that emitted the event.
+ * @param {TrackStructure | null} track The track that emitted the event.
  * @param {LyricsLineEvent} payload The payload of the event.
  * @returns {Promise<void>} Let's be honest, you don't care about this.
  */
-export async function lyricsLine(this: PlayerStructure, track: Track | null, payload: LyricsLineEvent): Promise<void> {
+export async function lyricsLine(this: PlayerStructure, track: TrackStructure | null, payload: LyricsLineEvent): Promise<void> {
     this.manager.emit(EventNames.LyricsLine, this, track, payload);
     this.manager.emit(
         EventNames.Debug,
@@ -287,11 +286,11 @@ export async function lyricsLine(this: PlayerStructure, track: Track | null, pay
 /**
  * The lyrics not found event.
  * @param {PlayerStructure} this The player that emitted the event.
- * @param {Track | null} track The track that emitted the event.
+ * @param {TrackStructure | null} track The track that emitted the event.
  * @param {LyricsNotFoundEvent} payload The payload of the event.
  * @returns {Promise<void>} Awww, no lyrics? That's sad.
  */
-export async function lyricsNotFound(this: PlayerStructure, track: Track | null, payload: LyricsNotFoundEvent): Promise<void> {
+export async function lyricsNotFound(this: PlayerStructure, track: TrackStructure | null, payload: LyricsNotFoundEvent): Promise<void> {
     this.manager.emit(EventNames.LyricsNotFound, this, track, payload);
     this.manager.emit(
         EventNames.Debug,
@@ -337,7 +336,7 @@ export async function resumeByLibrary(this: NodeStructure, players: PlayerStruct
                 return;
             }
 
-            const track = player.queue.current;
+            const track: TrackStructure | null = player.queue.current;
 
             await player.node.updatePlayer({
                 guildId: player.guildId,

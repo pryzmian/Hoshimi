@@ -25,11 +25,16 @@ import {
     type SessionResumingOptions,
     type UpdatePlayerInfo,
 } from "../../types/Rest";
-import { type LyricsManagerStructure, type NodeManagerStructure, type RestStructure, Structures } from "../../types/Structures";
+import {
+    type LyricsManagerStructure,
+    type NodeManagerStructure,
+    type RestStructure,
+    Structures,
+    type TrackStructure,
+} from "../../types/Structures";
 import { onClose, onError, onMessage, onOpen } from "../../util/events/websocket";
 import { stringify, validateQuery } from "../../util/functions/utils";
 import { NodeError } from "../Errors";
-import { Track } from "../Track";
 
 /**
  * Class representing a Lavalink node.
@@ -169,15 +174,15 @@ export class Node {
      * @readonly
      */
     readonly decode: DecodeMethods = {
-        single: async (track, requester): Promise<Track> => {
+        single: async (track, requester): Promise<TrackStructure> => {
             const raw = await this.rest.request<LavalinkTrack>({
                 endpoint: RestRoutes.DecodeTrack,
                 params: { encodedTrack: track },
             });
 
-            return new Track(raw, requester);
+            return Structures.Track(raw, requester);
         },
-        multiple: async (tracks, requester): Promise<Track[]> => {
+        multiple: async (tracks, requester): Promise<TrackStructure[]> => {
             const raw =
                 (await this.rest.request<LavalinkTrack[]>({
                     endpoint: RestRoutes.DecodeTracks,
@@ -185,7 +190,7 @@ export class Node {
                     body: stringify(tracks),
                 })) ?? [];
 
-            return raw.map((track): Track => new Track(track, requester));
+            return raw.map((track): TrackStructure => Structures.Track(track, requester));
         },
     };
 

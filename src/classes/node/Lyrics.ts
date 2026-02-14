@@ -1,8 +1,7 @@
 import { type LyricsResult, PluginNames } from "../../types/Node";
 import { HttpMethods, RestRoutes } from "../../types/Rest";
-import type { NodeStructure } from "../../types/Structures";
+import type { NodeStructure, TrackStructure } from "../../types/Structures";
 import { validateNodePlugins } from "../../util/functions/utils";
-import type { Track } from "../Track";
 
 /**
  * Class representing a LyricsManager.
@@ -56,7 +55,7 @@ export class LyricsManager {
     /**
      *
      * Get the lyrics for a specific track.
-     * @param {Track} track The track to get the lyrics for.
+     * @param {TrackStructure} track The track to get the lyrics for.
      * @param {boolean} skipSource Whether to skip the track source or not.
      * @returns {Promise<LyricsResult | null>} The lyrics result or null if not found.
      * @example
@@ -65,7 +64,7 @@ export class LyricsManager {
      * const lyrics = await node.lyricsManager.get(track);
      * ```
      */
-    public async get(track: Track, skipSource: boolean = false): Promise<LyricsResult | null> {
+    public async get(track: TrackStructure, skipSource: boolean = false): Promise<LyricsResult | null> {
         if (!this.node.sessionId) return null;
 
         validateNodePlugins(this.node, [PluginNames.LavaLyrics, PluginNames.JavaLyrics, PluginNames.LavaSrc]);
