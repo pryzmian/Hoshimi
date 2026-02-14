@@ -168,7 +168,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
                 userAgent: options.nodeOptions?.userAgent ?? HoshimiAgent,
                 resumable: options.nodeOptions?.resumable ?? false,
                 resumeByLibrary: options.nodeOptions?.resumeByLibrary ?? false,
-                resumeTimeout: options.nodeOptions?.resumeTimeout ?? 10000,
+                resumeTimeout: options.nodeOptions?.resumeTimeout ?? 60,
             },
             queueOptions: {
                 maxHistory: options.queueOptions?.maxHistory ?? 25,

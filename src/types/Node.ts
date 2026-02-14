@@ -1176,9 +1176,9 @@ export interface HoshimiNodeOptions {
      */
     resumeByLibrary?: boolean;
     /**
-     * The timeout for resuming the session in milliseconds.
+     * The timeout for resuming the session in seconds.
      * @type {number}
-     * @default 10000
+     * @default 60
      */
     resumeTimeout?: number;
 }
