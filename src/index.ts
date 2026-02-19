@@ -2,9 +2,11 @@
 export * from "./classes/Errors";
 export * from "./classes/Hoshimi";
 
-// Exports related to the node and the rest.
+// Exports related to the node, lyrics manager, node manager and the rest.
 export * from "./classes/node/Node";
 export * from "./classes/node/Rest";
+export * from "./classes/node/Lyrics";
+export * from "./classes/node/Manager";
 
 // Exports related to filters.
 export * from "./classes/player/filters/DSPXPlugin";
