@@ -193,7 +193,7 @@ export class Player {
      * @param {PlayOptions} options The options for the player.
      * @example
      * ```ts
-     * const player = new Player(manager, {
+     * const player = Structures.Player(manager, {
      * 	guildId: "guildId",
      * 	voiceId: "voiceId",
      * 	textId: "textId",

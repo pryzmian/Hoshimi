@@ -48,8 +48,7 @@ export class Queue {
      * @param {PlayerStructure} player Player instance.
      * @example
      * ```ts
-     * const player = new Player();
-     * const queue = new Queue(player);
+     * const queue = Structures.Queue(player);
      *
      * console.log(queue.size); // 0
      * queue.add(track);

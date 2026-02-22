@@ -1,5 +1,6 @@
 import { EventEmitter } from "node:events";
 import {
+    type ChannelDelete,
     type ChannelDeletePacket,
     type ClientData,
     DebugLevels,
@@ -277,9 +278,9 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
 
         switch (packet.t) {
             case "CHANNEL_DELETE": {
-                const data = packet.d;
+                const data: ChannelDelete = packet.d;
 
-                const player = this.getPlayer(data.guild_id);
+                const player: PlayerStructure | undefined = this.getPlayer(data.guild_id);
                 if (!player) {
                     this.emit(EventNames.Debug, DebugLevels.Player, "[Player] -> [Voice] The player is not found.");
                     return;
@@ -307,7 +308,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
             case "VOICE_SERVER_UPDATE":
             case "VOICE_STATE_UPDATE":
                 {
-                    const data = packet.d;
+                    const data: VoiceServer | VoiceState = packet.d;
 
                     if (!("guild_id" in data)) {
                         this.emit(EventNames.Debug, DebugLevels.Player, "[Player] -> [Voice] The guild id is missing.");

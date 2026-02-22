@@ -1,6 +1,5 @@
 import { NodeError, OptionError, ResolveError } from "../../classes/Errors";
 import type { Node } from "../../classes/node/Node";
-import type { Player } from "../../classes/player/Player";
 import { PlayerStorageAdapter } from "../../classes/storage/adapters/PlayerAdapter";
 import { QueueStorageAdapter } from "../../classes/storage/adapters/QueueAdapter";
 import type { HoshimiTrack, TrackRequester, UnresolvedTrack } from "../../classes/Track";
@@ -156,7 +155,7 @@ export function validatePlayerData(this: NodeStructure, data: Partial<UpdatePlay
         typeof data.guildId === "string" &&
         Object.keys(data.playerOptions).length > 0
     ) {
-        const player: Player | undefined = this.nodeManager.manager.getPlayer(data.guildId);
+        const player: PlayerStructure | undefined = this.nodeManager.manager.getPlayer(data.guildId);
         if (!player) return;
 
         if (typeof data.playerOptions.voice === "object") player.voice = data.playerOptions.voice;
@@ -221,7 +220,7 @@ export function validateEngine(type: SearchEngines | SourceNames): SearchEngines
 /**
  *
  * Resolve a track to a valid track instance.
- * @param {Player} player The player to resolve the track for.
+ * @param {PlayerStructure} player The player to resolve the track for.
  * @param {HoshimiTrack | null} track The track to resolve.
  * @returns {Promise<TrackStructure | null>} The resolved track.
  * @throws {ResolveError} If the track is not a valid unresolved track.

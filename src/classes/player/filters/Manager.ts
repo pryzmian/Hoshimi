@@ -6,6 +6,7 @@ import {
     type FilterSettings,
     FilterType,
     type KaraokeSettings,
+    type LavalinkFilterPluginSettings,
     type LowPassSettings,
     type TimescaleSettings,
     type TremoloSettings,
@@ -209,7 +210,7 @@ export class FilterManager {
         this.filters.vibrato = this.data.vibrato?.frequency !== 0 || this.data.vibrato?.depth !== 0;
         this.filters.tremolo = this.data.tremolo?.frequency !== 0 || this.data.tremolo?.depth !== 0;
 
-        const lavalinkPluginFilters = this.data.pluginFilters?.["lavalink-filter-plugin"] ?? {};
+        const lavalinkPluginFilters: LavalinkFilterPluginSettings = this.data.pluginFilters?.["lavalink-filter-plugin"] ?? {};
 
         this.filters.lavalinkFilterPlugin.echo = lavalinkPluginFilters.echo?.decay !== 0 || lavalinkPluginFilters.echo?.delay !== 0;
         this.filters.lavalinkFilterPlugin.reverb =
@@ -425,7 +426,7 @@ export class FilterManager {
     public async setEQBand(...bands: RestOrArray<EQBandSettings>): Promise<this> {
         bands = bands.flat();
 
-        if (!bands.length || !bands.every((band) => typeof band.band === "number" && typeof band.gain === "number"))
+        if (!bands.length || !bands.every((band): boolean => typeof band.band === "number" && typeof band.gain === "number"))
             throw new PlayerError("Bands must be a non-empty object array containing 'band' and 'gain' properties.");
 
         for (const { band, gain } of bands) this.bands[band] = { band, gain };
@@ -444,7 +445,7 @@ export class FilterManager {
      * ```
      */
     public async clearEQBands(): Promise<this> {
-        return this.setEQBand(Array.from({ length: 15 }, (_, i) => ({ band: i, gain: 0 })));
+        return this.setEQBand(this.bands.map((b) => ({ band: b.band, gain: 0 })));
     }
 
     /**

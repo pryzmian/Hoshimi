@@ -1,10 +1,9 @@
 import type { IncomingMessage } from "node:http";
-import type { Player } from "../../classes/player/Player";
 import { DebugLevels, EventNames } from "../../types/Manager";
 import { type LavalinkPayload, NodeDestroyReasons, type NodeInfo, OpCodes, State, WebsocketCloseCodes } from "../../types/Node";
 import { PlayerEventType } from "../../types/Player";
 import { type LavalinkPlayer, RestRoutes } from "../../types/Rest";
-import type { NodeStructure } from "../../types/Structures";
+import type { NodeStructure, PlayerStructure } from "../../types/Structures";
 import { stringify } from "../functions/utils";
 import {
     lyricsFound,
@@ -146,7 +145,7 @@ export async function onMessage(this: NodeStructure, message: Buffer | string): 
                         );
                     }
 
-                    const players: Player[] = this.nodeManager.manager.players.filter((p) => p.node.id === this.id);
+                    const players: PlayerStructure[] = this.nodeManager.manager.players.filter((p) => p.node.id === this.id);
                     const isLibrary: boolean = this.nodeManager.manager.options.nodeOptions.resumeByLibrary;
 
                     if (!payload.resumed && isLibrary && players.length) await resumeByLibrary.call(this, players);
@@ -178,7 +177,7 @@ export async function onMessage(this: NodeStructure, message: Buffer | string): 
                 break;
 
             case OpCodes.Event: {
-                const player: Player | undefined = this.nodeManager.manager.getPlayer(payload.guildId);
+                const player: PlayerStructure | undefined = this.nodeManager.manager.getPlayer(payload.guildId);
                 if (!player) return;
 
                 switch (payload.type) {
