@@ -17,7 +17,7 @@ import {
     type VoiceState,
 } from "../types/Manager";
 import { type LavalinkSearchResponse, LoadType, State } from "../types/Node";
-import type { PlayerOptions } from "../types/Player";
+import type { LavalinkPlayerVoice, PlayerOptions } from "../types/Player";
 import { type NodeManagerStructure, type NodeStructure, type PlayerStructure, Structures } from "../types/Structures";
 import { Collection } from "../util/collection";
 import { HoshimiAgent } from "../util/constants";
@@ -214,7 +214,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
      * ```
      */
     public isUseable(): boolean {
-        const nodes = this.nodeManager.nodes.filter((node) => node.state === State.Connected);
+        const nodes: NodeStructure[] = this.nodeManager.nodes.filter((node) => node.state === State.Connected);
         return this.ready && nodes.length > 0;
     }
 
@@ -323,6 +323,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
 
                     // this is the most funny thing i've ever made.
                     if ("session_id" in data) player.voice.sessionId = data.session_id;
+                    if ("channel_id" in data) player.voice.channelId = data.channel_id;
 
                     // And also includes some abstract code.
                     if ("token" in data && "endpoint" in data) {
@@ -339,10 +340,10 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
                         await player.updatePlayer({
                             playerOptions: {
                                 voice: {
-                                    sessionId: player.voice.sessionId,
+                                    ...player.voice,
                                     token: data.token,
                                     endpoint: data.endpoint,
-                                },
+                                } as LavalinkPlayerVoice,
                             },
                         });
 
@@ -424,6 +425,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
                             endpoint: null,
                             sessionId: null,
                             token: null,
+                            channelId: null,
                         };
 
                         return;

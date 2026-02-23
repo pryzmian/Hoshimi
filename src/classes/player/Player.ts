@@ -184,6 +184,7 @@ export class Player {
         endpoint: null,
         sessionId: null,
         token: null,
+        channelId: null,
     };
 
     /**

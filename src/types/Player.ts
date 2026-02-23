@@ -475,6 +475,11 @@ export interface PlayerVoice {
      */
     sessionId: string;
     /**
+     * The voice channel id.
+     * @type {string | undefined}
+     */
+    channelId?: string;
+    /**
      * The voice server guild id.
      * @type {string | undefined}
      */
@@ -650,4 +655,4 @@ export type VoiceChannelUpdate = Pick<PlayerOptions, "selfDeaf" | "voiceId" | "s
 /**
  * The voice settings for the player.
  */
-export type LavalinkPlayerVoice = Omit<PlayerVoice, "connected" | "ping">;
+export type LavalinkPlayerVoice = Required<Omit<PlayerVoice, "connected" | "ping">>;
