@@ -202,12 +202,12 @@ export interface HoshimiPlayerOptions {
 /**
  * The base interface for player events.
  */
-export interface PlayerEvent<E> {
+export interface PlayerEvent<Type> {
     /**
      * The type of the event.
-     * @type {E}
+     * @type {Type}
      */
-    type: E;
+    type: Type;
     /**
      * The operation code for the event.
      * @type {OpCodes.Event}
@@ -656,3 +656,4 @@ export type VoiceChannelUpdate = Pick<PlayerOptions, "selfDeaf" | "voiceId" | "s
  * The voice settings for the player.
  */
 export type LavalinkPlayerVoice = Required<Omit<PlayerVoice, "connected" | "ping">>;
+
