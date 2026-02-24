@@ -19,10 +19,9 @@ import {
     type VoiceChannelUpdate,
 } from "../../types/Player";
 import type { LavalinkPlayer, UpdatePlayerInfo } from "../../types/Rest";
-import { type NodeStructure, type QueueStructure, Structures, type TrackStructure } from "../../types/Structures";
+import { type HoshimiStructure, type NodeStructure, type QueueStructure, Structures, type TrackStructure } from "../../types/Structures";
 import { isTrack, isUnresolvedTrack, validatePlayerOptions, validateTrack } from "../../util/functions/utils";
 import { PlayerError } from "../Errors";
-import type { Hoshimi } from "../Hoshimi";
 import type { PlayerStorageAdapter } from "../storage/adapters/PlayerAdapter";
 import type { HoshimiTrack } from "../Track";
 import type { FilterManager } from "./filters/Manager";
@@ -56,7 +55,7 @@ export class Player {
      * @type {Hoshimi}
      * @readonly
      */
-    readonly manager: Hoshimi;
+    readonly manager: HoshimiStructure;
 
     /**
      * The queue for the player.
@@ -190,7 +189,7 @@ export class Player {
     /**
      *
      * Create a new player.
-     * @param {Hoshimi} manager The manager for the player.
+     * @param {HoshimiStructure} manager The manager for the player.
      * @param {PlayOptions} options The options for the player.
      * @example
      * ```ts
@@ -207,7 +206,7 @@ export class Player {
      * console.log(player.voiceId); // voiceId
      * console.log(player.textId); // textId
      */
-    constructor(manager: Hoshimi, options: PlayerOptions) {
+    constructor(manager: HoshimiStructure, options: PlayerOptions) {
         this.manager = manager;
         this.options = options;
 

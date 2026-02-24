@@ -1,3 +1,4 @@
+import { Hoshimi } from "../classes/Hoshimi";
 import { LyricsManager } from "../classes/node/Lyrics";
 import { NodeManager } from "../classes/node/Manager";
 import { Node } from "../classes/node/Node";
@@ -54,6 +55,11 @@ export type TrackStructure = InferCustomStructure<Track, "Track">;
 export type UnresolvedTrackStructure = InferCustomStructure<UnresolvedTrack, "UnresolvedTrack">;
 
 /**
+ * The structure for the Hoshimi classes.
+ */
+export type HoshimiStructure = InferCustomStructure<Hoshimi, "Hoshimi">;
+
+/**
  * The structures of the Hoshimi classes.
  */
 export const Structures = {
@@ -83,6 +89,9 @@ export const Structures = {
     },
     UnresolvedTrack(...args: ConstructorParameters<typeof UnresolvedTrack>): UnresolvedTrackStructure {
         return new UnresolvedTrack(...args);
+    },
+    Hoshimi(...args: ConstructorParameters<typeof Hoshimi>): HoshimiStructure {
+        return new Hoshimi(...args);
     },
 };
 

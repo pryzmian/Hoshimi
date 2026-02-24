@@ -202,7 +202,7 @@ export interface HoshimiPlayerOptions {
 /**
  * The base interface for player events.
  */
-export interface PlayerEvent<E extends PlayerEventType> {
+export interface PlayerEvent<E> {
     /**
      * The type of the event.
      * @type {E}

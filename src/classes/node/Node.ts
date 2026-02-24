@@ -1,5 +1,5 @@
 import { WebSocket } from "ws";
-import { DebugLevels, EventNames } from "../../types/Manager";
+import { type Awaitable, DebugLevels, EventNames } from "../../types/Manager";
 import {
     type LavalinkSearchResponse,
     type LavalinkTrack,
@@ -169,13 +169,29 @@ export class Node {
     }
 
     /**
+     *
+     * Define a custom event handler for the node.
+     * @param {P} payload The payload to send to the node.
+     * @returns {Awaitable<void>}
+     * @example
+     * ```ts
+     * class CustomNode extends Node {
+     *   public async message(payload: any): Promise<void> {
+     *    console.log("Received payload:", payload);
+     *  }
+     * }
+     * ```
+     */
+    public message?(payload: unknown): Awaitable<void>;
+
+    /**
      * The decode methods for the node.
      * @type {DecodeMethods}
      * @readonly
      */
     readonly decode: DecodeMethods = {
         single: async (track, requester): Promise<TrackStructure> => {
-            const raw = await this.rest.request<LavalinkTrack>({
+            const raw: LavalinkTrack | null = await this.rest.request<LavalinkTrack>({
                 endpoint: RestRoutes.DecodeTrack,
                 params: { encodedTrack: track },
             });
@@ -183,7 +199,7 @@ export class Node {
             return Structures.Track(raw, requester);
         },
         multiple: async (tracks, requester): Promise<TrackStructure[]> => {
-            const raw =
+            const raw: LavalinkTrack[] =
                 (await this.rest.request<LavalinkTrack[]>({
                     endpoint: RestRoutes.DecodeTracks,
                     method: HttpMethods.Post,
@@ -266,8 +282,8 @@ export class Node {
 
         const { players, cpu, frameStats } = this.stats;
 
-        const cpuPenalty = Math.round(1.05 ** (100 * cpu.systemLoad) * 10 - 10);
-        const framePenalty = frameStats ? frameStats.deficit + frameStats.nulled * 2 : 0;
+        const cpuPenalty: number = Math.round(1.05 ** (100 * cpu.systemLoad) * 10 - 10);
+        const framePenalty: number = frameStats ? frameStats.deficit + frameStats.nulled * 2 : 0;
 
         return players + cpuPenalty + framePenalty;
     }
@@ -293,7 +309,7 @@ export class Node {
     public search(search: SearchQuery): Promise<LavalinkSearchResponse | null> {
         search.engine ??= this.nodeManager.manager.options.defaultSearchEngine;
 
-        const identifier = validateQuery(search);
+        const identifier: string = validateQuery(search);
 
         return this.rest.request<LavalinkSearchResponse>({
             endpoint: RestRoutes.LoadTracks,
@@ -566,7 +582,7 @@ export class Node {
      * }
      * ```
      */
-    toJSON(): NodeJson {
+    public toJSON(): NodeJson {
         return {
             id: this.id,
             sessionId: this.sessionId,

@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-import { createHoshimi, type Hoshimi, type LyricsResult, Player, SearchEngines, Structures } from "hoshimi";
+import { createHoshimi, type HoshimiStructure, type LyricsResult, Player, SearchEngines, Structures } from "hoshimi";
 import { Client, type ParseClient, type UsingClient } from "seyfert";
 import { HandleCommand } from "seyfert/lib/commands/handle.js";
 import { Yuna } from "yunaforseyfert";
@@ -9,7 +9,8 @@ import { LavalinkHandler } from "./manager/handler.js";
 import { Sessions } from "./manager/sessions.js";
 import { RedisStorage } from "./manager/storage.js";
 import type { HoshimiUser } from "./manager/types.js";
-import { HoshimiNode } from "./nodelink.js";
+import { HoshimiNode } from "./nodelink/nodelink.js";
+import type { NodelinkEvents } from "./nodelink/types.js";
 import { RedisClient } from "./redis.js";
 import { ms } from "./time.js";
 
@@ -104,7 +105,7 @@ declare module "seyfert" {
     }
 
     interface Client {
-        manager: Hoshimi;
+        manager: HoshimiStructure;
     }
 
     interface ExtendedRCLocations {
@@ -128,4 +129,6 @@ declare module "hoshimi" {
         Player: HoshimiPlayer;
         Node: HoshimiNode;
     }
+
+    interface HoshimiEvents extends NodelinkEvents {}
 }

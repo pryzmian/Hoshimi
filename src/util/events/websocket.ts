@@ -100,6 +100,8 @@ export async function onMessage(this: NodeStructure, message: Buffer | string): 
 
         this.nodeManager.manager.emit(EventNames.NodeRaw, this, payload);
 
+        if (this.message) await this.message(payload);
+
         switch (payload.op) {
             case OpCodes.Stats:
                 {

@@ -13,10 +13,9 @@ import {
     type SessionResumingOptions,
     type UpdatePlayerInfo,
 } from "../../types/Rest";
-import type { NodeStructure } from "../../types/Structures";
+import type { HoshimiStructure, NodeStructure } from "../../types/Structures";
 import { HoshimiAgent } from "../../util/constants";
 import { stringify, validatePlayerData } from "../../util/functions/utils";
-import type { Hoshimi } from "../Hoshimi";
 
 /**
  * The RestError class has been taken from Shoukaku library.
@@ -127,7 +126,7 @@ export class Rest {
      * ```
      */
     constructor(node: NodeStructure) {
-        const manager: Hoshimi = node.nodeManager.manager;
+        const manager: HoshimiStructure = node.nodeManager.manager;
 
         this.url = `${node.options.secure ? "https" : "http"}://${node.options.host}:${node.options.port}`;
         this.restTimeout = node.options.restTimeout ?? manager.options.restOptions.resumeTimeout ?? 10000;

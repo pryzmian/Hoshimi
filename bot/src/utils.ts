@@ -1,7 +1,15 @@
 import { inspect as nodeInspect } from "node:util";
+import { Logger } from "seyfert";
 
 //const base64 = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
 const base64 = /^[a-zA-Z0-9+/]*={0,2}$/;
+
+/**
+ *
+ * Logger instance for the bot.
+ * @type {Logger}
+ */
+export const logger: Logger = new Logger({ name: "Hoshimi" });
 
 /**
  *

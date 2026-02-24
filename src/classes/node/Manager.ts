@@ -1,9 +1,8 @@
 import { EventNames, type NodeIdentifier } from "../../types/Manager";
 import { type NodeOptions, NodeSortTypes, State } from "../../types/Node";
-import { type NodeStructure, Structures } from "../../types/Structures";
+import { type HoshimiStructure, type NodeStructure, Structures } from "../../types/Structures";
 import { Collection } from "../../util/collection";
 import { NodeManagerError } from "../Errors";
-import type { Hoshimi } from "../Hoshimi";
 
 /**
  * Class representing a node manager.
@@ -15,7 +14,7 @@ export class NodeManager {
      * @type {Hoshimi}
      * @readonly
      */
-    readonly manager: Hoshimi;
+    readonly manager: HoshimiStructure;
 
     /**
      * The nodes for the manager.
@@ -27,7 +26,7 @@ export class NodeManager {
     /**
      *
      * The constructor for the node manager.
-     * @param {Hoshimi} manager The manager for the node.
+     * @param {HoshimiStructure} manager The manager for the node.
      * @example
      * ```ts
      * const manager = new Hoshimi();
@@ -36,7 +35,7 @@ export class NodeManager {
      * console.log(nodeManager.nodes.size); // 0
      * ```
      */
-    constructor(manager: Hoshimi) {
+    constructor(manager: HoshimiStructure) {
         this.manager = manager;
     }
 
