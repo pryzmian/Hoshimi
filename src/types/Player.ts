@@ -656,4 +656,3 @@ export type VoiceChannelUpdate = Pick<PlayerOptions, "selfDeaf" | "voiceId" | "s
  * The voice settings for the player.
  */
 export type LavalinkPlayerVoice = Required<Omit<PlayerVoice, "connected" | "ping">>;
-
