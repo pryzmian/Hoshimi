@@ -3,7 +3,8 @@ import type { Node } from "../../classes/node/Node";
 import { PlayerStorageAdapter } from "../../classes/storage/adapters/PlayerAdapter";
 import { QueueStorageAdapter } from "../../classes/storage/adapters/QueueAdapter";
 import type { HoshimiTrack, TrackRequester, UnresolvedTrack } from "../../classes/Track";
-import { type HoshimiOptions, SearchEngines } from "../../types/Manager";
+import type { TimescaleSettings } from "../../types/Filters";
+import { DebugLevels, EventNames, type HoshimiOptions, SearchEngines } from "../../types/Manager";
 import type {
     LavalinkTrack,
     NodeInfo,
@@ -171,7 +172,7 @@ export function validatePlayerData(this: NodeStructure, data: Partial<UpdatePlay
         }
 
         if (typeof data.playerOptions.filters === "object") {
-            const timescale = Object.freeze({ ...player.filterManager.data.timescale });
+            const timescale: Readonly<TimescaleSettings> = Object.freeze({ ...player.filterManager.data.timescale });
 
             Object.assign(player.filterManager.data, data.playerOptions.filters);
             player.filterManager.check(timescale);
@@ -188,6 +189,16 @@ export function validatePlayerData(this: NodeStructure, data: Partial<UpdatePlay
 export function validateNodePlugins(node: Node, plugins: PluginNames[]): void {
     const info: NodeInfo | null = node.info;
     if (!info) throw new NodeError({ id: node.id, message: "Node is not ready yet." });
+
+    if (node.isNodelink()) {
+        node.nodeManager.manager.emit(
+            EventNames.Debug,
+            DebugLevels.Node,
+            `[Node] Skipping plugin validation for node ${node.id} because it is a Nodelink node.`,
+        );
+
+        return;
+    }
 
     if (!info.plugins.length)
         throw new NodeError({

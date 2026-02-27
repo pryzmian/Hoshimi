@@ -1,5 +1,5 @@
 import type { HoshimiTrack } from "../../classes/Track";
-import { SearchEngines } from "../../types/Manager";
+import { type QueryResult, SearchEngines } from "../../types/Manager";
 import { SourceNames } from "../../types/Node";
 import type { PlayerStructure, TrackStructure } from "../../types/Structures";
 
@@ -20,7 +20,7 @@ const limit: number = 10;
 export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrack | null): Promise<void> {
     if (!lastTrack) return;
 
-    const isEnabled = !!(await player.data.get("enabledAutoplay")) || player.manager.options.queueOptions.autoPlay;
+    const isEnabled: boolean = !!(await player.data.get("enabledAutoplay")) || player.manager.options.queueOptions.autoPlay;
     if (!isEnabled) return;
 
     /**
@@ -31,7 +31,7 @@ export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrac
      */
     const filter = (tracks: TrackStructure[]): TrackStructure[] =>
         tracks.filter(
-            (track) =>
+            (track): boolean =>
                 !(
                     player.queue.history.some((t) => t.info.identifier === track.info.identifier) ||
                     lastTrack.info.identifier === track.info.identifier
@@ -40,22 +40,24 @@ export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrac
 
     switch (lastTrack.info.sourceName) {
         case SourceNames.Spotify: {
-            const filtered = player.queue.history.filter(({ info }) => info.sourceName === SourceNames.Spotify).slice(0, 1);
+            const filtered: TrackStructure[] = player.queue.history
+                .filter(({ info }) => info.sourceName === SourceNames.Spotify)
+                .slice(0, 1);
             if (!filtered.length) filtered.push(lastTrack as TrackStructure);
 
-            const ids = filtered.map(
-                ({ info }) => info.identifier ?? info.uri?.split("/").reverse()?.[0] ?? info.uri?.split("/").reverse()?.[1],
+            const ids: string[] = filtered.map(
+                ({ info }): string => info.identifier ?? info.uri?.split("/").reverse()?.[0] ?? info.uri?.split("/").reverse()?.[1],
             );
-            const res = await player.search({
+            const { tracks }: QueryResult = await player.search({
                 query: `seed_tracks=${ids.join(",")}`,
                 engine: SearchEngines.SpotifyRecommendations,
                 requester: lastTrack.requester,
             });
 
-            if (res.tracks.length) {
-                const index = Math.floor(Math.random() * res.tracks.length);
+            if (tracks.length) {
+                const index: number = Math.floor(Math.random() * tracks.length);
 
-                const track = filter(res.tracks)[index];
+                const track: TrackStructure | undefined = filter(tracks)[index];
                 if (!track) return;
 
                 player.queue.add(track);
@@ -66,14 +68,14 @@ export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrac
         case SourceNames.Youtube:
         case SourceNames.YoutubeMusic: {
             const search = `https://www.youtube.com/watch?v=${lastTrack.info.identifier}&list=RD${lastTrack.info.identifier}`;
-            const res = await player.search({
+            const res: QueryResult = await player.search({
                 query: search,
                 requester: lastTrack.requester,
             });
 
             if (res.tracks.length) {
-                const random = Math.floor(Math.random() * res.tracks.length);
-                const tracks = filter(res.tracks).slice(random, random + limit);
+                const random: number = Math.floor(Math.random() * res.tracks.length);
+                const tracks: TrackStructure[] = filter(res.tracks).slice(random, random + limit);
 
                 player.queue.add(tracks);
             }

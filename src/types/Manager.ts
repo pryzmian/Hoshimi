@@ -1,5 +1,3 @@
-import type { Node } from "../classes/node/Node";
-import type { Queue } from "../classes/queue/Queue";
 import type { TrackRequester } from "../classes/Track";
 import type {
     Exception,
@@ -28,7 +26,7 @@ import type {
 } from "./Player";
 import type { HoshimiQueueOptions } from "./Queue";
 import type { HoshimiRestOptions, LavalinkPlayer } from "./Rest";
-import type { NodeStructure, PlayerStructure, TrackStructure } from "./Structures";
+import type { NodeStructure, PlayerStructure, QueueStructure, TrackStructure } from "./Structures";
 
 /**
  * The search engines to use.
@@ -508,53 +506,53 @@ export interface HoshimiEvents {
 
     /**
      * Emitted when the node gives a response.
-     * @param {Node} node The node that emitted the event.
+     * @param {NodeStructure} node The node that emitted the event.
      * @param {LavalinkPayload} message The message that was received.
      */
-    nodeRaw: [node: Node, message: LavalinkPayload];
+    nodeRaw: [node: NodeStructure, message: LavalinkPayload];
     /**
      * Emitted when the node gives an error.
-     * @param {Node} node The node that emitted the event.
+     * @param {NodeStructure} node The node that emitted the event.
      * @param {Error | unknown} error The error that was received.
      */
-    nodeError: [node: Node, error: Error | unknown];
+    nodeError: [node: NodeStructure, error: Error | unknown];
     /**
      * Emitted when the node is ready.
-     * @param {Node} node The node that emitted the event.
+     * @param {NodeStructure} node The node that emitted the event.
      * @param {number} retries The number of retries after the node was ready.
      * @param {Ready} payload The payload of the event.
      */
-    nodeReady: [node: Node, retries: number, payload: Ready];
+    nodeReady: [node: NodeStructure, retries: number, payload: Ready];
     /**
      * Emitted when the node is disconnected.
-     * @param {Node} node The node that was disconnected.
+     * @param {NodeStructure} node The node that was disconnected.
      */
-    nodeDisconnect: [node: Node];
+    nodeDisconnect: [node: NodeStructure];
     /**
      * Emitted when the node reconnects.
-     * @param {Node} node The node that was reconnected.
+     * @param {NodeStructure} node The node that was reconnected.
      * @param {number} retriesLeft The number of retries left.
      * @param {number} delay The delay before the next retry.
      */
-    nodeReconnecting: [node: Node, retriesLeft: number, delay: number];
+    nodeReconnecting: [node: NodeStructure, retriesLeft: number, delay: number];
     /**
      * Emitted when the node is destroyed.
-     * @param {Node} node The node that was destroyed.
+     * @param {NodeStructure} node The node that was destroyed.
      * @param {NodeDestroyInfo} options The options for the destroy.
      */
-    nodeDestroy: [node: Node, destroy: NodeDestroyInfo];
+    nodeDestroy: [node: NodeStructure, destroy: NodeDestroyInfo];
     /**
      * Emitted when the node is resumed.
-     * @param {Node} node The node that was resumed.
+     * @param {NodeStructure} node The node that was resumed.
      * @param {LavalinkPlayer[]} players The players that were resumed.
      * @param {Ready} payload The payload of the event.
      */
-    nodeResumed: [node: Node, players: LavalinkPlayer[], payload: Ready];
+    nodeResumed: [node: NodeStructure, players: LavalinkPlayer[], payload: Ready];
     /**
      * Emitted when the node is created.
-     * @param {Node} node The node that was created.
+     * @param {NodeStructure} node The node that was created.
      */
-    nodeCreate: [node: Node];
+    nodeCreate: [node: NodeStructure];
 
     /**
      * Emitted when the player is created.
@@ -634,15 +632,15 @@ export interface HoshimiEvents {
     /**
      * Emitted when the queue ends.
      * @param {PlayerStructure} player The player that emitted the event.
-     * @param {Queue} queue The queue that ended.
+     * @param {QueueStructure} queue The queue that ended.
      */
-    queueEnd: [player: PlayerStructure, queue: Queue];
+    queueEnd: [player: PlayerStructure, queue: QueueStructure];
     /**
      * Emitted when the queue updates.
      * @param {PlayerStructure} player The player that emitted the event.
-     * @param {Queue} queue The queue that updated.
+     * @param {QueueStructure} queue The queue that updated.
      */
-    queueUpdate: [player: PlayerStructure, queue: Queue];
+    queueUpdate: [player: PlayerStructure, queue: QueueStructure];
 
     /**
      * Emitted when the socket is closed.
