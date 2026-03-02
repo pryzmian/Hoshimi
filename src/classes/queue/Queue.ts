@@ -155,8 +155,8 @@ export class Queue {
     public async build(track: LavalinkTrack | UnresolvedLavalinkTrack | HoshimiTrack, requester: TrackRequester): Promise<TrackStructure> {
         const requesterFn = this.player.manager.options.playerOptions.requesterFn;
 
-        if (isUnresolvedTrack(track)) return new UnresolvedTrack(track, requesterFn(requester)).resolve(this.player);
-        if (isTrack(track)) return Structures.Track(track, requesterFn(requester));
+        if (isUnresolvedTrack(track)) return new UnresolvedTrack(track, await requesterFn(requester)).resolve(this.player);
+        if (isTrack(track)) return Structures.Track(track, await requesterFn(requester));
 
         return track;
     }

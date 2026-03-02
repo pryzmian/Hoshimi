@@ -196,7 +196,9 @@ export class Node {
                 params: { encodedTrack: track },
             });
 
-            return Structures.Track(raw, requester);
+            const requesterFn = this.nodeManager.manager.options.playerOptions.requesterFn;
+
+            return Structures.Track(raw, await requesterFn(requester));
         },
         multiple: async (tracks, requester): Promise<TrackStructure[]> => {
             const raw: LavalinkTrack[] =
@@ -206,7 +208,9 @@ export class Node {
                     body: stringify(tracks),
                 })) ?? [];
 
-            return raw.map((track): TrackStructure => Structures.Track(track, requester));
+            const requesterFn = this.nodeManager.manager.options.playerOptions.requesterFn;
+
+            return Promise.all(raw.map(async (track): Promise<TrackStructure> => Structures.Track(track, await requesterFn(requester))));
         },
     };
 

@@ -236,16 +236,16 @@ export function validateEngine(type: SearchEngines | SourceNames): SearchEngines
  * @returns {Promise<TrackStructure | null>} The resolved track.
  * @throws {ResolveError} If the track is not a valid unresolved track.
  */
-export function validateTrack(player: PlayerStructure, track: HoshimiTrack | null): Promise<TrackStructure | null> {
-    if (!track) return Promise.resolve(null);
+export async function validateTrack(player: PlayerStructure, track: HoshimiTrack | null): Promise<TrackStructure | null> {
+    if (!track) return null;
 
     const requesterFn = player.manager.options.playerOptions.requesterFn;
 
-    if (isTrack(track)) return Promise.resolve(Structures.Track(track, requesterFn(track.requester)));
+    if (isTrack(track)) return Structures.Track(track, await requesterFn(track.requester));
 
     if (!isUnresolvedTrack(track)) throw new ResolveError("The track is not a valid unresolved track.");
     if (!track.resolve || typeof track.resolve !== "function")
-        return Structures.UnresolvedTrack(track, requesterFn(track.requester)).resolve(player);
+        return Structures.UnresolvedTrack(track, await requesterFn(track.requester)).resolve(player);
 
     return track.resolve(player);
 }

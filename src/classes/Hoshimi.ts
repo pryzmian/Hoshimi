@@ -24,6 +24,7 @@ import {
     type NodeStructure,
     type PlayerStructure,
     Structures,
+    type TrackStructure,
 } from "../types/Structures";
 import { Collection } from "../util/collection";
 import { HoshimiAgent } from "../util/constants";
@@ -561,6 +562,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
         );
 
         const requesterFn = this.options.playerOptions.requesterFn;
+        const requester = await requesterFn(options.requester);
 
         switch (res.loadType) {
             case LoadType.Empty: {
@@ -589,7 +591,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
                     exception: null,
                     playlist: res.data,
                     pluginInfo: res.data.pluginInfo,
-                    tracks: res.data.tracks.map((t) => Structures.Track(t, requesterFn(options.requester))),
+                    tracks: res.data.tracks.map((t): TrackStructure => Structures.Track(t, requester)),
                 };
             }
 
@@ -599,7 +601,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
                     exception: null,
                     playlist: null,
                     pluginInfo: null,
-                    tracks: res.data.map((t) => Structures.Track(t, requesterFn(options.requester))),
+                    tracks: res.data.map((t): TrackStructure => Structures.Track(t, requester)),
                 };
             }
 
@@ -609,7 +611,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
                     exception: null,
                     playlist: null,
                     pluginInfo: res.data.pluginInfo,
-                    tracks: [Structures.Track(res.data, requesterFn(options.requester))],
+                    tracks: [Structures.Track(res.data, requester)],
                 };
             }
         }
