@@ -331,6 +331,7 @@ export function stringify(value: unknown, space?: string | number): string {
  * @returns {TrackRequester} The default requester.
  */
 export function requesterFn<T extends TrackRequester = TrackRequester>(requester: TrackRequester): T {
+    if (!requester) return {} as T;
     return requester as T;
 }
 

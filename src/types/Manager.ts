@@ -689,7 +689,7 @@ export interface SearchOptions extends SearchQuery {
      * The requester of the query.
      * @type {TrackRequester}
      */
-    requester: TrackRequester;
+    requester?: TrackRequester | null;
     /**
      * The node or the node id to make the query.
      * @type {NodeIdentifier}
