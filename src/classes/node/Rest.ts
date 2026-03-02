@@ -168,8 +168,8 @@ export class Rest {
         options.pathType ??= RestPathType.V4;
 
         // normalize the path instead of normalize the whole url
-        const path = `${options.pathType}${options.endpoint}`.replace(/\/+/g, "/");
-        const url = new URL(`${this.url}${path}`);
+        const path: string = `${options.pathType}${options.endpoint}`.replace(/\/+/g, "/");
+        const url: URL = new URL(`${this.url}${path}`);
 
         if (options.params) {
             for (const [key, value] of Object.entries(options.params)) {
@@ -216,7 +216,7 @@ export class Rest {
 
         if (response.status === HttpStatusCodes.NoContent) return null;
 
-        return response.json().catch((): null => null) as Promise<T | null>;
+        return response.json() as Promise<T>;
     }
 
     /**
