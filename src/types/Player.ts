@@ -647,6 +647,21 @@ export interface LyricsMethods {
     unsubscribe(): Promise<void>;
 }
 
+export interface SkipOptions {
+    /**
+     * The amount of tracks to skip.
+     * @type {number | undefined}
+     * @default 1
+     */
+    to?: number;
+    /**
+     * Whether to throw an error if the skip amount exceeds the queue size.
+     * @type {boolean | undefined}
+     * @default true
+     */
+    throwError?: boolean;
+}
+
 /**
  * The voice channel update options.
  */

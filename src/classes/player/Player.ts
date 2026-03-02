@@ -16,6 +16,7 @@ import {
     type PlayerJson,
     type PlayerOptions,
     type PlayOptions,
+    type SkipOptions,
     type VoiceChannelUpdate,
 } from "../../types/Player";
 import type { LavalinkPlayer, UpdatePlayerInfo } from "../../types/Rest";
@@ -278,8 +279,7 @@ export class Player {
     /**
      *
      * Play the next track in the queue.
-     * @param {number} [to=0] The amount of tracks to skip.
-     * @param {boolean} [throwError=true] Whether to throw an error if there are no tracks to skip.
+     * @param {SkipOptions} options The options for skipping tracks.
      * @returns {Promise<void>}
      * @throws {PlayerError} If there are no tracks to skip.
      * @example
@@ -289,7 +289,9 @@ export class Player {
      * player.skip(); // skip 1 track
      * ```
      */
-    public async skip(to: number = 0, throwError: boolean = true): Promise<void> {
+    public async skip(options: SkipOptions): Promise<void> {
+        const { to = 0, throwError = true } = options;
+
         if (!this.queue.size) {
             this.manager.emit(EventNames.Debug, DebugLevels.Player, "[Player] -> [Skip] No tracks to skip.");
 
