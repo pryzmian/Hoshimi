@@ -241,11 +241,11 @@ export async function validateTrack(player: PlayerStructure, track: HoshimiTrack
 
     const requesterFn = player.manager.options.playerOptions.requesterFn;
 
-    if (isTrack(track)) return Structures.Track(track, await requesterFn(track.requester));
+    if (isTrack(track)) return Structures.Track(track, requesterFn(track.requester));
 
     if (!isUnresolvedTrack(track)) throw new ResolveError("The track is not a valid unresolved track.");
     if (!track.resolve || typeof track.resolve !== "function")
-        return Structures.UnresolvedTrack(track, await requesterFn(track.requester)).resolve(player);
+        return Structures.UnresolvedTrack(track, requesterFn(track.requester)).resolve(player);
 
     return track.resolve(player);
 }

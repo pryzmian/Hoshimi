@@ -562,7 +562,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
         );
 
         const requesterFn = this.options.playerOptions.requesterFn;
-        const requester = await requesterFn(options.requester);
+        const requester = requesterFn(options.requester);
 
         switch (res.loadType) {
             case LoadType.Empty: {

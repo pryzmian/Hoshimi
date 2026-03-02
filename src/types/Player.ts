@@ -1,7 +1,7 @@
 import type { PlayerStorageAdapter } from "../classes/storage/adapters/PlayerAdapter";
 import type { HoshimiTrack, TrackRequester } from "../classes/Track";
 import type { FilterSettings } from "./Filters";
-import type { Awaitable, NodeIdentifier, Nullable } from "./Manager";
+import type { NodeIdentifier, Nullable } from "./Manager";
 import type { Exception, LavalinkTrack, LyricsLine, LyricsResult, NodeJson, OpCodes } from "./Node";
 import type { QueueJson } from "./Queue";
 import type { TrackStructure } from "./Structures";
@@ -180,7 +180,7 @@ export interface HoshimiPlayerOptions {
      * The function to use to get the requester data.
      * @param {TrackRequester} requester The requester of the track.
      */
-    requesterFn?<T extends TrackRequester = TrackRequester>(requester: TrackRequester): Awaitable<T>;
+    requesterFn?<T extends TrackRequester = TrackRequester>(requester: TrackRequester): T;
     /**
      * The options for handling errors.
      * @type {ErrorPlayerActions | undefined}

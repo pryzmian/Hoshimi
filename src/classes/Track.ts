@@ -174,7 +174,7 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
 
         if (isTrack(this)) {
             const requesterFn = player.manager.options.playerOptions.requesterFn;
-            return Structures.Track(this, await requesterFn(this.requester));
+            return Structures.Track(this, requesterFn(this.requester));
         }
 
         if (!isUnresolvedTrack(this)) throw new ResolveError("Track is not an unresolved track.");
