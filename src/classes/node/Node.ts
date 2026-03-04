@@ -268,6 +268,26 @@ export class Node {
     }
 
     /**
+     * Check if the node is ready to receive events.
+     * @type {boolean}
+     * @readonly
+     * @example
+     * ```ts
+     * const node = manager.nodeManager.get("node1");
+     * if (node) {
+     * 	if (node.ready) {
+     *         console.log("The node is ready");
+     *    } else {
+     *        console.log("The node is not ready");
+     *   }
+     * }
+     * ```
+     */
+    public get ready(): boolean {
+        return this.ws?.readyState === WebSocket.OPEN;
+    }
+
+    /**
      * The penalties of the node.
      * @type {number}
      * @readonly
@@ -335,7 +355,7 @@ export class Node {
      * ```
      */
     public connect(): void {
-        if (this.state === State.Connected || this.state === State.Connecting) return;
+        if (this.state === State.Connected || this.state === State.Connecting || this.ready) return;
 
         if (!this.nodeManager.manager.options.client)
             throw new NodeError({
@@ -455,7 +475,7 @@ export class Node {
      * ```
      */
     public disconnect(disconnect: NodeDisconnectInfo = {}): void {
-        if (this.state !== State.Connected) return;
+        if (this.state === State.Disconnected || this.state === State.Destroyed) return;
 
         if (this.ws) {
             this.ws.close(disconnect.code, disconnect.reason);
@@ -484,7 +504,7 @@ export class Node {
      * ```
      */
     public destroy(destroy: NodeDestroyInfo = {}): void {
-        if (this.state !== State.Connected) return;
+        if (this.state === State.Destroyed) return;
 
         if (this.ws) {
             this.ws.close(destroy.code, destroy.reason);
@@ -536,7 +556,7 @@ export class Node {
      * ```
      */
     public reconnect(): void {
-        if (this.state === State.Disconnected || this.state === State.Destroyed) return;
+        if (this.state === State.Disconnected || this.state === State.Destroyed || this.reconnectTimeout) return;
 
         this.state = State.Idle;
 
