@@ -640,17 +640,20 @@ export class Player {
 
         this.node = target;
 
-        await this.updatePlayer({
-            playerOptions: {
-                voice: this.voice as LavalinkPlayerVoice,
-                ...((current && {
-                    track: current.encoded,
-                    position: this.position,
-                    volume: this.volume,
-                }) as LavalinkPlayOptions),
-            },
-        });
+        const playerOptions: LavalinkPlayOptions = { voice: this.voice as LavalinkPlayerVoice };
 
+        if (current) {
+            playerOptions.position = this.position;
+            playerOptions.volume = this.volume;
+            playerOptions.track = {
+                encoded: current.encoded,
+                info: current.info,
+                userData: current.userData,
+                pluginInfo: current.pluginInfo,
+            };
+        }
+
+        await this.updatePlayer({ playerOptions });
         await this.filterManager.apply();
 
         this.manager.emit(

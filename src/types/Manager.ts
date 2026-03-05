@@ -894,6 +894,13 @@ export type Nullable<T> = {
 };
 
 /**
+ * The type to prettify the object.
+ */
+export type Prettify<T> = {
+    [K in keyof T]: T[K];
+} & {};
+
+/**
  * Make a type required.
  */
 export type DeepRequired<T> = {

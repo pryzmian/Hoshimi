@@ -1,7 +1,7 @@
 import type { PlayerStorageAdapter } from "../classes/storage/adapters/PlayerAdapter";
 import type { HoshimiTrack, TrackRequester } from "../classes/Track";
 import type { FilterSettings } from "./Filters";
-import type { NodeIdentifier, Nullable } from "./Manager";
+import type { NodeIdentifier, Nullable, Prettify } from "./Manager";
 import type { Exception, LavalinkTrack, LyricsLine, LyricsResult, NodeJson, OpCodes } from "./Node";
 import type { QueueJson } from "./Queue";
 import type { TrackStructure } from "./Structures";
@@ -9,7 +9,7 @@ import type { TrackStructure } from "./Structures";
 /**
  * Partial Lavalink track type.
  */
-type PartialLavalinkTrack = Partial<Nullable<LavalinkTrack>>;
+type PartialLavalinkTrack = Prettify<Partial<Nullable<LavalinkTrack>>>;
 
 /**
  * The base options for playing a track.
@@ -665,9 +665,9 @@ export interface SkipOptions {
 /**
  * The voice channel update options.
  */
-export type VoiceChannelUpdate = Pick<PlayerOptions, "selfDeaf" | "voiceId" | "selfMute">;
+export type VoiceChannelUpdate = Prettify<Pick<PlayerOptions, "selfDeaf" | "voiceId" | "selfMute">>;
 
 /**
  * The voice settings for the player.
  */
-export type LavalinkPlayerVoice = Required<Omit<PlayerVoice, "connected" | "ping">>;
+export type LavalinkPlayerVoice = Prettify<Required<Omit<PlayerVoice, "connected" | "ping">>>;
