@@ -6,6 +6,7 @@ import {
     type LyricsLineEvent,
     type LyricsNotFoundEvent,
     PlayerEventType,
+    type PlayerJson,
     type PlayerUpdate,
     type TrackEndEvent,
     TrackEndReason,
@@ -27,7 +28,7 @@ async function onEnd(this: PlayerStructure): Promise<void> {
     if (
         this.queue.current &&
         !this.queue.history.find(
-            (x) => x.info.identifier === this.queue.current!.info.identifier && x.info.title === this.queue.current!.info.title,
+            (x): boolean => x.info.identifier === this.queue.current!.info.identifier && x.info.title === this.queue.current!.info.title,
         )
     ) {
         this.queue.history.unshift(this.queue.current);
@@ -66,6 +67,8 @@ async function queueEnd(
     track: TrackStructure | null,
     payload: TrackEndEvent | TrackStuckEvent | TrackExceptionEvent,
 ): Promise<void> {
+    if (await this.data.get("internal_move")) return;
+
     this.playing = false;
     this.paused = false;
     this.queue.current = null;
@@ -100,8 +103,10 @@ async function queueEnd(
  * @returns {Promise<void>} I mean, it's a track start event, what do you expect?
  */
 export async function trackStart(this: PlayerStructure, payload: TrackStartEvent): Promise<void> {
-    this.paused = false;
-    this.playing = true;
+    if (!(await this.data.get("internal_move"))) {
+        this.paused = false;
+        this.playing = true;
+    }
 
     if (this.queue.current) await this.queue.utils.save();
 
@@ -121,7 +126,9 @@ export async function trackStart(this: PlayerStructure, payload: TrackStartEvent
  * @returns {Promise<void>} The track ended... sadge.
  */
 export async function trackEnd(this: PlayerStructure, payload: TrackEndEvent): Promise<void> {
-    const current = this.queue.current;
+    if (await this.data.get("internal_move")) return;
+
+    const current: TrackStructure | null = this.queue.current;
 
     if (!this.queue.size && this.loop === LoopMode.Off) return queueEnd.call(this, current, payload);
 
@@ -232,10 +239,10 @@ export async function trackError(this: PlayerStructure, payload: TrackExceptionE
  * @returns {Promise<void>} Yeah, i don't know what to say here.
  */
 export async function playerUpdate(this: NodeStructure, payload: PlayerUpdate): Promise<void> {
-    const player = this.nodeManager.manager.getPlayer(payload.guildId);
+    const player: PlayerStructure | undefined = this.nodeManager.manager.getPlayer(payload.guildId);
     if (!player) return;
 
-    const oldPlayer = player.toJSON();
+    const oldPlayer: PlayerJson = player.toJSON();
 
     player.ping = payload.state.ping;
     player.connected = payload.state.connected;
