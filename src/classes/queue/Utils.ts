@@ -1,4 +1,4 @@
-import { DebugLevels, EventNames, type Awaitable } from "../../types/Manager";
+import { type Awaitable, DebugLevels, EventNames } from "../../types/Manager";
 import type { HoshimiQueueOptions, QueueJson } from "../../types/Queue";
 import type { QueueStructure } from "../../types/Structures";
 

@@ -373,6 +373,7 @@ export class Player {
     public async destroy(reason: DestroyReasons = DestroyReasons.Stop): Promise<boolean> {
         await this.disconnect();
         await this.node.destroyPlayer(this.guildId);
+        await this.queue.utils.destroy();
 
         this.manager.emit(EventNames.PlayerDestroy, this, reason);
         this.manager.emit(
