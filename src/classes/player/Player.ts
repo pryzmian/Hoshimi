@@ -449,6 +449,7 @@ export class Player {
      */
     public async connect(): Promise<this> {
         if (!this.voiceId) return this;
+        if (this.connected) return this;
 
         await this.setVoice();
 
@@ -642,10 +643,12 @@ export class Player {
 
         this.node = target;
 
+        await this.connect();
+
         const playerOptions: LavalinkPlayOptions = { voice: this.voice as LavalinkPlayerVoice };
 
         if (current) {
-            playerOptions.position = this.position;
+            playerOptions.position = this.lastPosition;
             playerOptions.volume = this.volume;
             playerOptions.track = {
                 encoded: current.encoded,
