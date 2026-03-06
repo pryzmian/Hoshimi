@@ -1,3 +1,5 @@
+import type { LavalinkRestError } from "../types/Rest";
+
 /**
  * Error class for the manager.
  * @class ManagerError
@@ -79,6 +81,62 @@ export class ResolveError extends Error {
     constructor(message: string) {
         super(message);
         this.name = "Hoshimi [ResolveError]";
+    }
+}
+
+/**
+ * The RestError class has been taken from Shoukaku library.
+ * A cute and epic lavalink wrapper, made in typescript.
+ * So, all the credits goes to the original author.
+ * @link https://github.com/shipgirlproject/Shoukaku/blob/master/src/node/Rest.ts
+ */
+
+/**
+ * Class representing a REST error.
+ * @class RestError
+ * @extends {Error}
+ */
+export class RestError extends Error {
+    /**
+     * The timestamp of the response.
+     * @type {number}
+     */
+    public timestamp: number;
+    /**
+     * The status of the response.
+     * @type {number}
+     */
+    public status: number;
+    /**
+     * The error of the response.
+     * @type {string}
+     */
+    public error: string;
+    /**
+     * The message of the response.
+     * @type {string}
+     */
+    public path: string;
+    /**
+     * The trace of the response.
+     * @type {string}
+     */
+    public trace?: string;
+
+    /**
+     *
+     * Create a new REST error.
+     */
+    constructor({ timestamp, status, error, trace, message, path }: LavalinkRestError) {
+        super(`Rest request failed with response code: ${status}${message ? ` | message: ${message}` : ""}`);
+
+        this.name = "Hoshimi [RestError]";
+        this.timestamp = timestamp;
+        this.status = status;
+        this.error = error;
+        this.trace = trace;
+        this.message = message;
+        this.path = path;
     }
 }
 

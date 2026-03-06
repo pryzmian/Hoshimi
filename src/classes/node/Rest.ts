@@ -16,62 +16,7 @@ import {
 import type { HoshimiStructure, NodeStructure } from "../../types/Structures";
 import { HoshimiAgent } from "../../util/constants";
 import { stringify, validatePlayerData } from "../../util/functions/utils";
-
-/**
- * The RestError class has been taken from Shoukaku library.
- * A cute and epic lavalink wrapper, made in typescript.
- * So, all the credits goes to the original author.
- * @link https://github.com/shipgirlproject/Shoukaku/blob/master/src/node/Rest.ts
- */
-
-/**
- * Class representing a REST error.
- * @class RestError
- * @extends {Error}
- */
-class RestError extends Error {
-    /**
-     * The timestamp of the response.
-     * @type {number}
-     */
-    public timestamp: number;
-    /**
-     * The status of the response.
-     * @type {number}
-     */
-    public status: number;
-    /**
-     * The error of the response.
-     * @type {string}
-     */
-    public error: string;
-    /**
-     * The message of the response.
-     * @type {string}
-     */
-    public path: string;
-    /**
-     * The trace of the response.
-     * @type {string}
-     */
-    public trace?: string;
-
-    /**
-     *
-     * Create a new REST error.
-     */
-    constructor({ timestamp, status, error, trace, message, path }: LavalinkRestError) {
-        super(`Rest request failed with response code: ${status}${message ? ` | message: ${message}` : ""}`);
-
-        this.name = "Hoshimi [RestError]";
-        this.timestamp = timestamp;
-        this.status = status;
-        this.error = error;
-        this.trace = trace;
-        this.message = message;
-        this.path = path;
-    }
-}
+import { RestError } from "../Errors";
 
 /**
  * Class representing the REST for the node.
@@ -199,7 +144,7 @@ export class Rest {
             `[Rest] -> [${this.node.id} : ${options.method}]: Url: ${this.restUrl} | Endpoint: ${options.endpoint} | Params: ${url.search} | Body: ${options.body ? stringify(options.body) : "None"} | Headers: ${stringify(headers)}`,
         );
 
-        const response = await fetch(url.toString(), fetchOptions).finally(() => clearTimeout(timeout));
+        const response = await fetch(url.toString(), fetchOptions).finally((): void => clearTimeout(timeout));
         if (!response.ok) {
             const restError = (await response.json().catch((): null => null)) as LavalinkRestError | null;
 
