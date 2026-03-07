@@ -48,10 +48,7 @@ export class PlayerMemoryStorage<
     }
 
     public all<K extends StorageKeys[], V extends StorageValues<K[number]>>(): Awaitable<Record<K[number], V>> {
-        return Object.fromEntries([...this.internal.entries()].filter(([key]) => !key.startsWith("internal_"))) as never as Record<
-            K[number],
-            V
-        >;
+        return Object.fromEntries([...this.internal.entries()]) as never as Record<K[number], V>;
     }
 
     public clear(): Awaitable<void> {
@@ -63,7 +60,6 @@ export class PlayerMemoryStorage<
     }
 
     public buildKey(...parts: RestOrArray<string>): string {
-        const flattern = parts.flat();
-        return flattern.join(":");
+        return parts.flat().join(":");
     }
 }

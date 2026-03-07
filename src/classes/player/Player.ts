@@ -623,7 +623,7 @@ export class Player {
         if (target.state !== State.Connected) throw new PlayerError("Target node is not connected.");
         if (target.id === this.node.id) return;
 
-        await this.data.set("internal_move", true);
+        await this.data.set("internal_playerMove", true);
 
         if (this.queue.current || this.queue.size) {
             const sources: SourceNames[] = [this.queue.current, ...this.queue.tracks]
@@ -667,7 +667,7 @@ export class Player {
             `[Player] -> [Move] Player moved to node: ${target.id} for guild: ${this.guildId}`,
         );
 
-        await this.data.delete("internal_move");
+        await this.data.delete("internal_playerMove");
     }
 
     /**

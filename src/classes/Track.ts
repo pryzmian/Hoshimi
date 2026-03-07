@@ -189,7 +189,7 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
         if (this.info.uri) {
             const track: TrackStructure | undefined = await player
                 .search({ query: this.info.uri, requester: this.requester })
-                .then((result): TrackStructure | undefined => result.tracks[0]);
+                .then((result): TrackStructure | undefined => result.tracks.at(0));
             if (!track) throw new ResolveError("Track could not be resolved from URI.");
 
             player.manager.emit(
@@ -216,7 +216,7 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
         );
 
         return player.search({ query, engine, requester: this.requester }).then((result): TrackStructure => {
-            let track: TrackStructure | null = result.tracks[0] ?? null;
+            let track: TrackStructure | null = result.tracks.at(0) ?? null;
 
             if (this.info.author && !track)
                 track =

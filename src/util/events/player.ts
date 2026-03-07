@@ -67,7 +67,7 @@ async function queueEnd(
     track: TrackStructure | null,
     payload: TrackEndEvent | TrackStuckEvent | TrackExceptionEvent,
 ): Promise<void> {
-    if (await this.data.get("internal_move")) return;
+    if (await this.data.get("internal_playerMove")) return;
 
     this.playing = false;
     this.paused = false;
@@ -103,7 +103,7 @@ async function queueEnd(
  * @returns {Promise<void>} I mean, it's a track start event, what do you expect?
  */
 export async function trackStart(this: PlayerStructure, payload: TrackStartEvent): Promise<void> {
-    if (!(await this.data.get("internal_move"))) {
+    if (!(await this.data.get("internal_playerMove"))) {
         this.paused = false;
         this.playing = true;
     }
@@ -126,7 +126,7 @@ export async function trackStart(this: PlayerStructure, payload: TrackStartEvent
  * @returns {Promise<void>} The track ended... sadge.
  */
 export async function trackEnd(this: PlayerStructure, payload: TrackEndEvent): Promise<void> {
-    if (await this.data.get("internal_move")) return;
+    if (await this.data.get("internal_playerMove")) return;
 
     const current: TrackStructure | null = this.queue.current;
 
