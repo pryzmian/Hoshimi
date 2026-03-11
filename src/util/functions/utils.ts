@@ -145,18 +145,18 @@ export function validatePlayerOptions(options: PlayerOptions): void {
 /**
  *
  * Validate the player data.
- * @param {NodeStructure} this The node to validate the player data for.
+ * @param {NodeStructure} node The node to validate the player data for.
  * @param {Partial<UpdatePlayerInfo>} data The data to validate.
  * @returns {void} Nothing.
  */
-export function validatePlayerData(this: NodeStructure, data: Partial<UpdatePlayerInfo>): void {
+export function updatePlayerData(node: NodeStructure, data: Partial<UpdatePlayerInfo>): void {
     if (
         typeof data === "object" &&
         typeof data.playerOptions === "object" &&
         typeof data.guildId === "string" &&
         Object.keys(data.playerOptions).length > 0
     ) {
-        const player: PlayerStructure | undefined = this.nodeManager.manager.getPlayer(data.guildId);
+        const player: PlayerStructure | undefined = node.nodeManager.manager.getPlayer(data.guildId);
         if (!player) return;
 
         if (typeof data.playerOptions.voice === "object") player.voice = data.playerOptions.voice;
