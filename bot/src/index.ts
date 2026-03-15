@@ -85,7 +85,7 @@ Structures.Player = (...args) => new HoshimiPlayer(...args);
 Structures.Node = (...args) => new HoshimiNode(...args);
 
 //Extend the lyrics manager to support nodelink.
-Structures.LyricsManager = (...args: ConstructorParameters<typeof HoshimiLyricsManager>) => new HoshimiLyricsManager(...args);
+Structures.LyricsManager = (...args) => new HoshimiLyricsManager(...args);
 
 /**
  * The lavalink handler of the bot.

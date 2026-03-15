@@ -60,9 +60,25 @@ export type UnresolvedTrackStructure = InferCustomStructure<UnresolvedTrack, "Un
 export type HoshimiStructure = InferCustomStructure<Hoshimi, "Hoshimi">;
 
 /**
+ * Factory signatures for all overridable structures.
+ */
+interface StructureFactories {
+    Player(...args: ConstructorParameters<typeof Player>): PlayerStructure;
+    Rest(...args: ConstructorParameters<typeof Rest>): RestStructure;
+    Node(...args: ConstructorParameters<typeof Node>): NodeStructure;
+    Queue(...args: ConstructorParameters<typeof Queue>): QueueStructure;
+    LyricsManager(...args: ConstructorParameters<typeof LyricsManager>): LyricsManagerStructure;
+    NodeManager(...args: ConstructorParameters<typeof NodeManager>): NodeManagerStructure;
+    FilterManager(...args: ConstructorParameters<typeof FilterManager>): FilterManagerStructure;
+    Track(...args: ConstructorParameters<typeof Track>): TrackStructure;
+    UnresolvedTrack(...args: ConstructorParameters<typeof UnresolvedTrack>): UnresolvedTrackStructure;
+    Hoshimi(...args: ConstructorParameters<typeof Hoshimi>): HoshimiStructure;
+}
+
+/**
  * The structures of the Hoshimi classes.
  */
-export const Structures = {
+export const Structures: StructureFactories = {
     Player(...args: ConstructorParameters<typeof Player>): PlayerStructure {
         return new Player(...args);
     },
@@ -98,4 +114,4 @@ export const Structures = {
 /**
  * Infers the custom structure for a given class.
  */
-export type InferCustomStructure<T, N extends string> = CustomizableStructures extends Record<N, infer P> ? P : T;
+export type InferCustomStructure<T, N extends string> = N extends keyof CustomizableStructures ? CustomizableStructures[N] : T;
