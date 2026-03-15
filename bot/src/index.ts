@@ -13,6 +13,7 @@ import { HoshimiNode } from "./nodelink/nodelink.js";
 import type { NodelinkEvents } from "./nodelink/types.js";
 import { RedisClient } from "./redis.js";
 import { ms } from "./time.js";
+import { HoshimiLyricsManager } from "./nodelink/lyrics.js";
 
 /**
  * The main client of the bot.
@@ -83,6 +84,9 @@ Structures.Player = (...args) => new HoshimiPlayer(...args);
 // Extend the node with whatever you want.
 Structures.Node = (...args) => new HoshimiNode(...args);
 
+//Extend the lyrics manager to support nodelink.
+Structures.LyricsManager = (...args: ConstructorParameters<typeof HoshimiLyricsManager>) => new HoshimiLyricsManager(...args);
+
 /**
  * The lavalink handler of the bot.
  * @type {LavalinkHandler}
@@ -128,6 +132,7 @@ declare module "hoshimi" {
     interface CustomizableStructures {
         Player: HoshimiPlayer;
         Node: HoshimiNode;
+        LyricsManager: HoshimiLyricsManager;
     }
 
     interface HoshimiEvents extends NodelinkEvents {}
