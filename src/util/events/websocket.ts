@@ -23,7 +23,7 @@ import {
  * Emitted when the socket connection is opened.
  * @param {NodeStructure} this The node that emitted the event.
  * @param {IncomingMessage} res The response from the socket connection.
- * @returns {void} Nothing new.
+ * @returns {void}
  */
 export function onOpen(this: NodeStructure, res: IncomingMessage): void {
     const isResume = res.headers["session-resumed"] === "true";
@@ -44,7 +44,7 @@ export function onOpen(this: NodeStructure, res: IncomingMessage): void {
  * @param {NodeStructure} this The node that emitted the event.
  * @param {number} code The close code of the connection.
  * @param {string} reason The close reason message.
- * @returns {void} The same thing as above.
+ * @returns {void}
  */
 export function onClose(this: NodeStructure, code: number, reason: string): void {
     this.nodeManager.manager.emit(
@@ -65,7 +65,7 @@ export function onClose(this: NodeStructure, code: number, reason: string): void
  * Emitted when an error occurs.
  * @param {NodeStructure} this The node that emitted the event.
  * @param {Error} [error] The error that occurred.
- * @returns {void} Did you know that void is a type in TypeScript?
+ * @returns {void}
  */
 export function onError(this: NodeStructure, error?: Error): void {
     if (!error) return;

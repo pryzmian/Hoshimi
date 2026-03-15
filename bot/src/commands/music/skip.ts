@@ -35,7 +35,7 @@ export default class SkipCommand extends Command {
 
         if (player.queue.isEmpty()) return ctx.editOrReply({ content: "The queue is empty." });
 
-        await player.skip(options.to);
+        await player.skip({ to: options.to });
         await ctx.editOrReply({
             content: `Skipped ${options.to ?? 1} track(s).`,
         });

@@ -205,7 +205,7 @@ export class Rest {
     /**
      *
      * Stop the track in player for the guild.
-     * @param {string} guildId the guild id to stop the player
+     * @param {string} guildId The guild id to stop the player.
      * @returns {Promise<LavalinkPlayer | null>} The updated player data.
      * @example
      * ```ts

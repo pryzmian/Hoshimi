@@ -4,10 +4,10 @@ import type { QueueJson } from "../../../types/Queue";
 /**
  * Class representing a storage manager.
  * @abstract
- * @class StorageManager
+ * @class QueueStorageAdapter
  * @example
  * ```ts
- * class MyStorageManager extends StorageManager {};
+ * class MyStorageManager extends QueueStorageAdapter {};
  *
  * const storage = new MyStorageManager();
  * storage.set("key", "value");

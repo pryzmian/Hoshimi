@@ -1,12 +1,4 @@
-import {
-    DebugLevels,
-    DestroyReasons,
-    EventNames,
-    type NodeIdentifier,
-    type Nullable,
-    type QueryResult,
-    type SearchOptions,
-} from "../../types/Manager";
+import { DebugLevels, DestroyReasons, EventNames, type NodeIdentifier, type QueryResult, type SearchOptions } from "../../types/Manager";
 import { type LyricsResult, type SourceNames, State } from "../../types/Node";
 import {
     type LavalinkPlayerVoice,
@@ -17,20 +9,22 @@ import {
     type PlayerOptions,
     type PlayOptions,
     type SkipOptions,
-    type VoiceChannelUpdate,
 } from "../../types/Player";
 import type { LavalinkPlayer, UpdatePlayerInfo } from "../../types/Rest";
-import { type HoshimiStructure, type NodeStructure, type QueueStructure, Structures, type TrackStructure } from "../../types/Structures";
+import {
+    type HoshimiStructure,
+    type NodeStructure,
+    type PlayerVoiceStateStructure,
+    type QueueStructure,
+    Structures,
+    type TrackStructure,
+} from "../../types/Structures";
 import { isTrack, isUnresolvedTrack, validatePlayerOptions, validateTrack } from "../../util/functions/utils";
 import { PlayerError } from "../Errors";
 import type { PlayerStorageAdapter } from "../storage/adapters/PlayerAdapter";
 import type { HoshimiTrack } from "../Track";
 import type { FilterManager } from "./filters/Manager";
-
-/**
- * Type representing a nullable voice channel update.
- */
-type NullableVoiceChannelUpdate = Partial<Nullable<VoiceChannelUpdate>>;
+import type { NullableVoiceChannelUpdate } from "./Voice";
 
 /**
  * Class representing a Hoshimi player.
@@ -126,13 +120,13 @@ export class Player {
     public volume: number = 100;
 
     /**
-     * Guild ig of the player.
+     * Guild id of the player.
      * @type {string}
      */
     public guildId: string;
 
     /**
-     * Voice channel idof the player.
+     * Voice channel id of the player.
      * @type {string | undefined}
      */
     public voiceId: string | undefined = undefined;
@@ -178,14 +172,9 @@ export class Player {
 
     /**
      * The voice connection details.
-     * @type {PlayerVoice}
+     * @type {PlayerVoiceStateStructure}
      */
-    public voice: Nullable<LavalinkPlayerVoice> = {
-        endpoint: null,
-        sessionId: null,
-        token: null,
-        channelId: null,
-    };
+    public readonly voice: PlayerVoiceStateStructure;
 
     /**
      *
@@ -229,6 +218,7 @@ export class Player {
 
         this.queue = Structures.Queue(this);
         this.filterManager = Structures.FilterManager(this);
+        this.voice = Structures.PlayerVoiceState(this);
     }
 
     /**
@@ -347,15 +337,7 @@ export class Player {
      * ```
      */
     public async disconnect(): Promise<this> {
-        if (!this.voiceId) return this;
-
-        this.voiceId = undefined;
-
-        await this.setVoice({ voiceId: undefined });
-
-        this.manager.emit(EventNames.Debug, DebugLevels.Player, `[Player] -> [Disconnect] Player disconnected for guild: ${this.guildId}`);
-        this.connected = false;
-
+        await this.voice.disconnect();
         return this;
     }
 
@@ -448,14 +430,7 @@ export class Player {
      * ```
      */
     public async connect(): Promise<this> {
-        if (!this.voiceId) return this;
-        if (this.connected) return this;
-
-        await this.setVoice();
-
-        this.manager.emit(EventNames.Debug, DebugLevels.Player, `[Player] -> [Connect] Player connected for guild: ${this.guildId}`);
-        this.connected = true;
-
+        await this.voice.connect();
         return this;
     }
 
@@ -580,25 +555,7 @@ export class Player {
      * ```
      */
     public async setVoice(options: NullableVoiceChannelUpdate = {}): Promise<void> {
-        options.voiceId ??= this.voiceId;
-        options.selfDeaf ??= this.selfDeaf;
-        options.selfMute ??= this.selfMute;
-
-        await this.manager.options.sendPayload(this.guildId, {
-            op: 4,
-            d: {
-                guild_id: this.guildId,
-                self_deaf: options.selfDeaf,
-                self_mute: options.selfMute,
-                channel_id: options.voiceId ?? null,
-            },
-        });
-
-        this.manager.emit(
-            EventNames.Debug,
-            DebugLevels.Player,
-            `[Player] -> [VoiceState] Updated voice state for guild: ${this.guildId} with voiceId: ${this.voiceId}`,
-        );
+        await this.voice.setState(options);
     }
 
     /**
@@ -637,15 +594,16 @@ export class Player {
 
         const current: TrackStructure | null = this.queue.current;
 
-        if (!this.voice.endpoint || !this.voice.sessionId || !this.voice.token)
-            throw new PlayerError("Player voice connection data is incomplete.");
+        const voice: LavalinkPlayerVoice | null = this.voice.toLavalink();
+        if (!voice) throw new PlayerError("Player voice connection data is incomplete.");
+
         if (this.node.state === State.Connected) await this.node.destroyPlayer(this.guildId);
 
         this.node = target;
 
         await this.connect();
 
-        const playerOptions: LavalinkPlayOptions = { voice: this.voice as LavalinkPlayerVoice };
+        const playerOptions: LavalinkPlayOptions = { voice };
 
         if (current) {
             playerOptions.position = this.lastPosition;
@@ -710,7 +668,7 @@ export class Player {
             selfMute: this.selfMute,
             selfDeaf: this.selfDeaf,
             options: this.options,
-            voice: this.voice,
+            voice: this.voice.toJSON(),
             textId: this.textId,
             lastPosition: this.lastPosition,
             lastPositionUpdate: this.lastPositionUpdate,

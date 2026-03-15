@@ -345,11 +345,18 @@ export async function resumeByLibrary(this: NodeStructure, players: PlayerStruct
 
             const track: TrackStructure | null = player.queue.current;
 
-            await player.node.updatePlayer({
-                guildId: player.guildId,
-                playerOptions: { voice: player.voice as LavalinkPlayerVoice },
-            });
+            const voice: LavalinkPlayerVoice | null = player.voice.toLavalink();
+            if (!voice) {
+                this.nodeManager.manager.emit(
+                    EventNames.Debug,
+                    DebugLevels.Node,
+                    `[Player] -> [Resume] Skipping guild ${player.guildId} because voice data is incomplete.`,
+                );
 
+                continue;
+            }
+
+            await player.updatePlayer({ playerOptions: { voice } });
             await player.connect();
             await player.queue.utils.sync(false, true);
 

@@ -322,15 +322,15 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
                         return;
                     }
 
-                    const player = this.getPlayer(data.guild_id);
+                    const player: PlayerStructure | undefined = this.getPlayer(data.guild_id);
                     if (!player) {
                         this.emit(EventNames.Debug, DebugLevels.Player, "[Player] -> [Voice] The player is not found.");
                         return;
                     }
 
                     // this is the most funny thing i've ever made.
-                    if ("session_id" in data) player.voice.sessionId = data.session_id;
-                    if ("channel_id" in data) player.voice.channelId = data.channel_id;
+                    if ("session_id" in data && "channel_id" in data)
+                        player.voice.patch({ channelId: data.channel_id, sessionId: data.session_id });
 
                     // And also includes some abstract code.
                     if ("token" in data && "endpoint" in data) {
@@ -344,15 +344,20 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
                             return;
                         }
 
-                        await player.updatePlayer({
-                            playerOptions: {
-                                voice: {
-                                    ...player.voice,
-                                    token: data.token,
-                                    endpoint: data.endpoint,
-                                } as LavalinkPlayerVoice,
-                            },
-                        });
+                        player.voice.patch({ token: data.token, endpoint: data.endpoint });
+
+                        const voice: LavalinkPlayerVoice | null = player.voice.toLavalink();
+                        if (!voice) {
+                            this.emit(
+                                EventNames.Debug,
+                                DebugLevels.Player,
+                                `[Player] -> [Voice] Voice data is incomplete for: ${data.guild_id}`,
+                            );
+
+                            return;
+                        }
+
+                        await player.updatePlayer({ playerOptions: { voice } });
 
                         this.emit(
                             EventNames.Debug,
@@ -428,12 +433,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
                         }
 
                         player.voiceId = undefined;
-                        player.voice = {
-                            endpoint: null,
-                            sessionId: null,
-                            token: null,
-                            channelId: null,
-                        };
+                        player.voice.reset();
 
                         return;
                     }

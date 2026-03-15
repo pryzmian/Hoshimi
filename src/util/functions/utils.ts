@@ -23,7 +23,7 @@ import { UrlRegex, ValidEngines, ValidSources } from "../constants";
  *
  * Validate the manager options.
  * @param {HoshimiOptions} options The options to validate.
- * @returns {void} Nothing, yeah, nothing.
+ * @returns {void}
  */
 export function validateManagerOptions(options: HoshimiOptions): void {
     if (!Array.isArray(options.nodes) || !options.nodes.every(isNode) || !options.nodes.length)
@@ -126,7 +126,7 @@ export function validateQuery(search: SearchQuery): string {
  *
  * Validate the player options.
  * @param {PlayerOptions} options The player options.
- * @returns {void} Nothing, yeah, nothing, again.
+ * @returns {void}
  */
 export function validatePlayerOptions(options: PlayerOptions): void {
     if (typeof options.guildId !== "string") throw new OptionError("The player option 'options.guildId' must be a string.");
@@ -147,7 +147,7 @@ export function validatePlayerOptions(options: PlayerOptions): void {
  * Validate the player data.
  * @param {NodeStructure} node The node to validate the player data for.
  * @param {Partial<UpdatePlayerInfo>} data The data to validate.
- * @returns {void} Nothing.
+ * @returns {void}
  */
 export function updatePlayerData(node: NodeStructure, data: Partial<UpdatePlayerInfo>): void {
     if (
@@ -159,7 +159,7 @@ export function updatePlayerData(node: NodeStructure, data: Partial<UpdatePlayer
         const player: PlayerStructure | undefined = node.nodeManager.manager.getPlayer(data.guildId);
         if (!player) return;
 
-        if (typeof data.playerOptions.voice === "object") player.voice = data.playerOptions.voice;
+        if (typeof data.playerOptions.voice === "object") player.voice.patch(data.playerOptions.voice);
         if (typeof data.playerOptions.paused === "boolean") {
             player.paused = data.playerOptions.paused;
             player.playing = !data.playerOptions.paused;

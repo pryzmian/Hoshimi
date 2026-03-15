@@ -198,7 +198,7 @@ export class FilterManager {
     /**
      * Checks if the current filters are active.
      * @param {TimescaleSettings} timescale The timescale settings to check against.
-     * @returns {void} Nothing!
+     * @returns {void}
      * @example
      * ```ts
      * // Check the current filters

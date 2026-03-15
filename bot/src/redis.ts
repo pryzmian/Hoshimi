@@ -42,7 +42,7 @@ export class RedisClient {
 
     /**
      * Disconnects from the Redis server.
-     * @returns {void} Nothing, yay!
+     * @returns {void}
      */
     public destroy(): void {
         this.instance.destroy();

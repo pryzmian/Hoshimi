@@ -444,7 +444,7 @@ export interface UpdatePlayerInfo {
  */
 export interface LavalinkSession {
     /**
-     * Whather the session is resuming.
+     * Whether the session is resuming.
      * @type {boolean}
      */
     resuming: boolean;
@@ -476,7 +476,7 @@ export interface DecodeMethods {
      * Decodes a single base64 encoded track.
      * @param {string} track The base64 encoded track.
      * @param {TrackRequester} requester The requester of the track.
-     * @return {Promise<TrackStructure>} The decoded track.
+     * @returns {Promise<TrackStructure>} The decoded track.
      * @example
      * ```ts
      * const node = player.node;
@@ -489,7 +489,7 @@ export interface DecodeMethods {
      * Decodes multiple base64 encoded tracks.
      * @param {string[]} tracks The base64 encoded tracks.
      * @param {TrackRequester} requester The requester of the tracks.
-     * @return {Promise<TrackStructure[]>} The decoded tracks.
+     * @returns {Promise<TrackStructure[]>} The decoded tracks.
      * @example
      * ```ts
      * const node = player.node;

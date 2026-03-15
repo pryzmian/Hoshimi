@@ -4,7 +4,7 @@ import { QueueStorageAdapter } from "./adapters/QueueAdapter";
 
 /**
  * Class representing a memory storage manager.
- * @class MemoryAdapter
+ * @class QueueMemoryStorage
  * @extends {QueueStorageAdapter}
  */
 export class QueueMemoryStorage<T extends QueueJson = QueueJson> extends QueueStorageAdapter<T> {

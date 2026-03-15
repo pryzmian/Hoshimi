@@ -1,4 +1,4 @@
-import { EventNames } from "hoshimi";
+import { EventNames, type PlayerStructure } from "hoshimi";
 import { createLavalinkEvent } from "../../manager/events.js";
 import { Sessions } from "../../manager/sessions.js";
 import type { SessionJson } from "../../manager/types.js";
@@ -17,7 +17,7 @@ export default createLavalinkEvent({
                 continue;
             }
 
-            const player = client.manager.createPlayer({
+            const player: PlayerStructure = client.manager.createPlayer({
                 node,
                 guildId: data.guildId,
                 voiceId: session.voiceId!,
@@ -27,7 +27,7 @@ export default createLavalinkEvent({
                 volume: data.volume,
             });
 
-            player.voice = data.voice;
+            player.voice.patch(data.voice);
 
             await player.connect();
             await player.queue.utils.sync(true, false);

@@ -58,7 +58,7 @@ export const Sessions = {
      * Set the session of the player.
      * @param {string} id The id of the session
      * @param {string} value The value of the session.
-     * @returns {void} Did you know, this saves the session into a json file? No way!
+     * @returns {void} Saves the session to storage.
      */
     set<T>(id: string, value: T): void {
         storage.set<T>(id, value);
@@ -67,7 +67,7 @@ export const Sessions = {
     /**
      * Get the session of the player.
      * @param {string} id The id of the session.
-     * @return {T | undefined} The value of the session.
+     * @returns {T | undefined} The value of the session.
      */
     get<T>(id: string): T | undefined {
         return storage.get<T>(id);
@@ -75,7 +75,7 @@ export const Sessions = {
     /**
      * Delete the session of the player.
      * @param {string} id The id of the session.
-     * @return {boolean} Whether the session was deleted or not.
+     * @returns {boolean} Whether the session was deleted or not.
      */
     delete(id: string): boolean {
         // this throws an error if there's no session with the id.
