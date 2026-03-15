@@ -79,34 +79,34 @@ interface StructureFactories {
  * The structures of the Hoshimi classes.
  */
 export const Structures: StructureFactories = {
-    Player(...args: ConstructorParameters<typeof Player>): PlayerStructure {
+    Player(...args): PlayerStructure {
         return new Player(...args);
     },
-    Rest(...args: ConstructorParameters<typeof Rest>): RestStructure {
+    Rest(...args): RestStructure {
         return new Rest(...args);
     },
-    Node(...args: ConstructorParameters<typeof Node>): NodeStructure {
+    Node(...args): NodeStructure {
         return new Node(...args);
     },
-    Queue(...args: ConstructorParameters<typeof Queue>): QueueStructure {
+    Queue(...args): QueueStructure {
         return new Queue(...args);
     },
-    LyricsManager(...args: ConstructorParameters<typeof LyricsManager>): LyricsManagerStructure {
+    LyricsManager(...args): LyricsManagerStructure {
         return new LyricsManager(...args);
     },
-    NodeManager(...args: ConstructorParameters<typeof NodeManager>): NodeManagerStructure {
+    NodeManager(...args): NodeManagerStructure {
         return new NodeManager(...args);
     },
-    FilterManager(...args: ConstructorParameters<typeof FilterManager>): FilterManagerStructure {
+    FilterManager(...args): FilterManagerStructure {
         return new FilterManager(...args);
     },
-    Track(...args: ConstructorParameters<typeof Track>): TrackStructure {
+    Track(...args): TrackStructure {
         return new Track(...args);
     },
-    UnresolvedTrack(...args: ConstructorParameters<typeof UnresolvedTrack>): UnresolvedTrackStructure {
+    UnresolvedTrack(...args): UnresolvedTrackStructure {
         return new UnresolvedTrack(...args);
     },
-    Hoshimi(...args: ConstructorParameters<typeof Hoshimi>): HoshimiStructure {
+    Hoshimi(...args): HoshimiStructure {
         return new Hoshimi(...args);
     },
 };
