@@ -13,7 +13,7 @@ export default createLavalinkEvent({
         if (!textId) return;
 
         await client.messages.write(textId, {
-            content: `Now playing: ${track.toHyperlink()} (${TimeFormat.toHumanize(track.info.length)}), By: ${track.requester.tag}`,
+            content: `Now playing: ${track.toHyperlink()} (${TimeFormat.toHumanize(track.info.length)})\nBy: ${track.requester.tag}`,
         });
     },
 });

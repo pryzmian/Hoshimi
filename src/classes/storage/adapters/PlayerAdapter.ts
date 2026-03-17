@@ -1,10 +1,10 @@
-import type { Awaitable, RestOrArray } from "../../../types/Manager";
+import type { Awaitable, Hint, RestOrArray } from "../../../types/Manager";
 import type { CustomizablePlayerStorage } from "../../player/Player";
 
 /**
  * Type representing the customizable player storage.
  */
-export type StorageKeys = keyof CustomizablePlayerStorage | (string & {});
+export type StorageKeys = Hint<keyof CustomizablePlayerStorage>;
 
 /**
  * Type representing the customizable player storage values.

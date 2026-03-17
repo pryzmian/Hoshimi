@@ -873,6 +873,11 @@ export type RestOrArray<T> = T[] | [T[]];
 export type If<T extends boolean, A, B = null> = T extends true ? A : B extends null ? A | null : B;
 
 /**
+ * A hint type that can be either the type or a string.
+ */
+export type Hint<T> = T | (string & {});
+
+/**
  * Make a type required.
  */
 export type PickRequired<T, K extends keyof T> = {
