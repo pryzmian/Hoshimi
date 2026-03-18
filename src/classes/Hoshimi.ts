@@ -10,7 +10,7 @@ import {
     type HoshimiEvents,
     type HoshimiOptions,
     type QueryResult,
-    SearchEngines,
+    SearchSources,
     type SearchOptions,
     type VoicePacket,
     type VoiceServer,
@@ -50,7 +50,7 @@ type RequiredOptions = DeepRequired<HoshimiOptions>;
  * @extends {EventEmitter<HoshimiEvents>}
  * @example
  * ```ts
- * import { Hoshimi, SearchEngines } from "hoshimi";
+ * import { Hoshimi, SearchSources } from "hoshimi";
  *
  * const manager = new Hoshimi({ // or via createHoshimi() function
  *  sendPayload: async (guildId, payload) => {
@@ -127,7 +127,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
      * 		id: "clientId",
      * 		username: "clientUsername",
      * 	},
-     * 	defaultSearchEngine: SearchEngines.Youtube,
+     * 	defaultSearchSource: SearchSources.Youtube,
      * 	restOptions: {
      * 		resumeTimeout: 10000,
      * 	},
@@ -167,7 +167,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
 
         this.options = {
             ...options,
-            defaultSearchEngine: options.defaultSearchEngine ?? SearchEngines.Youtube,
+            defaultSearchSource: options.defaultSearchSource ?? SearchSources.Youtube,
             restOptions: {
                 resumeTimeout: options.restOptions?.resumeTimeout ?? 10000,
             },
@@ -526,7 +526,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
      * ```ts
      * const result = await manager.search({
      * 	query: "track name",
-     * 	engine: SearchEngines.Youtube,
+     * 	engine: SearchSources.Youtube,
      * });
      *
      * console.log(result); // The search result
@@ -558,7 +558,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
         this.emit(
             EventNames.Debug,
             DebugLevels.Manager,
-            `[Manager] -> [Search] Searching for: ${options.query} (${options.engine ?? "unknown"}) | Result: ${stringify(res)}`,
+            `[Manager] -> [Search] Searching for: ${options.query} (${options.source ?? "unknown"}) | Result: ${stringify(res)}`,
         );
 
         const requesterFn = this.options.playerOptions.requesterFn;

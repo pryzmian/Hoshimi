@@ -4,20 +4,13 @@ import { PlayerStorageAdapter } from "../../classes/storage/adapters/PlayerAdapt
 import { QueueStorageAdapter } from "../../classes/storage/adapters/QueueAdapter";
 import type { HoshimiTrack, TrackRequester, UnresolvedTrack } from "../../classes/Track";
 import type { TimescaleSettings } from "../../types/Filters";
-import { DebugLevels, EventNames, type HoshimiOptions, SearchEngines } from "../../types/Manager";
-import type {
-    LavalinkTrack,
-    NodeInfo,
-    NodeOptions,
-    PluginNames,
-    SearchQuery,
-    SourceNames,
-    UnresolvedLavalinkTrack,
-} from "../../types/Node";
+import { DebugLevels, EventNames, type HoshimiOptions, type SearchSource } from "../../types/Manager";
+import type { LavalinkTrack, NodeInfo, NodeOptions, PluginNames, SearchQuery, SourceName, UnresolvedLavalinkTrack } from "../../types/Node";
 import type { PlayerOptions } from "../../types/Player";
 import type { UpdatePlayerInfo } from "../../types/Rest";
 import { type NodeStructure, type PlayerStructure, Structures, type TrackStructure } from "../../types/Structures";
-import { UrlRegex, ValidEngines, ValidSources } from "../constants";
+import { UrlRegex } from "../constants";
+import { SourceRegistry } from "../sourceRegistry";
 
 /**
  *
@@ -30,8 +23,8 @@ export function validateManagerOptions(options: HoshimiOptions): void {
         throw new OptionError("The manager option 'options.nodes' must be a valid array of nodes and atleast one valid node.");
     if (typeof options.sendPayload !== "function")
         throw new OptionError("The manager option 'options.sendPayload' must be a vaid function.");
-    if (typeof options.defaultSearchEngine !== "undefined" && !ValidEngines.includes(options.defaultSearchEngine))
-        throw new OptionError("The manager option 'options.defaultSearchEngine' Must be a valid search engine.");
+    if (typeof options.defaultSearchSource !== "undefined" && !SourceRegistry.isRegistered(options.defaultSearchSource))
+        throw new OptionError("The manager option 'options.defaultSearchSource' Must be a valid search source.");
 
     if (typeof options.queueOptions !== "undefined") {
         if (typeof options.queueOptions.maxHistory !== "number")
@@ -95,31 +88,25 @@ export function validateQuery(search: SearchQuery): string {
     if (typeof search !== "object") throw new OptionError("The 'query' must be a valid object.");
     if (typeof search.query !== "string") throw new OptionError("The query option 'query.query' must be a valid string.");
 
-    if (typeof search.engine !== "string") throw new OptionError("The query option 'query.engine' must be a valid search engine.");
+    if (typeof search.source !== "string") throw new OptionError("The query option 'query.source' must be a valid search source.");
 
-    search.engine = validateEngine(search.engine);
+    search.source = validateSource(search.source);
 
-    if (!ValidEngines.includes(search.engine)) throw new OptionError(`The query option 'query.engine' must be a valid search engine.`);
+    if (!SourceRegistry.isRegistered(search.source))
+        throw new OptionError(`The query option 'query.source' must be a valid search source.`);
 
     const query: string = search.query.trim();
 
-    const engineKey: SearchEngines | undefined = Object.values(SearchEngines).find((key): boolean => query.toLowerCase().startsWith(key));
-    if (engineKey && query.toLowerCase().startsWith(`${engineKey}:`)) {
-        const sliced: string = query.slice(engineKey.length + 1).trim();
-        const isUrl: boolean = UrlRegex.test(sliced);
-
-        if (isUrl) return sliced;
-
-        return `${engineKey}:${sliced}`;
+    const parsed = SourceRegistry.parseQuery(query);
+    if (parsed) {
+        if (UrlRegex.test(parsed.value)) return parsed.value;
+        return SourceRegistry.createIdentifier(parsed.source, parsed.value);
     }
 
     const isUrl: boolean = UrlRegex.test(query);
     if (isUrl) return query;
 
-    if (search.engine === SearchEngines.FloweryTTS) return `${search.engine}://${query}`;
-    if (search.engine !== SearchEngines.Local) return `${search.engine}:${query}`;
-
-    return query;
+    return SourceRegistry.createIdentifier(search.source, query);
 }
 
 /**
@@ -217,15 +204,14 @@ export function validateNodePlugins(node: Node, plugins: PluginNames[]): void {
 /**
  *
  * Validate the engine type.
- * @param {SearchEngines | SourceNames} type The type to validate.
- * @returns {SearchEngines} The validated engine type.
+ * @param {SearchSource | SourceName} type The type to validate.
+ * @returns {SearchSource} The validated engine type.
  */
-export function validateEngine(type: SearchEngines | SourceNames): SearchEngines {
-    const source: SearchEngines | undefined =
-        ValidEngines.find((engine): boolean => engine === type) ?? ValidSources.get(type as SourceNames);
+export function validateSource(type: SearchSource | SourceName): SearchSource {
+    const source: string | undefined = SourceRegistry.resolve(type);
     if (!source) throw new OptionError(`The engine '${type}' is not a valid engine.`);
 
-    return source;
+    return source as SearchSource;
 }
 
 /**

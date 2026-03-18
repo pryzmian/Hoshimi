@@ -1,6 +1,6 @@
 import type { TrackUserData } from "../classes/Track";
 import type { FilterType } from "./Filters";
-import type { PickRequired, SearchEngines } from "./Manager";
+import type { Hint, PickRequired, SearchSource } from "./Manager";
 import type {
     LyricsFoundEvent,
     LyricsLineEvent,
@@ -236,6 +236,16 @@ export enum SourceNames {
      */
     TikTok = "tiktok",
 }
+
+/**
+ * Extend this interface via module augmentation to add strongly-typed custom sources.
+ */
+export interface CustomizableSourceNames {}
+
+/**
+ * Source name type supporting built-ins plus custom augmented values.
+ */
+export type SourceName = SourceNames | Hint<keyof CustomizableSourceNames>;
 
 /**
  * The response severity of the result.
@@ -662,9 +672,9 @@ export interface TrackInfo {
     uri: string;
     /**
      * The source name of the track.
-     * @type {SourceNames}
+     * @type {SourceName}
      */
-    sourceName: SourceNames;
+    sourceName: SourceName;
     /**
      * Whether the track is seekable.
      * @type {boolean}
@@ -1026,9 +1036,9 @@ export interface NodeInfo {
     lavaplayer: string;
     /**
      * The source managers available in the node.
-     * @type {SourceNames[]}
+     * @type {SourceName[]}
      */
-    sourceManagers: SourceNames[];
+    sourceManagers: SourceName[];
     /**
      * The filters available in the node.
      * @type {FilterType[]}
@@ -1142,10 +1152,10 @@ export interface SearchQuery {
      */
     query: string;
     /**
-     * The search engine to use.
-     * @type {SearchEngines | SourceNames | undefined}
+     * The search source to use.
+     * @type {SearchSource | SourceName | undefined}
      */
-    engine?: SearchEngines | SourceNames;
+    source?: SearchSource | SourceName;
     /**
      * The search params to use.
      * @type {Record<string, string> | undefined}

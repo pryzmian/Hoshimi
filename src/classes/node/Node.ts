@@ -323,7 +323,7 @@ export class Node {
      * if (node) {
      * 	const search = await node.search({
      * 		query: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-     * 		engine: SearchEngines.Youtube,
+     * 		engine: SearchSources.Youtube,
      * 	});
      *
      * 	console.log(search); // the search result
@@ -331,7 +331,7 @@ export class Node {
      * ```
      */
     public search(search: SearchQuery): Promise<LavalinkSearchResponse | null> {
-        search.engine ??= this.nodeManager.manager.options.defaultSearchEngine;
+        search.source ??= this.nodeManager.manager.options.defaultSearchSource;
 
         const identifier: string = validateQuery(search);
 

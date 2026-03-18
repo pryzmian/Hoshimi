@@ -1,4 +1,4 @@
-import { type HoshimiTrack, type PlayerStructure, SearchEngines, SourceNames, type TrackStructure } from "hoshimi";
+import { type HoshimiTrack, type PlayerStructure, SearchSources, SourceNames, type TrackStructure } from "hoshimi";
 
 /**
  * The maximum number of tracks to be added to the queue.
@@ -41,7 +41,7 @@ export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrac
 
             const res = await player.search({
                 query: lastTrack.info.identifier,
-                engine: SearchEngines.SpotifyTrackMix,
+                source: SearchSources.SpotifyTrackMix,
                 requester: lastTrack.requester,
             });
 

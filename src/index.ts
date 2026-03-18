@@ -38,3 +38,4 @@ export * from "./types/Structures";
 
 // Exports related to constants.
 export * from "./util/constants";
+export * from "./util/sourceRegistry";

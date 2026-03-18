@@ -1,4 +1,4 @@
-import { SearchEngines } from "hoshimi";
+import { SearchSources } from "hoshimi";
 import { Command, createStringOption, Declare, type GuildCommandContext, Options } from "seyfert";
 
 const options = {
@@ -45,7 +45,7 @@ export default class TtsCommand extends Command {
 
         const { tracks } = await player.search({
             query: options.text,
-            engine: SearchEngines.FloweryTTS,
+            source: SearchSources.FloweryTTS,
             params: {
                 voice: options.voice ?? "Andrea",
             },

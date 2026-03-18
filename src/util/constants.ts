@@ -1,34 +1,12 @@
 import PackageJson from "../../package.json";
 import type { ChannelMixSettings, FilterSettings } from "../types/Filters";
 import { AudioOutput } from "../types/Filters";
-import { SearchEngines } from "../types/Manager";
-import { SourceNames, type UserAgent } from "../types/Node";
+import type { UserAgent } from "../types/Node";
 
 /**
  * The auto output record type.
  */
 type AutoOutputRecord = Record<AudioOutput, Required<ChannelMixSettings>>;
-
-/**
- * The excluded source names, which do not have a corresponding search engine.
- * Why? I checked the plugin's code, and these sources doesn't have a valid search prefix.
- */
-type ExcludedSourceNames =
-    | SourceNames.HTTP
-    | SourceNames.Clypit
-    | SourceNames.StreamDeckAudio
-    | SourceNames.GetYarn
-    | SourceNames.MixCloud
-    | SourceNames.OCRemix
-    | SourceNames.PixelDrain
-    | SourceNames.Reddit
-    | SourceNames.SoundGasm
-    | SourceNames.TikTok;
-
-/**
- * The valid source names.
- */
-type ValidSourceNames = Exclude<SourceNames, ExcludedSourceNames>;
 
 /**
  * The user agent for Hoshimi.
@@ -41,38 +19,6 @@ export const HoshimiAgent: UserAgent = `hoshimi/v${PackageJson.version} (${Packa
  * @type {RegExp}
  */
 export const UrlRegex: RegExp = /^(https?:\/\/)?([a-zA-Z0-9\-_]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
-
-/**
- * The valid search engines for Hoshimi.
- * @type {SearchEngines[]}
- */
-export const ValidEngines: SearchEngines[] = Object.values<SearchEngines>(SearchEngines);
-
-/**
- * The valid sources for Hoshimi.
- * @type {Map<SourceNames, SearchEngines>}
- */
-export const ValidSources: Map<SourceNames, SearchEngines> = new Map<SourceNames, SearchEngines>(
-    Object.entries<SearchEngines>({
-        [SourceNames.Youtube]: SearchEngines.Youtube,
-        [SourceNames.YoutubeMusic]: SearchEngines.YoutubeMusic,
-        [SourceNames.Soundcloud]: SearchEngines.SoundCloud,
-        [SourceNames.Bandcamp]: SearchEngines.BandCamp,
-        [SourceNames.Twitch]: SearchEngines.Twitch,
-        [SourceNames.Vimeo]: SearchEngines.Vimeo,
-        [SourceNames.Mixer]: SearchEngines.Mixer,
-        [SourceNames.Spotify]: SearchEngines.Spotify,
-        [SourceNames.Deezer]: SearchEngines.Deezer,
-        [SourceNames.AppleMusic]: SearchEngines.AppleMusic,
-        [SourceNames.YandexMusic]: SearchEngines.YandexMusic,
-        [SourceNames.FloweryTTS]: SearchEngines.FloweryTTS,
-        [SourceNames.JioSaavn]: SearchEngines.JioSaavn,
-        [SourceNames.VKMusic]: SearchEngines.VKMusic,
-        [SourceNames.Tidal]: SearchEngines.Tidal,
-        [SourceNames.TextToSpeech]: SearchEngines.TextToSpeech,
-        [SourceNames.PornHub]: SearchEngines.PornHub,
-    } satisfies Record<ValidSourceNames, SearchEngines>) as [SourceNames, SearchEngines][],
-);
 
 /**
  * The audio output data for Hoshimi.

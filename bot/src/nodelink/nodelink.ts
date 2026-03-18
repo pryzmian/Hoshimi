@@ -1,4 +1,4 @@
-import { type Awaitable, Node, RestRoutes } from "hoshimi";
+import { type Awaitable, Node, RestRoutes, SourceRegistry } from "hoshimi";
 import { logger } from "../utils";
 import type { NodelinkConnectionMetrics, NodelinkPayload } from "./types";
 
@@ -8,6 +8,11 @@ import type { NodelinkConnectionMetrics, NodelinkPayload } from "./types";
  * @extends {Node}
  */
 export class HoshimiNode extends Node {
+    public constructor(...args: ConstructorParameters<typeof Node>) {
+        super(...args);
+
+        SourceRegistry.register({ source: "bilibili", name: "bilibili" });
+    }
     /**
      *
      * Get the connection metrics for nodelink.
