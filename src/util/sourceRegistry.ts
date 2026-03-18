@@ -1,4 +1,4 @@
-import { type Hint, type RestOrArray, SearchSources } from "../types/Manager";
+import { Hint, RestOrArray, SearchSources } from "../types/Manager";
 import { SourceNames } from "../types/Node";
 
 /**
@@ -13,11 +13,11 @@ export interface SourceRegistration {
     /**
      * Search source prefix used by Lavalink.
      */
-    source: Hint<RegistrySearchSource>;
+    source: RegistrySearchSource;
     /**
      * Optional track source name that resolves to the search source.
      */
-    name?: Hint<CustomizableSources[keyof CustomizableSources]>;
+    name?: RegistrySourceName;
     /**
      * Protocol used when creating lavalink identifiers.
      * @default "colon"
@@ -43,12 +43,17 @@ export interface CustomizableSources {}
 /**
  * The custom search source keys provided by users via module augmentation.
  */
-export type CustomizableSearchSource = keyof CustomizableSources;
+export type SearchSourceKey = keyof CustomizableSources;
 
 /**
  * The full source identifier accepted by the source registry.
  */
-export type RegistrySearchSource = SearchSources | CustomizableSearchSource;
+export type RegistrySearchSource = SearchSources | Hint<SearchSourceKey>;
+
+/**
+ * The source name accepted by the source registry alias mapping.
+ */
+export type RegistrySourceName = SourceNames | Hint<CustomizableSources[keyof CustomizableSources]>;
 
 /**
  * Static source registry API.
@@ -99,6 +104,7 @@ export class SourceRegistry {
 
             this.sourceToProtocolMap.set(canonicalKey, protocol);
             this.aliasToSourceMap.set(canonicalKey, canonical);
+
             if (name?.length) this.aliasToSourceMap.set(this.normalize(name), canonical);
 
             results.push(canonical);
@@ -112,7 +118,7 @@ export class SourceRegistry {
      * @param {Hint<RegistrySearchSource>} value The value to resolve.
      * @returns {string | undefined} The canonical source identifier.
      */
-    public static resolve(value: Hint<RegistrySearchSource>): string | undefined {
+    public static resolve(value: RegistrySearchSource): string | undefined {
         const raw: string = String(value).trim();
         if (!raw) return undefined;
 
@@ -124,7 +130,7 @@ export class SourceRegistry {
      * @param {Hint<RegistrySearchSource>} value The value to check.
      * @returns {boolean} Whether the source is registered.
      */
-    public static isRegistered(value: Hint<RegistrySearchSource>): boolean {
+    public static isRegistered(value: RegistrySearchSource): boolean {
         return typeof this.resolve(value) === "string";
     }
 
@@ -142,7 +148,7 @@ export class SourceRegistry {
      * @param {string} query The query to format.
      * @returns {string} The formatted lavalink identifier.
      */
-    public static createIdentifier(source: Hint<RegistrySearchSource>, query: string): string {
+    public static createIdentifier(source: RegistrySearchSource, query: string): string {
         const canonical: string | undefined = this.resolve(source);
         if (!canonical) throw new TypeError(`The source '${source}' is not a valid source.`);
 

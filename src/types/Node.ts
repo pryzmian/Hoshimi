@@ -1,6 +1,7 @@
 import type { TrackUserData } from "../classes/Track";
+import { CustomizableSources } from "../util/sourceRegistry";
 import type { FilterType } from "./Filters";
-import type { Hint, PickRequired, SearchSource } from "./Manager";
+import type { PickRequired, SearchSource } from "./Manager";
 import type {
     LyricsFoundEvent,
     LyricsLineEvent,
@@ -238,14 +239,9 @@ export enum SourceNames {
 }
 
 /**
- * Extend this interface via module augmentation to add strongly-typed custom sources.
- */
-export interface CustomizableSourceNames {}
-
-/**
  * Source name type supporting built-ins plus custom augmented values.
  */
-export type SourceName = SourceNames | Hint<keyof CustomizableSourceNames>;
+export type SourceName = SourceNames | CustomizableSources[keyof CustomizableSources];
 
 /**
  * The response severity of the result.
