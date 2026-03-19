@@ -203,13 +203,13 @@ export function validateNodePlugins(node: Node, plugins: PluginNames[]): void {
 
 /**
  *
- * Validate the engine type.
+ * Validate the source type.
  * @param {SearchSource | SourceName} type The type to validate.
- * @returns {SearchSource} The validated engine type.
+ * @returns {SearchSource} The validated source type.
  */
 export function validateSource(type: SearchSource | SourceName): SearchSource {
     const source: string | undefined = SourceRegistry.resolve(type);
-    if (!source) throw new OptionError(`The engine '${type}' is not a valid engine.`);
+    if (!source) throw new OptionError(`The source '${type}' is not a valid source.`);
 
     return source as SearchSource;
 }

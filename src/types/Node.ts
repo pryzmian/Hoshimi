@@ -1,5 +1,5 @@
 import type { TrackUserData } from "../classes/Track";
-import { CustomizableSources } from "../util/sourceRegistry";
+import type { CustomizableSources } from "../util/sourceRegistry";
 import type { FilterType } from "./Filters";
 import type { PickRequired, SearchSource } from "./Manager";
 import type {

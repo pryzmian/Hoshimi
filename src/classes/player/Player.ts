@@ -252,7 +252,7 @@ export class Player {
      * const player = manager.getPlayer("guildId");
      * const result = await player.search({
      * 	query: "track name",
-     * 	engine: SearchSource.Youtube,
+     * 	source: SearchSource.Youtube,
      * 	requester: {},
      * });
      *

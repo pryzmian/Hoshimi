@@ -24,7 +24,7 @@
         "yunaforseyfert": "github:SagiriIkeda/yunaforseyfert"
     },
     "devDependencies": {
-        "@biomejs/biome": "^2.4.7",
+        "@biomejs/biome": "^2.4.8",
         "@types/node": "^25.5.0",
         "tsx": "^4.21.0",
         "typescript": "^5.9.3"
@@ -33,7 +33,8 @@
         "onlyBuiltDependencies": [
             "@biomejs/biome",
             "esbuild",
-            "seyfert"
+            "seyfert",
+            "yunaforseyfert"
         ]
     }
 }

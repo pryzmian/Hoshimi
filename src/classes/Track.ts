@@ -205,7 +205,7 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
         const query: string = [this.info.title, this.info.author].filter(Boolean).join(" by ");
         const excluded: SourceName[] = [SourceNames.Twitch, SourceNames.FloweryTTS, SourceNames.Mixer, SourceNames.Vimeo];
 
-        const engine: SearchSource =
+        const source: SearchSource =
             this.info.sourceName && !excluded.includes(this.info.sourceName)
                 ? validateSource(this.info.sourceName)
                 : player.manager.options.defaultSearchSource;
@@ -213,10 +213,10 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
         player.manager.emit(
             EventNames.Debug,
             DebugLevels.Player,
-            `[Unresolved] -> [Track] Searching for track with query: ${query} using engine: ${engine}`,
+            `[Unresolved] -> [Track] Searching for track with query: ${query} using source: ${source}`,
         );
 
-        return player.search({ query, source: engine, requester: this.requester }).then((result): TrackStructure => {
+        return player.search({ query, source, requester: this.requester }).then((result): TrackStructure => {
             let track: TrackStructure | null = result.tracks.at(0) ?? null;
 
             if (this.info.author && !track)

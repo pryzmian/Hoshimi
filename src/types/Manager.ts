@@ -30,7 +30,7 @@ import type { HoshimiRestOptions, LavalinkPlayer } from "./Rest";
 import type { NodeStructure, PlayerStructure, QueueStructure, TrackStructure } from "./Structures";
 
 /**
- * The search engines to use.
+ * The search sources to use.
  */
 export enum SearchSources {
     /**
@@ -477,7 +477,7 @@ export interface HoshimiOptions {
      */
     client?: Partial<ClientData>;
     /**
-     * The default search engine to use.
+     * The default search source to use.
      * @type {SearchSources}
      * @default SearchSources.Youtube
      */

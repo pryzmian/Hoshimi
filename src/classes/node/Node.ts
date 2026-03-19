@@ -323,7 +323,7 @@ export class Node {
      * if (node) {
      * 	const search = await node.search({
      * 		query: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-     * 		engine: SearchSources.Youtube,
+     * 		source: SearchSources.Youtube,
      * 	});
      *
      * 	console.log(search); // the search result

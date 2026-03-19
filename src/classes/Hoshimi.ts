@@ -526,7 +526,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
      * ```ts
      * const result = await manager.search({
      * 	query: "track name",
-     * 	engine: SearchSources.Youtube,
+     * 	source: SearchSources.Youtube,
      * });
      *
      * console.log(result); // The search result
