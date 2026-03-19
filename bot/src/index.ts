@@ -137,6 +137,7 @@ declare module "hoshimi" {
 
     interface CustomizableSources {
         bilibili: "bilibili";
+        azsearch: "amazonmusic";
     }
 
     interface HoshimiEvents extends NodelinkEvents {}
