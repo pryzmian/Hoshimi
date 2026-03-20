@@ -1,4 +1,5 @@
 import type { TrackRequester } from "../classes/Track";
+import type { CustomizableSources } from "../util/sourceRegistry";
 import type {
     Exception,
     HoshimiNodeOptions,
@@ -29,9 +30,9 @@ import type { HoshimiRestOptions, LavalinkPlayer } from "./Rest";
 import type { NodeStructure, PlayerStructure, QueueStructure, TrackStructure } from "./Structures";
 
 /**
- * The search engines to use.
+ * The search sources to use.
  */
-export enum SearchEngines {
+export enum SearchSources {
     /**
      * Search on YouTube.
      * @description Provided by youtube-source plugin.
@@ -205,6 +206,21 @@ export enum SearchEngines {
      */
     HTTP = "http",
 }
+
+/**
+ * The custom search source keys provided by users.
+ */
+export type CustomSearchSources = keyof CustomizableSources;
+
+/**
+ * The custom source names provided by users.
+ */
+export type CustomSourceNames = CustomizableSources[CustomSearchSources];
+
+/**
+ * The full source identifier accepted by the search API.
+ */
+export type SearchSource = SearchSources | CustomSearchSources;
 
 /**
  * The debug levels for the manager.
@@ -461,11 +477,11 @@ export interface HoshimiOptions {
      */
     client?: Partial<ClientData>;
     /**
-     * The default search engine to use.
-     * @type {SearchEngines}
-     * @default SearchEngines.Youtube
+     * The default search source to use.
+     * @type {SearchSources}
+     * @default SearchSources.Youtube
      */
-    defaultSearchEngine?: SearchEngines;
+    defaultSearchSource?: SearchSource;
     /**
      * The queue options to use.
      * @type {HoshimiQueueOptions}

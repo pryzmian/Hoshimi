@@ -1,14 +1,15 @@
-import { DebugLevels, EventNames, type Inferable, type SearchEngines } from "../types/Manager";
+import { DebugLevels, EventNames, type Inferable, type SearchSource } from "../types/Manager";
 import {
     type LavalinkTrack,
     type PluginInfo,
+    type SourceName,
     SourceNames,
     type TrackInfo,
     type UnresolvedLavalinkTrack,
     type UnresolvedTrackInfo,
 } from "../types/Node";
 import { type PlayerStructure, Structures, type TrackStructure, type UnresolvedTrackStructure } from "../types/Structures";
-import { isTrack, isUnresolvedTrack, validateEngine } from "../util/functions/utils";
+import { isTrack, isUnresolvedTrack, validateSource } from "../util/functions/utils";
 import { ResolveError } from "./Errors";
 
 /**
@@ -202,20 +203,20 @@ export class UnresolvedTrack implements UnresolvedLavalinkTrack {
         }
 
         const query: string = [this.info.title, this.info.author].filter(Boolean).join(" by ");
-        const excluded: SourceNames[] = [SourceNames.Twitch, SourceNames.FloweryTTS, SourceNames.Mixer, SourceNames.Vimeo];
+        const excluded: SourceName[] = [SourceNames.Twitch, SourceNames.FloweryTTS, SourceNames.Mixer, SourceNames.Vimeo];
 
-        const engine: SearchEngines =
+        const source: SearchSource =
             this.info.sourceName && !excluded.includes(this.info.sourceName)
-                ? validateEngine(this.info.sourceName)
-                : player.manager.options.defaultSearchEngine;
+                ? validateSource(this.info.sourceName)
+                : player.manager.options.defaultSearchSource;
 
         player.manager.emit(
             EventNames.Debug,
             DebugLevels.Player,
-            `[Unresolved] -> [Track] Searching for track with query: ${query} using engine: ${engine}`,
+            `[Unresolved] -> [Track] Searching for track with query: ${query} using source: ${source}`,
         );
 
-        return player.search({ query, engine, requester: this.requester }).then((result): TrackStructure => {
+        return player.search({ query, source, requester: this.requester }).then((result): TrackStructure => {
             let track: TrackStructure | null = result.tracks.at(0) ?? null;
 
             if (this.info.author && !track)

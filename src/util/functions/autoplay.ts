@@ -1,5 +1,5 @@
 import type { HoshimiTrack } from "../../classes/Track";
-import { type QueryResult, SearchEngines } from "../../types/Manager";
+import { type QueryResult, SearchSources } from "../../types/Manager";
 import { SourceNames } from "../../types/Node";
 import type { PlayerStructure, TrackStructure } from "../../types/Structures";
 
@@ -50,7 +50,7 @@ export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrac
             );
             const { tracks }: QueryResult = await player.search({
                 query: `seed_tracks=${ids.join(",")}`,
-                engine: SearchEngines.SpotifyRecommendations,
+                source: SearchSources.SpotifyRecommendations,
                 requester: lastTrack.requester,
             });
 

@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-import { createHoshimi, type HoshimiStructure, type LyricsResult, Player, SearchEngines, Structures } from "hoshimi";
+import { createHoshimi, type HoshimiStructure, type LyricsResult, Player, SearchSources, Structures } from "hoshimi";
 import { Client, type ParseClient, type UsingClient } from "seyfert";
 import { HandleCommand } from "seyfert/lib/commands/handle.js";
 import { Yuna } from "yunaforseyfert";
@@ -42,7 +42,7 @@ const redis: RedisClient = new RedisClient(client);
 // Initialize the manager with a helper function.
 client.manager = createHoshimi({
     sendPayload: (guildId, payload) => client.gateway.send(client.gateway.calculateShardId(guildId), payload),
-    defaultSearchEngine: SearchEngines.Spotify,
+    defaultSearchSource: SearchSources.Spotify,
     nodeOptions: {
         resumable: true,
         resumeByLibrary: true,
@@ -133,6 +133,11 @@ declare module "hoshimi" {
         Player: HoshimiPlayer;
         Node: HoshimiNode;
         LyricsManager: HoshimiLyricsManager;
+    }
+
+    interface CustomizableSources {
+        bilibili: "bilibili";
+        azsearch: "amazonmusic";
     }
 
     interface HoshimiEvents extends NodelinkEvents {}

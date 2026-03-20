@@ -1,5 +1,5 @@
 import { DebugLevels, DestroyReasons, EventNames, type NodeIdentifier, type QueryResult, type SearchOptions } from "../../types/Manager";
-import { type LyricsResult, type SourceNames, State } from "../../types/Node";
+import { type LyricsResult, type SourceName, State } from "../../types/Node";
 import {
     type LavalinkPlayerVoice,
     type LavalinkPlayOptions,
@@ -252,7 +252,7 @@ export class Player {
      * const player = manager.getPlayer("guildId");
      * const result = await player.search({
      * 	query: "track name",
-     * 	engine: SearchEngine.Youtube,
+     * 	source: SearchSource.Youtube,
      * 	requester: {},
      * });
      *
@@ -583,12 +583,12 @@ export class Player {
         await this.data.set("internal_playerMove", true);
 
         if (this.queue.current || this.queue.size) {
-            const sources: SourceNames[] = [this.queue.current, ...this.queue.tracks]
+            const sources: SourceName[] = [this.queue.current, ...this.queue.tracks]
                 .filter((t): t is HoshimiTrack => t != null || typeof t !== "undefined")
-                .map((t): SourceNames | undefined => t.info.sourceName)
-                .filter((s): s is SourceNames => s != null || typeof s !== "undefined");
+                .map((t): SourceName | undefined => t.info.sourceName)
+                .filter((s): s is SourceName => s != null || typeof s !== "undefined");
 
-            const missings: SourceNames[] = [...new Set(sources)].filter((s): boolean => !target.info!.sourceManagers.includes(s));
+            const missings: SourceName[] = [...new Set(sources)].filter((s): boolean => !target.info!.sourceManagers.includes(s));
             if (missings.length) throw new PlayerError(`Target node is missing source managers for: ${missings.join(", ")}`);
         }
 

@@ -71,11 +71,22 @@ export interface NodelinkConnectionMetrics {
      * @type {NodelinkConnectionSpeed}
      */
     speed: NodelinkConnectionSpeed;
+}
+
+/**
+ * The connection metrics for nodelink.
+ */
+export interface NodelinkConnection {
     /**
      * The current status of the connection.
      * @type {NodelinkConnectionStatus}
      */
     status: NodelinkConnectionStatus;
+    /**
+     * The connection metrics.
+     * @type {NodelinkConnectionMetrics}
+     */
+    metrics: NodelinkConnectionMetrics;
 }
 
 /**
