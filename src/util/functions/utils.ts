@@ -8,9 +8,9 @@ import { DebugLevels, EventNames, type HoshimiOptions, type SearchSource } from 
 import type { LavalinkTrack, NodeInfo, NodeOptions, PluginNames, SearchQuery, SourceName, UnresolvedLavalinkTrack } from "../../types/Node";
 import type { PlayerOptions } from "../../types/Player";
 import type { UpdatePlayerInfo } from "../../types/Rest";
+import { SourceRegistry } from "../../types/Sources";
 import { type NodeStructure, type PlayerStructure, Structures, type TrackStructure } from "../../types/Structures";
 import { UrlRegex } from "../constants";
-import { SourceRegistry } from "../sourceRegistry";
 
 /**
  *
