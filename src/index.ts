@@ -34,8 +34,8 @@ export * from "./types/Node";
 export * from "./types/Player";
 export * from "./types/Queue";
 export * from "./types/Rest";
+export * from "./types/Sources";
 export * from "./types/Structures";
 
 // Exports related to constants.
 export * from "./util/constants";
-export * from "./util/sourceRegistry";

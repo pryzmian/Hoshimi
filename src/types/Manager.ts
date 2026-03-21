@@ -1,5 +1,4 @@
 import type { TrackRequester } from "../classes/Track";
-import type { CustomizableSources } from "../util/sourceRegistry";
 import type {
     Exception,
     HoshimiNodeOptions,
@@ -27,6 +26,7 @@ import type {
 } from "./Player";
 import type { HoshimiQueueOptions } from "./Queue";
 import type { HoshimiRestOptions, LavalinkPlayer } from "./Rest";
+import type { CustomizableSources } from "./Sources";
 import type { NodeStructure, PlayerStructure, QueueStructure, TrackStructure } from "./Structures";
 
 /**
