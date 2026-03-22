@@ -5,6 +5,13 @@ import { Collection } from "../../util/collection";
 import { NodeManagerError } from "../Errors";
 
 /**
+ * The type for the sort function used in the getLeastUsed method.
+ * @param {NodeStructure} node The node to get the value from.
+ * @returns {number} The value to sort by.
+ */
+type SortFunction = (node: NodeStructure) => number;
+
+/**
  * Class representing a node manager.
  * @class NodeManager
  */
@@ -203,30 +210,19 @@ export class NodeManager {
         const nodes: NodeStructure[] = this.nodes.filter((node) => node.state === State.Connected);
         if (!nodes.length) throw new NodeManagerError("No connected nodes available.");
 
-        switch (sortType) {
-            case NodeSortTypes.Players:
-                return nodes.reduce((a, b) => ((a.stats?.players ?? 0) < (b.stats?.players ?? 0) ? a : b));
-            case NodeSortTypes.PlayingPlayers:
-                return nodes.reduce((a, b) => ((a.stats?.playingPlayers ?? 0) < (b.stats?.playingPlayers ?? 0) ? a : b));
-            case NodeSortTypes.SystemLoad:
-                return nodes.reduce((a, b) => ((a.stats?.cpu.systemLoad ?? 0) < (b.stats?.cpu.systemLoad ?? 0) ? a : b));
-            case NodeSortTypes.LavalinkLoad:
-                return nodes.reduce((a, b) => ((a.stats?.cpu.lavalinkLoad ?? 0) < (b.stats?.cpu.lavalinkLoad ?? 0) ? a : b));
-            case NodeSortTypes.Penalties:
-                return nodes.reduce((a, b) => (a.penalties < b.penalties ? a : b));
-            case NodeSortTypes.Cpu:
-                return nodes.reduce((a, b) => {
-                    const aLoad = ((a.stats?.cpu.systemLoad ?? 0) + (a.stats?.cpu.lavalinkLoad ?? 0)) / 2;
-                    const bLoad = ((b.stats?.cpu.systemLoad ?? 0) + (b.stats?.cpu.lavalinkLoad ?? 0)) / 2;
-                    return aLoad < bLoad ? a : b;
-                });
-            case NodeSortTypes.Memory:
-                return nodes.reduce((a, b) => {
-                    const aLoad = ((a.stats?.memory.used ?? 0) / (a.stats?.memory.allocated ?? 1)) * 100;
-                    const bLoad = ((b.stats?.memory.used ?? 0) / (b.stats?.memory.allocated ?? 1)) * 100;
-                    return aLoad < bLoad ? a : b;
-                });
-        }
+        const sortFilters: Record<NodeSortTypes, SortFunction> = {
+            [NodeSortTypes.Players]: (node): number => node.stats?.players ?? 0,
+            [NodeSortTypes.PlayingPlayers]: (node): number => node.stats?.playingPlayers ?? 0,
+            [NodeSortTypes.SystemLoad]: (node): number => node.stats?.cpu.systemLoad ?? 0,
+            [NodeSortTypes.LavalinkLoad]: (node): number => node.stats?.cpu.lavalinkLoad ?? 0,
+            [NodeSortTypes.Penalties]: (node): number => node.penalties,
+            [NodeSortTypes.Cpu]: (node): number => ((node.stats?.cpu.systemLoad ?? 0) + (node.stats?.cpu.lavalinkLoad ?? 0)) / 2,
+            [NodeSortTypes.Memory]: (node): number => ((node.stats?.memory.used ?? 0) / (node.stats?.memory.allocated ?? 1)) * 100,
+        };
+
+        const filter: SortFunction = sortFilters[sortType];
+
+        return nodes.reduce((a, b): NodeStructure => (filter(a) < filter(b) ? a : b));
     }
 
     /**
