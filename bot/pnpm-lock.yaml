@@ -22,7 +22,7 @@ importers:
         version: 5.11.0
       seyfert:
         specifier: github:tiramisulabs/seyfert
-        version: https://codeload.github.com/tiramisulabs/seyfert/tar.gz/b8d4adf6f27ccd03aa753c69aeb3fbe8995605f9
+        version: https://codeload.github.com/tiramisulabs/seyfert/tar.gz/bbc59022861479514c1e8514b772e199209d4367
       yunaforseyfert:
         specifier: github:SagiriIkeda/yunaforseyfert
         version: https://codeload.github.com/SagiriIkeda/yunaforseyfert/tar.gz/8d365abbc3f4b36a83ed929366c48ea5c77e6b3d
@@ -309,8 +309,8 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  get-tsconfig@4.13.6:
-    resolution: {integrity: sha512-shZT/QMiSHc/YBLxxOkMtgSid5HFoauqCE3/exfsEcwg1WkeqjG+V40yBbBrsD+jW2HDXcs28xOfcbm2jI8Ddw==}
+  get-tsconfig@4.13.7:
+    resolution: {integrity: sha512-7tN6rFgBlMgpBML5j8typ92BKFi2sFQvIdpAqLA2beia5avZDrMs0FLZiM5etShWq5irVyGcGMEA1jcDaK7A/Q==}
 
   meowdb@2.2.3:
     resolution: {integrity: sha512-D2Arz1yZtJ40vWFmUblMKPyuvzXbdKJ5DTMmsnWNRBR0AeFd7eI/oqDXD5tsyHSH7W2jm1i1Y39bD6eTKrdMAA==}
@@ -322,8 +322,8 @@ packages:
   resolve-pkg-maps@1.0.0:
     resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
 
-  seyfert@https://codeload.github.com/tiramisulabs/seyfert/tar.gz/b8d4adf6f27ccd03aa753c69aeb3fbe8995605f9:
-    resolution: {tarball: https://codeload.github.com/tiramisulabs/seyfert/tar.gz/b8d4adf6f27ccd03aa753c69aeb3fbe8995605f9}
+  seyfert@https://codeload.github.com/tiramisulabs/seyfert/tar.gz/bbc59022861479514c1e8514b772e199209d4367:
+    resolution: {tarball: https://codeload.github.com/tiramisulabs/seyfert/tar.gz/bbc59022861479514c1e8514b772e199209d4367}
     version: 4.2.2
 
   tsx@4.21.0:
@@ -518,7 +518,7 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  get-tsconfig@4.13.6:
+  get-tsconfig@4.13.7:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
@@ -536,12 +536,12 @@ snapshots:
 
   resolve-pkg-maps@1.0.0: {}
 
-  seyfert@https://codeload.github.com/tiramisulabs/seyfert/tar.gz/b8d4adf6f27ccd03aa753c69aeb3fbe8995605f9: {}
+  seyfert@https://codeload.github.com/tiramisulabs/seyfert/tar.gz/bbc59022861479514c1e8514b772e199209d4367: {}
 
   tsx@4.21.0:
     dependencies:
       esbuild: 0.27.4
-      get-tsconfig: 4.13.6
+      get-tsconfig: 4.13.7
     optionalDependencies:
       fsevents: 2.3.3
 
