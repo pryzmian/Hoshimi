@@ -227,6 +227,7 @@ export const SourceRegistry = {
     },
 } as const;
 
+// Pre-register built-in sources with their respective names and protocols.
 SourceRegistry.register([
     { source: SearchSources.Youtube, name: SourceNames.Youtube },
     { source: SearchSources.YoutubeMusic, name: SourceNames.YoutubeMusic },
@@ -247,4 +248,18 @@ SourceRegistry.register([
     { source: SearchSources.PornHub, name: SourceNames.PornHub },
     { source: SearchSources.Local, protocol: "raw" },
     { source: SearchSources.HTTP, name: SourceNames.HTTP, protocol: "raw" },
+    { source: SearchSources.SpotifyAlbumMix },
+    { source: SearchSources.SpotifyArtistMix },
+    { source: SearchSources.SpotifyISRCMix },
+    { source: SearchSources.SpotifyTrackMix },
+    { source: SearchSources.SpotifyRecommendations },
+    { source: SearchSources.DeezerISRC },
+    { source: SearchSources.DeezerRecommendations },
+    { source: SearchSources.YandexMusicRecommendations },
+    { source: SearchSources.VKMusicRecommendations },
+    { source: SearchSources.TidalRecommendations },
+    { source: SearchSources.Qobuz },
+    { source: SearchSources.QobuzISRC },
+    { source: SearchSources.QobuzRecommendations },
+    { source: SearchSources.JioSaavnRecommendations },
 ]);
