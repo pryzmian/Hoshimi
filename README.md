@@ -42,19 +42,19 @@
 
 # Using NPM
 npm install hoshimi # Stable
-npm install https://github.com/Ganyu-Studios/Hoshimi.git # Development
+npm install hoshimi@dev # Development
 
 # Using PNPM
 pnpm install hoshimi
-pnpm install https://github.com/Ganyu-Studios/Hoshimi.git
+pnpm install hoshimi@dev
 
 # Using YARN
 yarn add hoshimi
-yarn add https://github.com/Ganyu-Studios/Hoshimi.git
+yarn add hoshimi@dev
 
 # Using BUN
 bun add hoshimi
-bun add https://github.com/Ganyu-Studios/Hoshimi.git
+bun add hoshimi@dev
 
 ```
 
@@ -114,7 +114,7 @@ client.events.values.RAW = {
 
 ## 💖 Used By
 
-- For now, no one is using it :(
+- **[Stelle](https://github.com/Ganyu-Studios/stelle-music)**: Currently on the [hoshimi](https://github.com/Ganyu-Studios/stelle-music/tree/hoshimi) branch.
 
 ## 📝 Additional Notes
 I am currently working on this package.</br> This package takes some ideas provided from libraries like:

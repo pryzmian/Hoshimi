@@ -32,9 +32,7 @@
         "test": "vitest run",
         "lint": "biome lint .",
         "format": "biome format --write .",
-        "prepare": "husky && pnpm build",
-        "tool:prepublish": "pnpm build && tsx ./scripts/prepublish.mts && cd .npm && npm pack",
-        "tool:publish": "cd .npm && npm publish"
+        "prepare": "husky && pnpm build"
     },
     "keywords": [
         "discord",
