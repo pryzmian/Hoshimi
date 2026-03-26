@@ -204,10 +204,10 @@ export function validateNodePlugins(node: Node, plugins: PluginNames[]): void {
 /**
  *
  * Validate the source type.
- * @param {SearchSource | SourceName} type The type to validate.
+ * @param {SearchSource | SourceName | string} type The type to validate.
  * @returns {SearchSource} The validated source type.
  */
-export function validateSource(type: SearchSource | SourceName): SearchSource {
+export function validateSource(type: SearchSource | SourceName | string): SearchSource {
     const source: string | undefined = SourceRegistry.resolve(type);
     if (!source) throw new OptionError(`The source '${type}' is not a valid source.`);
 

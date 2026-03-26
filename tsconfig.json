@@ -7,6 +7,7 @@
         /* Base Options: */
         "esModuleInterop": true,
         "skipLibCheck": true,
+        "skipDefaultLibCheck": true,
         "target": "es2022",
         "allowJs": true,
         "resolveJsonModule": true,

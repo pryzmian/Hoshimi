@@ -1,6 +1,6 @@
 import type { TrackUserData } from "../classes/Track";
 import type { FilterType } from "./Filters";
-import type { PickRequired, SearchSource } from "./Manager";
+import type { Hint, PickRequired, SearchSource } from "./Manager";
 import type {
     LyricsFoundEvent,
     LyricsLineEvent,
@@ -1195,14 +1195,14 @@ export interface HoshimiNodeOptions {
 export interface NodeDestroyInfo {
     /**
      * The code for the destroy.
-     * @type {WebsocketCloseCodes | undefined}
+     * @type {WebsocketCloseCodes | undefined | number}
      */
-    code?: WebsocketCloseCodes;
+    code?: WebsocketCloseCodes | number;
     /**
      * The reason for the destroy.
-     * @type {string | undefined}
+     * @type {NodeDestroyReasons | undefined | string}
      */
-    reason?: NodeDestroyReasons;
+    reason?: NodeDestroyReasons | string;
 }
 
 /**
@@ -1296,7 +1296,7 @@ export type NodeDisconnectInfo = NodeDestroyInfo;
 /**
  * The type of the user agent for the requests.
  */
-export type UserAgent = `${string}/v${string} (${string})`;
+export type UserAgent = Hint<`${string}/v${string} (${string})`>;
 
 /**
  * The type of the payload for the socket.
