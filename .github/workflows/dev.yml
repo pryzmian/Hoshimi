@@ -5,6 +5,10 @@ on:
     branches:
       - lib
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   publish_dev:
     name: Publish Dev
