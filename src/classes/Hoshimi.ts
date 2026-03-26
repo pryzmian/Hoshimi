@@ -221,7 +221,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
      * ```
      */
     public isUseable(): boolean {
-        const nodes: NodeStructure[] = this.nodeManager.nodes.filter((node) => node.state === State.Connected);
+        const nodes: NodeStructure[] = this.nodeManager.nodes.filter((node): boolean => node.state === State.Connected);
         return this.ready && nodes.length > 0;
     }
 
@@ -466,7 +466,7 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
         if (!this.options.client.id) throw new ManagerError("You must provide the client id.");
         if (typeof this.options.client.id !== "string") throw new OptionError("The client info 'info.client.id': must be a string.");
 
-        let amount = 0;
+        let amount: number = 0;
 
         for (const options of this.options.nodes) {
             const node = this.nodeManager.create(options);
