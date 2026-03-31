@@ -182,7 +182,7 @@ export const SourceRegistry = {
     },
     /**
      * Build a lavalink identifier from a source and query.
-     * @param {Hint<RegistrySearchSource>} source The source to use.
+     * @param {RegistrySearchSource} source The source to use.
      * @param {string} query The query to format.
      * @returns {string} The formatted lavalink identifier.
      */
