@@ -1,4 +1,3 @@
-import { Hoshimi } from "../classes/Hoshimi";
 import { LyricsManager } from "../classes/node/Lyrics";
 import { NodeManager } from "../classes/node/Manager";
 import { Node } from "../classes/node/Node";
@@ -56,11 +55,6 @@ export type TrackStructure = InferCustomStructure<Track, "Track">;
 export type UnresolvedTrackStructure = InferCustomStructure<UnresolvedTrack, "UnresolvedTrack">;
 
 /**
- * The structure for the Hoshimi classes.
- */
-export type HoshimiStructure = InferCustomStructure<Hoshimi, "Hoshimi">;
-
-/**
  * The structure for the PlayerVoiceState class.
  */
 export type PlayerVoiceStateStructure = InferCustomStructure<PlayerVoiceState, "PlayerVoiceState">;
@@ -78,7 +72,6 @@ interface StructureFactories {
     FilterManager(...args: ConstructorParameters<typeof FilterManager>): FilterManagerStructure;
     Track(...args: ConstructorParameters<typeof Track>): TrackStructure;
     UnresolvedTrack(...args: ConstructorParameters<typeof UnresolvedTrack>): UnresolvedTrackStructure;
-    Hoshimi(...args: ConstructorParameters<typeof Hoshimi>): HoshimiStructure;
     PlayerVoiceState(...args: ConstructorParameters<typeof PlayerVoiceState>): PlayerVoiceStateStructure;
 }
 
@@ -112,9 +105,6 @@ export const Structures: StructureFactories = {
     },
     UnresolvedTrack(...args): UnresolvedTrackStructure {
         return new UnresolvedTrack(...args);
-    },
-    Hoshimi(...args): HoshimiStructure {
-        return new Hoshimi(...args);
     },
     PlayerVoiceState(...args): PlayerVoiceStateStructure {
         return new PlayerVoiceState(...args);

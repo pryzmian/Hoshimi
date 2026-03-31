@@ -3,7 +3,7 @@ import type { LavalinkTrack, UnresolvedLavalinkTrack } from "../../types/Node";
 import type { QueueJson } from "../../types/Queue";
 import { type PlayerStructure, Structures, type TrackStructure } from "../../types/Structures";
 import { isTrack, isUnresolvedTrack } from "../../util/functions/utils";
-import { type HoshimiTrack, type TrackRequester, UnresolvedTrack } from "../Track";
+import { type TrackRequester, type TrackResolvableStructure, UnresolvedTrack } from "../Track";
 import { QueueUtils } from "./Utils";
 
 /**
@@ -13,9 +13,9 @@ import { QueueUtils } from "./Utils";
 export class Queue {
     /**
      * Tracks of the queue.
-     * @type {HoshimiTrack[]}
+     * @type {TrackResolvableStructure[]}
      */
-    public tracks: HoshimiTrack[] = [];
+    public tracks: TrackResolvableStructure[] = [];
 
     /**
      * Previous tracks of the queue.
@@ -152,7 +152,10 @@ export class Queue {
      * console.log(track.info.title); // The title of the track
      * ```
      */
-    public async build(track: LavalinkTrack | UnresolvedLavalinkTrack | HoshimiTrack, requester: TrackRequester): Promise<TrackStructure> {
+    public async build(
+        track: LavalinkTrack | UnresolvedLavalinkTrack | TrackResolvableStructure,
+        requester: TrackRequester,
+    ): Promise<TrackStructure> {
         const requesterFn = this.player.manager.options.playerOptions.requesterFn;
 
         if (isUnresolvedTrack(track)) return new UnresolvedTrack(track, requesterFn(requester)).resolve(this.player);
@@ -192,7 +195,7 @@ export class Queue {
     /**
      *
      * Add a track or tracks to the queue.
-     * @param {HoshimiTrack | HoshimiTrack[]} track The track or tracks to add.
+     * @param {TrackResolvableStructure | TrackResolvableStructure[]} track The track or tracks to add.
      * @param {number} [position] The position to add the track or tracks.
      * @returns {Promise<this>} The queue instance.
      * @example
@@ -212,8 +215,8 @@ export class Queue {
      * console.log(queue.tracks); // [track1, track3, track2, track]
      * ```
      */
-    public async add(track: HoshimiTrack | HoshimiTrack[], position?: number): Promise<this> {
-        const tracks: HoshimiTrack[] = Array.isArray(track) ? track : [track];
+    public async add(track: TrackResolvableStructure | TrackResolvableStructure[], position?: number): Promise<this> {
+        const tracks: TrackResolvableStructure[] = Array.isArray(track) ? track : [track];
 
         if (typeof position === "number" && position >= 0 && position < this.tracks.length) return this.splice(position, 0, ...tracks);
 
@@ -229,7 +232,7 @@ export class Queue {
     /**
      *
      * Get the first track of the queue.
-     * @returns {Promise<HoshimiTrack | null>} The first track of the queue.
+     * @returns {Promise<TrackResolvableStructure | null>} The first track of the queue.
      * @example
      * ```ts
      * const queue = player.queue;
@@ -241,8 +244,8 @@ export class Queue {
      * await queue.add(track2);
      * ```
      */
-    public async shift(): Promise<HoshimiTrack | null> {
-        const track: HoshimiTrack | null = this.tracks.shift() ?? null;
+    public async shift(): Promise<TrackResolvableStructure | null> {
+        const track: TrackResolvableStructure | null = this.tracks.shift() ?? null;
         if (track) await this.utils.save();
         return track;
     }
@@ -390,7 +393,7 @@ export class Queue {
      * Delete tracks from the queue.
      * @param {number} start The start index.
      * @param {number} deleteCount The number of tracks to delete.
-     * @param {HoshimiTrack | HoshimiTrack[]} [tracks] The tracks to add.
+     * @param {TrackResolvableStructure | TrackResolvableStructure[]} [tracks] The tracks to add.
      * @returns {Promise<this>} The queue instance.
      * @example
      * ```ts
@@ -404,7 +407,7 @@ export class Queue {
      * console.log(queue.tracks); // [track, track2]
      * ```
      */
-    public async splice(start: number, deleteCount: number, tracks?: HoshimiTrack | HoshimiTrack[]): Promise<this> {
+    public async splice(start: number, deleteCount: number, tracks?: TrackResolvableStructure | TrackResolvableStructure[]): Promise<this> {
         if (!this.size && tracks) await this.add(tracks);
 
         if (tracks) this.tracks.splice(start, deleteCount, ...(Array.isArray(tracks) ? tracks : [tracks]));

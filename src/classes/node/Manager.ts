@@ -1,8 +1,9 @@
 import { EventNames, type NodeIdentifier } from "../../types/Manager";
 import { type NodeOptions, NodeSortTypes, State } from "../../types/Node";
-import { type HoshimiStructure, type NodeStructure, Structures } from "../../types/Structures";
+import { type NodeStructure, Structures } from "../../types/Structures";
 import { Collection } from "../../util/collection";
 import { NodeManagerError } from "../Errors";
+import type { Hoshimi } from "../Hoshimi";
 
 /**
  * The type for the sort function used in the getLeastUsed method.
@@ -21,7 +22,7 @@ export class NodeManager {
      * @type {Hoshimi}
      * @readonly
      */
-    readonly manager: HoshimiStructure;
+    readonly manager: Hoshimi;
 
     /**
      * The nodes for the manager.
@@ -33,7 +34,7 @@ export class NodeManager {
     /**
      *
      * The constructor for the node manager.
-     * @param {HoshimiStructure} manager The manager for the node.
+     * @param {Hoshimi} manager The manager for the node.
      * @example
      * ```ts
      * const manager = new Hoshimi();
@@ -42,7 +43,7 @@ export class NodeManager {
      * console.log(nodeManager.nodes.size); // 0
      * ```
      */
-    constructor(manager: HoshimiStructure) {
+    constructor(manager: Hoshimi) {
         this.manager = manager;
     }
 

@@ -1,6 +1,6 @@
 import type { TrackUserData } from "../classes/Track";
 import type { FilterType } from "./Filters";
-import type { Hint, PickRequired, SearchSource } from "./Manager";
+import type { Hint, PickRequired, Prettify, SearchSource } from "./Manager";
 import type {
     LyricsFoundEvent,
     LyricsLineEvent,
@@ -1286,7 +1286,7 @@ export interface NodeJson {
 /**
  * The type for the unresolved track info.
  */
-export type UnresolvedTrackInfo = PickRequired<Partial<TrackInfo>, "title">;
+export type UnresolvedTrackInfo = Prettify<PickRequired<Partial<TrackInfo>, "title">>;
 
 /**
  * The type of the node disconnect object.
@@ -1301,7 +1301,7 @@ export type UserAgent = Hint<`${string}/v${string} (${string})`>;
 /**
  * The type of the payload for the socket.
  */
-export type LavalinkPayload =
+export type LavalinkEventPayload =
     | Ready
     | Stats
     | PlayerUpdate

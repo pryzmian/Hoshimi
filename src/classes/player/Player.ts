@@ -12,7 +12,6 @@ import {
 } from "../../types/Player";
 import type { LavalinkPlayer, UpdatePlayerInfo } from "../../types/Rest";
 import {
-    type HoshimiStructure,
     type NodeStructure,
     type PlayerVoiceStateStructure,
     type QueueStructure,
@@ -21,8 +20,9 @@ import {
 } from "../../types/Structures";
 import { isTrack, isUnresolvedTrack, validatePlayerOptions, validateTrack } from "../../util/functions/utils";
 import { PlayerError } from "../Errors";
+import type { Hoshimi } from "../Hoshimi";
 import type { PlayerStorageAdapter } from "../storage/adapters/PlayerAdapter";
-import type { HoshimiTrack } from "../Track";
+import type { TrackResolvableStructure } from "../Track";
 import type { FilterManager } from "./filters/Manager";
 import type { NullableVoiceChannelUpdate } from "./Voice";
 
@@ -50,7 +50,7 @@ export class Player {
      * @type {Hoshimi}
      * @readonly
      */
-    readonly manager: HoshimiStructure;
+    readonly manager: Hoshimi;
 
     /**
      * The queue for the player.
@@ -179,7 +179,7 @@ export class Player {
     /**
      *
      * Create a new player.
-     * @param {HoshimiStructure} manager The manager for the player.
+     * @param {Hoshimi} manager The manager for the player.
      * @param {PlayOptions} options The options for the player.
      * @example
      * ```ts
@@ -196,7 +196,7 @@ export class Player {
      * console.log(player.voiceId); // voiceId
      * console.log(player.textId); // textId
      */
-    constructor(manager: HoshimiStructure, options: PlayerOptions) {
+    constructor(manager: Hoshimi, options: PlayerOptions) {
         this.manager = manager;
         this.options = options;
 
@@ -584,7 +584,7 @@ export class Player {
 
         if (this.queue.current || this.queue.size) {
             const sources: SourceName[] = [this.queue.current, ...this.queue.tracks]
-                .filter((t): t is HoshimiTrack => t != null || typeof t !== "undefined")
+                .filter((t): t is TrackResolvableStructure => t != null || typeof t !== "undefined")
                 .map((t): SourceName | undefined => t.info.sourceName)
                 .filter((s): s is SourceName => s != null || typeof s !== "undefined");
 

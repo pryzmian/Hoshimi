@@ -1,5 +1,5 @@
 import type { PlayerStorageAdapter } from "../classes/storage/adapters/PlayerAdapter";
-import type { HoshimiTrack, TrackRequester } from "../classes/Track";
+import type { TrackResolvableStructure, TrackRequester } from "../classes/Track";
 import type { FilterSettings } from "./Filters";
 import type { NodeIdentifier, Nullable, Prettify } from "./Manager";
 import type { Exception, LavalinkTrack, LyricsLine, LyricsResult, NodeJson, OpCodes } from "./Node";
@@ -453,9 +453,9 @@ export interface PlayOptions extends BasePlayOptions {
     noReplace?: boolean;
     /**
      * Track to play.
-     * @type {HoshimiTrack | undefined}
+     * @type {TrackResolvableStructure | undefined}
      */
-    track?: HoshimiTrack;
+    track?: TrackResolvableStructure;
 }
 
 export interface PlayerVoice {

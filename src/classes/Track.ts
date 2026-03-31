@@ -260,7 +260,7 @@ export interface CustomizableTrack {}
 /**
  * Type representing a Hoshimi track, which can be either a resolved or unresolved track.
  */
-export type HoshimiTrack = TrackStructure | UnresolvedTrackStructure;
+export type TrackResolvableStructure = TrackStructure | UnresolvedTrackStructure;
 
 /**
  * The requester of the track.

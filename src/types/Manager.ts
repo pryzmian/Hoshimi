@@ -2,7 +2,7 @@ import type { TrackRequester } from "../classes/Track";
 import type {
     Exception,
     HoshimiNodeOptions,
-    LavalinkPayload,
+    LavalinkEventPayload,
     LoadType,
     NodeDestroyInfo,
     NodeOptions,
@@ -523,9 +523,9 @@ export interface HoshimiEvents {
     /**
      * Emitted when the node gives a response.
      * @param {NodeStructure} node The node that emitted the event.
-     * @param {LavalinkPayload} message The message that was received.
+     * @param {LavalinkEventPayload} message The message that was received.
      */
-    nodeRaw: [node: NodeStructure, message: LavalinkPayload];
+    nodeRaw: [node: NodeStructure, message: LavalinkEventPayload];
     /**
      * Emitted when the node gives an error.
      * @param {NodeStructure} node The node that emitted the event.

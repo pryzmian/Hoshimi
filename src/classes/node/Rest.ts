@@ -1,3 +1,4 @@
+import type { Hoshimi } from "../..";
 import { DebugLevels, EventNames } from "../../types/Manager";
 import type { UserAgent } from "../../types/Node";
 import {
@@ -13,7 +14,7 @@ import {
     type SessionResumingOptions,
     type UpdatePlayerInfo,
 } from "../../types/Rest";
-import type { HoshimiStructure, NodeStructure } from "../../types/Structures";
+import type { NodeStructure } from "../../types/Structures";
 import { HoshimiAgent } from "../../util/constants";
 import { stringify, updatePlayerData } from "../../util/functions/utils";
 import { RestError } from "../Errors";
@@ -71,7 +72,7 @@ export class Rest {
      * ```
      */
     constructor(node: NodeStructure) {
-        const manager: HoshimiStructure = node.nodeManager.manager;
+        const manager: Hoshimi = node.nodeManager.manager;
 
         this.url = `${node.options.secure ? "https" : "http"}://${node.options.host}:${node.options.port}`;
         this.restTimeout = node.options.restTimeout ?? manager.options.restOptions.resumeTimeout ?? 10000;

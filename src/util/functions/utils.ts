@@ -2,7 +2,7 @@ import { NodeError, OptionError, ResolveError } from "../../classes/Errors";
 import type { Node } from "../../classes/node/Node";
 import { PlayerStorageAdapter } from "../../classes/storage/adapters/PlayerAdapter";
 import { QueueStorageAdapter } from "../../classes/storage/adapters/QueueAdapter";
-import type { HoshimiTrack, TrackRequester, UnresolvedTrack } from "../../classes/Track";
+import type { TrackResolvableStructure, TrackRequester, UnresolvedTrack } from "../../classes/Track";
 import type { TimescaleSettings } from "../../types/Filters";
 import { DebugLevels, EventNames, type HoshimiOptions, type SearchSource } from "../../types/Manager";
 import type { LavalinkTrack, NodeInfo, NodeOptions, PluginNames, SearchQuery, SourceName, UnresolvedLavalinkTrack } from "../../types/Node";
@@ -218,11 +218,11 @@ export function validateSource(type: SearchSource | SourceName | string): Search
  *
  * Resolve a track to a valid track instance.
  * @param {PlayerStructure} player The player to resolve the track for.
- * @param {HoshimiTrack | null} track The track to resolve.
+ * @param {TrackResolvableStructure | null} track The track to resolve.
  * @returns {Promise<TrackStructure | null>} The resolved track.
  * @throws {ResolveError} If the track is not a valid unresolved track.
  */
-export async function validateTrack(player: PlayerStructure, track: HoshimiTrack | null): Promise<TrackStructure | null> {
+export async function validateTrack(player: PlayerStructure, track: TrackResolvableStructure | null): Promise<TrackStructure | null> {
     if (!track) return null;
 
     const requesterFn = player.manager.options.playerOptions.requesterFn;

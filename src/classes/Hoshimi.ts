@@ -18,14 +18,7 @@ import {
 } from "../types/Manager";
 import { type LavalinkSearchResponse, LoadType, State } from "../types/Node";
 import type { LavalinkPlayerVoice, PlayerOptions } from "../types/Player";
-import {
-    type HoshimiStructure,
-    type NodeManagerStructure,
-    type NodeStructure,
-    type PlayerStructure,
-    Structures,
-    type TrackStructure,
-} from "../types/Structures";
+import { type NodeManagerStructure, type NodeStructure, type PlayerStructure, Structures, type TrackStructure } from "../types/Structures";
 import { Collection } from "../util/collection";
 import { HoshimiAgent } from "../util/constants";
 import { autoplayFn } from "../util/functions/autoplay";
@@ -621,8 +614,8 @@ export class Hoshimi extends EventEmitter<HoshimiEvents> {
 /**
  * Create a new Hoshimi instance.
  * @param {ConstructorParameters<typeof Hoshimi>} args The arguments for the constructor.
- * @returns {HoshimiStructure} The new Hoshimi structure.
+ * @returns {Hoshimi} The new Hoshimi instance.
  */
-export function createHoshimi(...args: ConstructorParameters<typeof Hoshimi>): HoshimiStructure {
-    return Structures.Hoshimi(...args);
+export function createHoshimi(...args: ConstructorParameters<typeof Hoshimi>): Hoshimi {
+    return new Hoshimi(...args);
 }

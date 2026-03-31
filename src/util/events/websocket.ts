@@ -1,6 +1,6 @@
 import type { IncomingMessage } from "node:http";
 import { DebugLevels, EventNames } from "../../types/Manager";
-import { type LavalinkPayload, NodeDestroyReasons, type NodeInfo, OpCodes, State, WebsocketCloseCodes } from "../../types/Node";
+import { type LavalinkEventPayload, NodeDestroyReasons, type NodeInfo, OpCodes, State, WebsocketCloseCodes } from "../../types/Node";
 import { PlayerEventType } from "../../types/Player";
 import { type LavalinkPlayer, RestRoutes } from "../../types/Rest";
 import type { NodeStructure, PlayerStructure } from "../../types/Structures";
@@ -95,7 +95,7 @@ export async function onMessage(this: NodeStructure, message: Buffer | string): 
     else if (message instanceof ArrayBuffer) message = Buffer.from(message);
 
     try {
-        const payload: LavalinkPayload = JSON.parse(message.toString());
+        const payload: LavalinkEventPayload = JSON.parse(message.toString());
         if (!payload.op) return;
 
         this.nodeManager.manager.emit(EventNames.NodeRaw, this, payload);

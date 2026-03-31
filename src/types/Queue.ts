@@ -1,5 +1,5 @@
 import type { QueueStorageAdapter } from "../classes/storage/adapters/QueueAdapter";
-import type { HoshimiTrack } from "../classes/Track";
+import type { TrackResolvableStructure } from "../classes/Track";
 import type { Awaitable } from "./Manager";
 import type { PlayerStructure, TrackStructure } from "./Structures";
 
@@ -17,9 +17,9 @@ export interface HoshimiQueueOptions {
      *
      * The function to use for autoplay.
      * @param {Player} player The player.
-     * @param {HoshimiTrack | null} lastTrack The last track played.
+     * @param {TrackResolvableStructure | null} lastTrack The last track played.
      */
-    autoplayFn?(player: PlayerStructure, lastTrack: HoshimiTrack | null): Awaitable<void>;
+    autoplayFn?(player: PlayerStructure, lastTrack: TrackResolvableStructure | null): Awaitable<void>;
     /**
      * Enable the auto play for the queue. (By default, only supports `youtube` and `spotify`, add more with your own function)
      * @type {boolean}
@@ -40,9 +40,9 @@ export interface HoshimiQueueOptions {
 export interface QueueJson {
     /**
      * The tracks of the queue.
-     * @type {HoshimiTrack[]}
+     * @type {TrackResolvableStructure[]}
      */
-    tracks: HoshimiTrack[];
+    tracks: TrackResolvableStructure[];
     /**
      * The previous tracks of the queue.
      * @type {TrackStructure[]}

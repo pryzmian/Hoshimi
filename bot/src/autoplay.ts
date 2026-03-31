@@ -1,4 +1,11 @@
-import { type HoshimiTrack, type PlayerStructure, SearchSources, SourceNames, type TrackStructure } from "hoshimi";
+import {
+    type PlayerStructure,
+    type QueryResult,
+    SearchSources,
+    SourceNames,
+    type TrackResolvableStructure,
+    type TrackStructure,
+} from "hoshimi";
 
 /**
  * The maximum number of tracks to be added to the queue.
@@ -11,13 +18,13 @@ const max: number = 10;
  *
  * The autoplay function for the player.
  * @param {PlayerStructure} player The player for the autoplay function.
- * @param {HoshimiTrack | null} lastTrack The last track that was played.
+ * @param {TrackResolvableStructure | null} lastTrack The last track that was played.
  * @returns {Promise<void>} The promise for the autoplay function.
  */
-export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrack | null): Promise<void> {
+export async function autoplayFn(player: PlayerStructure, lastTrack: TrackResolvableStructure | null): Promise<void> {
     if (!lastTrack) return;
 
-    const isEnabled = !!(await player.data.get("enabledAutoplay")) || player.manager.options.queueOptions.autoPlay;
+    const isEnabled: boolean = !!(await player.data.get("enabledAutoplay")) || player.manager.options.queueOptions.autoPlay;
     if (!isEnabled) return;
 
     /**
@@ -28,7 +35,7 @@ export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrac
      */
     const filter = (tracks: TrackStructure[]): TrackStructure[] =>
         tracks.filter(
-            (track) =>
+            (track): boolean =>
                 !(
                     player.queue.history.some((t) => t.info.identifier === track.info.identifier) ||
                     lastTrack.info.identifier === track.info.identifier
@@ -46,7 +53,7 @@ export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrac
             });
 
             if (res.tracks.length) {
-                const index = Math.floor(Math.random() * res.tracks.length);
+                const index: number = Math.floor(Math.random() * res.tracks.length);
 
                 const track = filter(res.tracks)[index];
                 if (!track) return;
@@ -61,14 +68,14 @@ export async function autoplayFn(player: PlayerStructure, lastTrack: HoshimiTrac
             if (!lastTrack.info.identifier) return;
 
             const search = `https://www.youtube.com/watch?v=${lastTrack.info.identifier}&list=RD${lastTrack.info.identifier}`;
-            const res = await player.search({
+            const res: QueryResult = await player.search({
                 query: search,
                 requester: lastTrack.requester,
             });
 
             if (res.tracks.length) {
-                const random = Math.floor(Math.random() * res.tracks.length);
-                const tracks = filter(res.tracks).slice(random, random + max);
+                const random: number = Math.floor(Math.random() * res.tracks.length);
+                const tracks: TrackStructure[] = filter(res.tracks).slice(random, random + max);
 
                 player.queue.add(tracks);
             }
