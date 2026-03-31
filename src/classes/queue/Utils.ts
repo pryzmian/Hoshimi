@@ -1,6 +1,6 @@
 import { type Awaitable, DebugLevels, EventNames } from "../../types/Manager";
 import type { HoshimiQueueOptions, QueueJson } from "../../types/Queue";
-import type { QueueStructure } from "../../types/Structures";
+import type { QueueStructure, TrackStructure } from "../../types/Structures";
 
 import { isTrack, stringify } from "../../util/functions/utils";
 import { StorageError } from "../Errors";
@@ -97,22 +97,22 @@ export class QueueUtils {
      * Sync the queue.
      * @param {boolean} [override=true] Whether to override the current queue or not.
      * @param {boolean} [syncCurrent=false] Whether to sync the current track or not.
-     * @returns {Awaitable<void>}
+     * @returns {Promise<void>} The promise for the sync operation.
      * @example
      * ```ts
      * await player.queue.utils.sync();
      * ```
      */
-    public async sync(override = true, syncCurrent = false): Promise<void> {
+    public async sync(override: boolean = true, syncCurrent: boolean = false): Promise<void> {
         const data: QueueJson | undefined = await this.store.get(this.queue.player.guildId);
         if (!data) throw new StorageError(`No data found to sync for guildId: ${this.queue.player.guildId}`);
 
         if (syncCurrent && data.current && !this.queue.current && isTrack(data.current)) this.queue.current = data.current;
 
-        const tracks = data.tracks.filter((track) => isTrack(track)) || [];
-        const history = data.history.filter((track) => isTrack(track)) || [];
+        const tracks: TrackStructure[] = data.tracks.filter((track): track is TrackStructure => isTrack(track)) || [];
+        const history: TrackStructure[] = data.history.filter((track): track is TrackStructure => isTrack(track)) || [];
 
-        const length = this.queue.tracks.length;
+        const length: number = this.queue.tracks.length;
 
         if (tracks.length) this.queue.tracks.splice(override ? 0 : length, override ? length : 0, ...tracks);
         if (history.length) this.queue.history.splice(0, override ? length : 0, ...history);
